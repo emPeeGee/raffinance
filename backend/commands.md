@@ -13,3 +13,7 @@ This will create an image from dockerfile
 1. `docker ps` List processes
 2. `docker exec -it #id bash` Connect to docker instance
 3. `psql -U postgres raffinance` Connect to database
+
+
+## posgresql
+1. `DROP SCHEMA public CASCADE; CREATE SCHEMA public;`. Deletes all tables from db

@@ -7,8 +7,10 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/emPeeGee/raffinance/internal/auth"
 	"github.com/emPeeGee/raffinance/internal/config"
 	"github.com/emPeeGee/raffinance/internal/connection"
+	"github.com/emPeeGee/raffinance/internal/entity"
 	"github.com/emPeeGee/raffinance/pkg/log"
 
 	"github.com/gin-gonic/gin"
@@ -39,10 +41,10 @@ func main() {
 		logger.Fatalf("failed to initialize db: %s", err.Error())
 	}
 
-	// err = db.AutoMigrate(&entity.Thought{}, &entity.User{})
-	// if err != nil {
-	// 	logger.Fatalf("failed to auto migrate gorm", err.Error())
-	// }
+	err = db.AutoMigrate(&entity.User{}, &entity.Contact{}, &entity.Account{})
+	if err != nil {
+		logger.Fatalf("failed to auto migrate gorm", err.Error())
+	}
 
 	server := new(connection.Server)
 	valid := validator.New()
@@ -71,16 +73,16 @@ func buildHandler(db *gorm.DB, valid *validator.Validate, logger log.Logger) htt
 	router := gin.New()
 	// router.Use(accesslog.Handler(logger), flaw.Handler(logger), cors.Handler())
 
-	// authRg := router.Group("/auth")
-	// apiRg := router.Group("/api", auth.HandleUserIdentity(logger))
+	authRg := router.Group("/auth")
+	apiRg := router.Group("/api", auth.HandleUserIdentity(logger))
 
-	// auth.RegisterHandlers(
-	// 	authRg,
-	// 	apiRg,
-	// 	auth.NewAuthService(auth.NewAuthRepository(db, logger), logger),
-	// 	valid,
-	// 	logger,
-	// )
+	auth.RegisterHandlers(
+		authRg,
+		apiRg,
+		auth.NewAuthService(auth.NewAuthRepository(db, logger), logger),
+		valid,
+		logger,
+	)
 
 	return router
 }

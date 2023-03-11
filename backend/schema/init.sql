@@ -1,6 +1,7 @@
 CREATE TABLE users (
   userID SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
+  username VARCHAR(64) UNIQUE NOT NULL,
   email VARCHAR(255) UNIQUE NOT NULL,
   password VARCHAR(255) NOT NULL,
   phone VARCHAR(255) NOT NULL
@@ -151,5 +152,5 @@ ALTER TABLE recurringTransactions ADD FOREIGN KEY (transactionTypeID) REFERENCES
 
 ALTER TABLE Goals ADD FOREIGN KEY (userID) REFERENCES users (userID);
 
-INSERT INTO users (name, email, password, phone) VALUES
-  ('Ionel', 'ionel@mail.com', '1111', '012345');
+-- INSERT INTO users (name, email, password, phone) VALUES
+--   ('Ionel', 'ionel@mail.com', '1111', '012345');
