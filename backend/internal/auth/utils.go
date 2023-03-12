@@ -31,7 +31,7 @@ func parseToken(accessToken string) (uint, error) {
 
 // TODO: to be added associations and checking jwt
 // 4 July, what did I mean withch checking jwt?
-func getUserId(c *gin.Context) (*uint, error) {
+func GetUserId(c *gin.Context) (*uint, error) {
 	id, ok := c.Get(userCtx)
 	if !ok {
 		return nil, nil

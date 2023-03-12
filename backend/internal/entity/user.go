@@ -15,4 +15,5 @@ type User struct {
 	LatestLogins pq.StringArray `json:"latestLogins" gorm:"type:varchar(64)[]"`
 
 	Accounts []Account
+	Contacts []Contact
 }

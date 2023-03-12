@@ -83,7 +83,7 @@ func (h *handler) signIn(c *gin.Context) {
 }
 
 func (h *handler) getUser(c *gin.Context) {
-	userId, err := getUserId(c)
+	userId, err := GetUserId(c)
 	if err != nil {
 		errorutil.Unauthorized(c, err.Error(), "")
 		return
