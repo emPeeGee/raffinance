@@ -1,6 +1,10 @@
 package auth
 
-import "time"
+import (
+	"time"
+
+	"github.com/lib/pq"
+)
 
 type createUserDTO struct {
 	Password string `json:"password" validate:"required,min=4,max=256"`
@@ -20,10 +24,11 @@ type userHashedPassword struct {
 }
 
 type UserResponse struct {
-	Username  string    `json:"username"`
-	Name      string    `json:"name"`
-	Phone     string    `json:"phone"`
-	Email     string    `json:"email"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
+	Username     string         `json:"username"`
+	Name         string         `json:"name"`
+	Phone        string         `json:"phone"`
+	Email        string         `json:"email"`
+	LatestLogins pq.StringArray `json:"latestLogins" gorm:"type:varchar(64)[]"`
+	CreatedAt    time.Time      `json:"createdAt"`
+	UpdatedAt    time.Time      `json:"updatedAt"`
 }

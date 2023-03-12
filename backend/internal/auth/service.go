@@ -59,15 +59,17 @@ func (s *service) generateToken(credentials credentialsDTO) (string, error) {
 		return "", err
 	}
 
-	// TODO: I guess this is bad, because I am getting password
-	// with username and I compare it in service, instead of comparing in repo
 	ok := crypt.CheckPasswordHashes(credentials.Password, hashedPassword.Password)
-	if ok == false {
+	if !ok {
 		return "", errors.New("password does not match")
 	}
 
 	user, err := s.repo.getUserByUsername(credentials.Username)
 	if err != nil {
+		return "", err
+	}
+
+	if err := s.repo.updateLatestLogins(credentials.Username); err != nil {
 		return "", err
 	}
 

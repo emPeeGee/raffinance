@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"time"
+
 	"github.com/emPeeGee/raffinance/internal/entity"
 	"github.com/emPeeGee/raffinance/pkg/log"
 	"gorm.io/gorm"
@@ -8,6 +10,7 @@ import (
 
 type Repository interface {
 	createUser(user createUserDTO) error
+	updateLatestLogins(username string) error
 	getUserById(id uint) (UserResponse, error)
 	getUserByUsername(username string) (entity.User, error)
 	getHashedPasswordByUsername(username string) (userHashedPassword, error)
@@ -23,13 +26,13 @@ func NewAuthRepository(db *gorm.DB, logger log.Logger) *repository {
 }
 
 func (r *repository) createUser(user createUserDTO) error {
-	// maybe dto is not needed here?
 	newUser := entity.User{
-		Username: user.Username,
-		Password: user.Password,
-		Name:     user.Name,
-		Email:    user.Email,
-		Phone:    user.Phone,
+		Username:     user.Username,
+		Password:     user.Password,
+		Name:         user.Name,
+		Email:        user.Email,
+		Phone:        user.Phone,
+		LatestLogins: []string{},
 	}
 
 	if err := r.db.Create(&newUser).Error; err != nil {
@@ -48,6 +51,21 @@ func (r *repository) getUserByUsername(username string) (entity.User, error) {
 	}
 
 	return user, nil
+}
+
+func (r *repository) updateLatestLogins(username string) error {
+	var user entity.User
+
+	if err := r.db.Where("username = ?", username).First(&user).Error; err != nil {
+		return err
+	}
+
+	user.LatestLogins = append(user.LatestLogins, time.Now().String())
+	if err := r.db.Save(&user).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (r *repository) getHashedPasswordByUsername(username string) (userHashedPassword, error) {
