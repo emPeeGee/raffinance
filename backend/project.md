@@ -30,6 +30,11 @@ Loans: InterestRate, DurationInMonths, GracePeriodInMonths
   I. Latest logins. Display by aggregating them by day
   II. Limit latest logins by 50 
 
+## Features
+1. Transactions: compact view and more detailed view
+2. Notifications:
+3. Future: Exchanges
+
 
 ## Backend structure
 - cmd/server/
