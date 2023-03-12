@@ -17,21 +17,21 @@ func (e ErrorResponse) Error() string {
 }
 
 func Error(c *gin.Context, code int, message, details string) {
-	c.AbortWithError(code, ErrorResponse{Status: code, Message: message, Details: details})
+	c.AbortWithStatusJSON(code, ErrorResponse{Status: code, Message: message, Details: details})
 }
 
 func InternalServer(c *gin.Context, message, details string) {
-	c.AbortWithError(http.StatusInternalServerError, ErrorResponse{Status: http.StatusInternalServerError, Message: message, Details: details})
+	c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Status: http.StatusInternalServerError, Message: message, Details: details})
 }
 
 func BadRequest(c *gin.Context, message, details string) {
-	c.AbortWithError(http.StatusBadRequest, ErrorResponse{Status: http.StatusBadRequest, Message: message, Details: details})
+	c.AbortWithStatusJSON(http.StatusBadRequest, ErrorResponse{Status: http.StatusBadRequest, Message: message, Details: details})
 }
 
 func NotFound(c *gin.Context, message, details string) {
-	c.AbortWithError(http.StatusNotFound, ErrorResponse{Status: http.StatusNotFound, Message: message, Details: details})
+	c.AbortWithStatusJSON(http.StatusNotFound, ErrorResponse{Status: http.StatusNotFound, Message: message, Details: details})
 }
 
 func Unauthorized(c *gin.Context, message, details string) {
-	c.AbortWithError(http.StatusUnauthorized, ErrorResponse{Status: http.StatusUnauthorized, Message: message, Details: details})
+	c.AbortWithStatusJSON(http.StatusUnauthorized, ErrorResponse{Status: http.StatusUnauthorized, Message: message, Details: details})
 }
