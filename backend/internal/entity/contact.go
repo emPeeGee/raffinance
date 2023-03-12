@@ -7,5 +7,5 @@ type Contact struct {
 	UserID *uint
 	Name   string `json:"name" gorm:"notNull;size:256"`
 	Phone  string `json:"phone" gorm:"size:16"`
-	Email  string `json:"email" gorm:"notNull;unique;size:256"`
+	Email  string `json:"email" gorm:"notNull;size:256"`
 }

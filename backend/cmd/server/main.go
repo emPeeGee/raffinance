@@ -10,6 +10,7 @@ import (
 	"github.com/emPeeGee/raffinance/internal/auth"
 	"github.com/emPeeGee/raffinance/internal/config"
 	"github.com/emPeeGee/raffinance/internal/connection"
+	"github.com/emPeeGee/raffinance/internal/contact"
 	"github.com/emPeeGee/raffinance/internal/entity"
 	"github.com/emPeeGee/raffinance/pkg/log"
 
@@ -80,6 +81,13 @@ func buildHandler(db *gorm.DB, valid *validator.Validate, logger log.Logger) htt
 		authRg,
 		apiRg,
 		auth.NewAuthService(auth.NewAuthRepository(db, logger), logger),
+		valid,
+		logger,
+	)
+
+	contact.RegisterHandlers(
+		apiRg,
+		contact.NewContactService(contact.NewContactRepository(db, logger), logger),
 		valid,
 		logger,
 	)
