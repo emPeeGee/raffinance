@@ -17,9 +17,9 @@ type createContactDTO struct {
 	Phone string `json:"phone" validate:"max=16"`
 }
 
+// they are identical
 type updateContactDTO struct {
-	ID    uint
-	Name  string `json:"name" validate:"required,min=2,max=256"`
-	Email string `json:"email" validate:"required,min=3,max=256"`
+	Name  string `json:"name" validate:"max=256"`
+	Email string `json:"email" validate:"max=256"`
 	Phone string `json:"phone" validate:"max=16"`
 }

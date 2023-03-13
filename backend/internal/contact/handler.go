@@ -2,6 +2,7 @@ package contact
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/emPeeGee/raffinance/internal/auth"
 	"github.com/emPeeGee/raffinance/pkg/errorutil"
@@ -63,7 +64,40 @@ func (h *handler) createContact(c *gin.Context) {
 	})
 }
 
-func (h *handler) updateContact(c *gin.Context) {}
+func (h *handler) updateContact(c *gin.Context) {
+	var input updateContactDTO
+
+	userId, err := auth.GetUserId(c)
+	if err != nil || userId == nil {
+		errorutil.Unauthorized(c, err.Error(), "you are not authorized")
+		return
+	}
+
+	contactId, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		errorutil.BadRequest(c, "wrong contact id", err.Error())
+		return
+	}
+
+	if err := c.BindJSON(&input); err != nil {
+		errorutil.BadRequest(c, "your request looks incorrect", err.Error())
+		return
+	}
+
+	if err := h.validate.Struct(input); err != nil {
+		errorutil.BadRequest(c, "your request did not pass validation", err.Error())
+		return
+	}
+
+	updatedContact, err := h.service.updateContact(*userId, uint(contactId), input)
+	if err != nil {
+		errorutil.BadRequest(c, "error", err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, updatedContact)
+}
+
 func (h *handler) deleteContact(c *gin.Context) {}
 
 func (h *handler) getContacts(c *gin.Context) {

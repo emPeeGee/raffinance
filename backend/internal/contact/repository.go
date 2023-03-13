@@ -1,6 +1,9 @@
 package contact
 
 import (
+	"errors"
+	"fmt"
+
 	"github.com/emPeeGee/raffinance/internal/entity"
 	"github.com/emPeeGee/raffinance/pkg/log"
 
@@ -9,8 +12,10 @@ import (
 
 type Repository interface {
 	getContacts(userId uint) ([]contactResponse, error)
+	contactExistsByID(id uint) error
+	contactExists(name, email string) error
 	createContact(userId uint, contact createContactDTO) error
-	// updateContact(contact updateContactDTO) (contactResponse, error)
+	updateContact(userId, contactId uint, contact updateContactDTO) (*contactResponse, error)
 	// deleteContact(id uint) error
 }
 
@@ -36,6 +41,27 @@ func (r *repository) createContact(userId uint, contact createContactDTO) error 
 	}
 
 	return nil
+}
+
+func (r *repository) updateContact(userId, contactId uint, contact updateContactDTO) (*contactResponse, error) {
+	fmt.Printf("%+v\n", contact)
+
+	// NOTE:NOTE When update with struct, GORM will only update non-zero fields, you might want to use
+	// map to update attributes or use Select to specify fields to update
+	if err := r.db.Model(&entity.Contact{}).Where("id = ?", contactId).Updates(map[string]interface{}{
+		"name":  contact.Name,
+		"phone": contact.Phone,
+		"email": contact.Email,
+	}).Error; err != nil {
+		return nil, err
+	}
+
+	var theContact contactResponse
+	if err := r.db.Model(&entity.Contact{}).First(&theContact, contactId).Error; err != nil {
+		return nil, err
+	}
+
+	return &theContact, nil
 }
 
 func (r *repository) getContacts(userId uint) ([]contactResponse, error) {
@@ -71,4 +97,28 @@ func (r *repository) getContacts(userId uint) ([]contactResponse, error) {
 	// }
 
 	// return contacts, nil
+}
+
+func (r *repository) contactExistsByID(id uint) error {
+	var contact entity.Contact
+	if err := r.db.Where("id = ?", id).First(&contact).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil // contact does not exist
+		}
+		return err
+	}
+
+	return nil // contact exists
+}
+
+func (r *repository) contactExists(name, email string) error {
+	var contact entity.Contact
+	if err := r.db.Where("name = ? OR email = ?", name, email).First(&contact).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil // contact does not exist
+		}
+		return err
+	}
+
+	return fmt.Errorf("name or email already taken")
 }
