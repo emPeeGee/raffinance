@@ -1,11 +1,14 @@
 package contact
 
 import (
+	"fmt"
+
 	"github.com/emPeeGee/raffinance/pkg/log"
 )
 
 type Service interface {
 	createContact(userId uint, contact createContactDTO) error
+	deleteContact(userId, id uint) error
 	getContacts(userId uint) ([]contactResponse, error)
 	updateContact(usedId, contactId uint, contact updateContactDTO) (*contactResponse, error)
 }
@@ -27,6 +30,19 @@ func (s *service) createContact(userId uint, contact createContactDTO) error {
 	}
 
 	return s.repo.createContact(userId, contact)
+}
+
+func (s *service) deleteContact(userId, id uint) error {
+	ok, err := s.repo.contactExistsAndBelongsToUser(userId, id)
+	if err != nil {
+		return err
+	}
+
+	if !ok {
+		return fmt.Errorf("contact with ID %d does not exist or belong to user with ID %d", id, userId)
+	}
+
+	return s.repo.deleteContact(userId, id)
 }
 
 func (s *service) getContacts(userId uint) ([]contactResponse, error) {

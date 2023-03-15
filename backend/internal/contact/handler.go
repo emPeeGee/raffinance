@@ -20,7 +20,6 @@ func RegisterHandlers(apiRg *gin.RouterGroup, service Service, validate *validat
 		// api.GET("/:id", h.createContact)
 		api.POST("", h.createContact)
 		api.PUT("/:id", h.updateContact)
-		// an contact can be associated with many
 		api.DELETE("/:id", h.deleteContact)
 
 	}
@@ -98,7 +97,30 @@ func (h *handler) updateContact(c *gin.Context) {
 	c.JSON(http.StatusOK, updatedContact)
 }
 
-func (h *handler) deleteContact(c *gin.Context) {}
+func (h *handler) deleteContact(c *gin.Context) {
+	userId, err := auth.GetUserId(c)
+	if err != nil || userId == nil {
+		errorutil.Unauthorized(c, err.Error(), "you are not authorized")
+		return
+	}
+
+	contactId, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		errorutil.BadRequest(c, err.Error(), "the id must be an integer")
+		return
+	}
+
+	if err := h.service.deleteContact(*userId, uint(contactId)); err != nil {
+		h.logger.Info(err.Error())
+		errorutil.NotFound(c, err.Error(), "Not found")
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"ok": true,
+	})
+
+}
 
 func (h *handler) getContacts(c *gin.Context) {
 	userId, err := auth.GetUserId(c)

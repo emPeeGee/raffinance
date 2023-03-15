@@ -12,11 +12,12 @@ import (
 
 type Repository interface {
 	getContacts(userId uint) ([]contactResponse, error)
-	contactExistsByID(id uint) error
-	contactExists(name, email string) error
 	createContact(userId uint, contact createContactDTO) error
 	updateContact(userId, contactId uint, contact updateContactDTO) (*contactResponse, error)
-	// deleteContact(id uint) error
+	deleteContact(userId, id uint) error
+	contactExistsByID(id uint) error
+	contactExists(name, email string) error
+	contactExistsAndBelongsToUser(userId, id uint) (bool, error)
 }
 
 type repository struct {
@@ -64,6 +65,11 @@ func (r *repository) updateContact(userId, contactId uint, contact updateContact
 	return &theContact, nil
 }
 
+// TODO: check when there will be some contacts used in some places
+func (r *repository) deleteContact(userId, id uint) error {
+	return r.db.Delete(&entity.Contact{}, id).Error
+}
+
 func (r *repository) getContacts(userId uint) ([]contactResponse, error) {
 	var contacts []contactResponse
 	var user entity.User
@@ -85,18 +91,16 @@ func (r *repository) getContacts(userId uint) ([]contactResponse, error) {
 
 	// TODO: when empty sends nill, instead of []
 	return contacts, nil
-	// var contacts []contactResponse
-	// var user entity.User
+}
 
-	// if err := r.db.Model(&user).Where("id = ?", userId).First(&user).Error; err != nil {
-	// 	return nil, err
-	// }
+func (r *repository) contactExistsAndBelongsToUser(userId, id uint) (bool, error) {
+	var count int64
 
-	// if err := r.db.Model(&user).Association("Contacts").Find(&contacts); err != nil {
-	// 	return nil, err
-	// }
+	if err := r.db.Model(&entity.Contact{}).Where("id = ? AND user_id = ?", id, userId).Count(&count).Error; err != nil {
+		return false, err
+	}
 
-	// return contacts, nil
+	return count > 0, nil
 }
 
 func (r *repository) contactExistsByID(id uint) error {
