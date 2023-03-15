@@ -53,6 +53,7 @@ func (s *service) createUser(user createUserDTO) error {
 
 	return nil
 }
+
 func (s *service) generateToken(credentials credentialsDTO) (string, error) {
 	hashedPassword, err := s.repo.getHashedPasswordByUsername(credentials.Username)
 	if err != nil {

@@ -18,7 +18,7 @@ func parseToken(accessToken string) (uint, error) {
 	})
 
 	if err != nil {
-		return 0, nil
+		return 0, err
 	}
 
 	claims, ok := token.Claims.(*tokenClaims)
