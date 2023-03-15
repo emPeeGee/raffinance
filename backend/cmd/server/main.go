@@ -14,6 +14,7 @@ import (
 	"github.com/emPeeGee/raffinance/internal/contact"
 	"github.com/emPeeGee/raffinance/internal/entity"
 	"github.com/emPeeGee/raffinance/pkg/log"
+	"github.com/emPeeGee/raffinance/pkg/validatorutil"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator"
@@ -50,6 +51,7 @@ func main() {
 
 	server := new(connection.Server)
 	valid := validator.New()
+	valid.RegisterValidation("currency", validatorutil.CurrencyValidator)
 
 	go func() {
 		if err := server.Run(cfg.Server, buildHandler(db, valid, logger)); err != nil {
