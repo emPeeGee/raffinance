@@ -30,6 +30,7 @@ func (r *repository) createAccount(userId uint, account createAccountDTO) error 
 	newAccount := entity.Account{
 		Name:     account.Name,
 		Currency: account.Currency,
+		Color:    account.Color,
 		UserID:   &userId,
 	}
 
@@ -46,6 +47,7 @@ func (r *repository) updateAccount(userId, accountId uint, account updateAccount
 	if err := r.db.Model(&entity.Account{}).Where("id = ?", accountId).Updates(map[string]interface{}{
 		"name":     account.Name,
 		"currency": account.Currency,
+		"color":    account.Color,
 	}).Error; err != nil {
 		return nil, err
 	}
@@ -67,7 +69,7 @@ func (r *repository) deleteAccount(userId, id uint) error {
 }
 
 func (r *repository) getAccounts(userId uint) ([]accountResponse, error) {
-	var accounts []accountResponse
+	var accounts []accountResponse = make([]accountResponse, 0)
 	var user entity.User
 
 	if err := r.db.Preload("Accounts").Where("id = ?", userId).First(&user).Error; err != nil {
@@ -84,6 +86,7 @@ func (r *repository) getAccounts(userId uint) ([]accountResponse, error) {
 			Name:      account.Name,
 			Currency:  account.Currency,
 			Balance:   0,
+			Color:     account.Color,
 			CreatedAt: account.CreatedAt,
 			UpdatedAt: account.UpdatedAt,
 		})
