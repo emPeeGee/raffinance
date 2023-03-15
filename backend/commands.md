@@ -7,6 +7,11 @@ This will create an image from dockerfile
 3. `docker run --name raffinance-db -p 5436:5432 -d raffinance-img`
 --name is container nm
 
+## Docker
+1. docker ps -a - List proccesses
+2. docker stop <id> - Stop it
+3. docker start <id> - Start it
+
 
 ## get inside the db
 1. `docker ps` List processes
