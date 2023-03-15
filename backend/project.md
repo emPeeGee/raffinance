@@ -2,7 +2,7 @@
 ## DB
 Users (UserID, Username, Name, Email, Password, Phone, LatestLogins)
 Contacts (ContactID, UserID, Name, Phone, Email)
-Accounts (AccountID, UserID, Name, Balance, Currency)
+Accounts (AccountID, UserID, Name, Currency) (Balance as a computed field)
 Transactions (TransactionID, FromAccountID, ToAccountID, Date, Amount, Description, CategoryID, TagID, TransactionTypeID, Location, )
 TransactionTypes (TransactionTypeID, Name)
 Loans (LoanID, ContactID, AccountID, Amount, Date, RepaymentDate, Type, Status)
@@ -26,6 +26,8 @@ Transactions: PaymentMethod, Location, Image, Receipt
 Loans: InterestRate, DurationInMonths, GracePeriodInMonths
 
 ## TODOs
+1. Account -> Transactions. Calculate the transactions dynamically when ready
+1. Account, Contacts. Add comments on tricky code
 1. Users.
   I. Latest logins. Display by aggregating them by day
   II. Limit latest logins by 50 
@@ -33,7 +35,9 @@ Loans: InterestRate, DurationInMonths, GracePeriodInMonths
 ## Features
 1. Transactions: compact view and more detailed view
 2. Notifications:
-3. Future: Exchanges
+3. Future: Exchanges. 
+  1. When changing currency of account. Show it the user currency below to new one
+4. 
 
 
 ## Backend structure

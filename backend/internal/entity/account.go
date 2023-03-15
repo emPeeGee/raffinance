@@ -6,8 +6,7 @@ type Account struct {
 	gorm.Model
 	UserID *uint
 	// TODO: Validation
-	Name    string  `json:"name" gorm:"notNull;unique;size:256"`
-	Balance float32 `json:"balance" gorm:"notNull"`
+	Name string `json:"name" gorm:"notNull;size:256"`
 	// TODO: how will currency work
 	Currency string `json:"currency" gorm:"notNull;size:10"`
 }

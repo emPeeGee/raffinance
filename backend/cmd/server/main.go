@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/emPeeGee/raffinance/internal/account"
 	"github.com/emPeeGee/raffinance/internal/auth"
 	"github.com/emPeeGee/raffinance/internal/config"
 	"github.com/emPeeGee/raffinance/internal/connection"
@@ -88,6 +89,13 @@ func buildHandler(db *gorm.DB, valid *validator.Validate, logger log.Logger) htt
 	contact.RegisterHandlers(
 		apiRg,
 		contact.NewContactService(contact.NewContactRepository(db, logger), logger),
+		valid,
+		logger,
+	)
+
+	account.RegisterHandlers(
+		apiRg,
+		account.NewAccountService(account.NewAccountRepository(db, logger), logger),
 		valid,
 		logger,
 	)
