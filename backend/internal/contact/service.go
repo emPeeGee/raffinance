@@ -10,7 +10,7 @@ type Service interface {
 	createContact(userId uint, contact createContactDTO) error
 	deleteContact(userId, id uint) error
 	getContacts(userId uint) ([]contactResponse, error)
-	updateContact(usedId, contactId uint, contact updateContactDTO) (*contactResponse, error)
+	updateContact(userId, contactId uint, contact updateContactDTO) (*contactResponse, error)
 }
 
 type service struct {
@@ -39,7 +39,7 @@ func (s *service) deleteContact(userId, id uint) error {
 	}
 
 	if !ok {
-		return fmt.Errorf("contact with ID %d does not exist or belong to user with ID %d", id, userId)
+		return fmt.Errorf("contact with ID %d exists or does not belong to user with ID %d", id, userId)
 	}
 
 	return s.repo.deleteContact(userId, id)
@@ -49,7 +49,7 @@ func (s *service) getContacts(userId uint) ([]contactResponse, error) {
 	return s.repo.getContacts(userId)
 }
 
-func (s *service) updateContact(usedId, contactId uint, contact updateContactDTO) (*contactResponse, error) {
+func (s *service) updateContact(userId, contactId uint, contact updateContactDTO) (*contactResponse, error) {
 	// TODO: check if the contact belongs to the current user
 
 	// check if id exists
@@ -64,5 +64,5 @@ func (s *service) updateContact(usedId, contactId uint, contact updateContactDTO
 		return nil, err
 	}
 
-	return s.repo.updateContact(usedId, contactId, contact)
+	return s.repo.updateContact(userId, contactId, contact)
 }
