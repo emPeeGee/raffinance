@@ -33,12 +33,12 @@ func HandleUserIdentity(logger log.Logger) gin.HandlerFunc {
 			return
 		}
 
-		userId, err := parseToken(headerParts[1])
+		userId, err := extractUserIdFromToken(headerParts[1])
 		if err != nil {
 			errorutil.Unauthorized(c, "the token is invalid", err.Error())
 			return
 		}
 
-		c.Set(userCtx, userId)
+		c.Set(userCtx, *userId)
 	}
 }

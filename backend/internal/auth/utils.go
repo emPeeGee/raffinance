@@ -2,35 +2,41 @@ package auth
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 )
 
-func parseToken(accessToken string) (uint, error) {
-	token, err := jwt.ParseWithClaims(accessToken, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+const (
+	signingMethodErrorMsg = "invalid signing method"
+	tokenClaimsErrorMsg   = "token claims are not of type *tokenClaims"
+)
 
+// extractUserIdFromToken parses the provided access token and returns the user ID if successful
+func extractUserIdFromToken(accessToken string) (*uint, error) {
+	token, err := jwt.ParseWithClaims(accessToken, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, errors.New("invalid signing method")
+			return nil, errors.New(signingMethodErrorMsg)
 		}
 
 		return []byte(signingKey), nil
 	})
 
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
 
 	claims, ok := token.Claims.(*tokenClaims)
 	if !ok {
-		return 0, errors.New("token claims are not of type *tokenClaims")
+		return nil, errors.New(tokenClaimsErrorMsg)
 	}
 
-	return claims.UserId, nil
+	return &claims.UserId, nil
 }
 
 // TODO: to be added associations and checking jwt
-// 4 July, what did I mean withch checking jwt?
+// GetUserId tries to get the user id from context and return it if successful
 func GetUserId(c *gin.Context) (*uint, error) {
 	id, ok := c.Get(userCtx)
 	if !ok {
@@ -39,7 +45,7 @@ func GetUserId(c *gin.Context) (*uint, error) {
 
 	idInt, ok := id.(uint)
 	if !ok {
-		return nil, errors.New("user id is of invalid type")
+		return nil, fmt.Errorf("user ID is of invalid type: %v", id)
 	}
 
 	return &idInt, nil
