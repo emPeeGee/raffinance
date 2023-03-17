@@ -13,6 +13,7 @@ import (
 	"github.com/emPeeGee/raffinance/internal/connection"
 	"github.com/emPeeGee/raffinance/internal/contact"
 	"github.com/emPeeGee/raffinance/internal/entity"
+	"github.com/emPeeGee/raffinance/internal/seeder"
 	"github.com/emPeeGee/raffinance/pkg/log"
 	"github.com/emPeeGee/raffinance/pkg/validatorutil"
 
@@ -44,15 +45,24 @@ func main() {
 		logger.Fatalf("failed to initialize db: %s", err.Error())
 	}
 
-	err = db.AutoMigrate(&entity.User{}, &entity.Contact{}, &entity.Account{})
+	err = db.AutoMigrate(&entity.User{}, &entity.Contact{}, &entity.Account{}, &entity.Transaction{}, &entity.TransactionType{})
 	if err != nil {
 		logger.Fatalf("failed to auto migrate gorm", err.Error())
+	}
+
+	seeder := seeder.NewSeeder(db, logger)
+	if err := seeder.Run(); err != nil {
+		logger.Fatalf("Error has occurred while seeding: %s", err.Error())
 	}
 
 	server := new(connection.Server)
 	valid := validator.New()
 	if err := valid.RegisterValidation("currency", validatorutil.CurrencyValidator); err != nil {
 		logger.Fatalf("failed to register currency validator: %s", err.Error())
+	}
+
+	if err := valid.RegisterValidation("transactiontype", validatorutil.TransactionType); err != nil {
+		logger.Fatalf("failed to register transaction type validator: %s", err.Error())
 	}
 
 	go func() {

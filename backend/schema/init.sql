@@ -154,3 +154,5 @@ ALTER TABLE Goals ADD FOREIGN KEY (userID) REFERENCES users (userID);
 
 -- INSERT INTO users (name, email, password, phone) VALUES
 --   ('Ionel', 'ionel@mail.com', '1111', '012345');
+
+select * from transactions inner join transaction_types on transactions.transaction_type_id = transaction_types.id;
