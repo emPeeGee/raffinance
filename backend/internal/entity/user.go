@@ -16,4 +16,5 @@ type User struct {
 
 	Accounts []Account
 	Contacts []Contact
+	Category []Category
 }

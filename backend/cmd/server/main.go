@@ -10,6 +10,7 @@ import (
 
 	"github.com/emPeeGee/raffinance/internal/account"
 	"github.com/emPeeGee/raffinance/internal/auth"
+	"github.com/emPeeGee/raffinance/internal/category"
 	"github.com/emPeeGee/raffinance/internal/config"
 	"github.com/emPeeGee/raffinance/internal/connection"
 	"github.com/emPeeGee/raffinance/internal/contact"
@@ -47,7 +48,7 @@ func main() {
 		logger.Fatalf("failed to initialize db: %s", err.Error())
 	}
 
-	err = db.AutoMigrate(&entity.User{}, &entity.Contact{}, &entity.Account{}, &entity.Transaction{}, &entity.TransactionType{})
+	err = db.AutoMigrate(&entity.User{}, &entity.Contact{}, &entity.Account{}, &entity.Transaction{}, &entity.TransactionType{}, &entity.Category{})
 	if err != nil {
 		logger.Fatalf("failed to auto migrate gorm", err.Error())
 	}
@@ -122,6 +123,13 @@ func buildHandler(db *gorm.DB, valid *validator.Validate, logger log.Logger) htt
 	transaction.RegisterHandlers(
 		apiRg,
 		transaction.NewTransactionService(transaction.NewTransactionRepository(db, logger), logger),
+		valid,
+		logger,
+	)
+
+	category.RegisterHandlers(
+		apiRg,
+		category.NewCategoryService(category.NewCategoryRepository(db, logger), logger),
 		valid,
 		logger,
 	)
