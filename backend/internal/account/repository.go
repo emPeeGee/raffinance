@@ -3,13 +3,14 @@ package account
 import (
 	"github.com/emPeeGee/raffinance/internal/entity"
 	"github.com/emPeeGee/raffinance/pkg/log"
+	"github.com/emPeeGee/raffinance/pkg/util"
 
 	"gorm.io/gorm"
 )
 
 type Repository interface {
 	getAccounts(userId uint) ([]accountResponse, error)
-	createAccount(userId uint, Account createAccountDTO) error
+	createAccount(userId uint, Account createAccountDTO) (*accountResponse, error)
 	updateAccount(userId, accountId uint, account updateAccountDTO) (*accountResponse, error)
 	deleteAccount(userId, id uint) error
 	accountExists(name string) (bool, error)
@@ -25,7 +26,7 @@ func NewAccountRepository(db *gorm.DB, logger log.Logger) *repository {
 	return &repository{db: db, logger: logger}
 }
 
-func (r *repository) createAccount(userId uint, account createAccountDTO) error {
+func (r *repository) createAccount(userId uint, account createAccountDTO) (*accountResponse, error) {
 	// TODO: When transactions will be. Create a transaction with init balance
 	newAccount := entity.Account{
 		Name:     account.Name,
@@ -35,10 +36,21 @@ func (r *repository) createAccount(userId uint, account createAccountDTO) error 
 	}
 
 	if err := r.db.Create(&newAccount).Error; err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	r.logger.Info("new account, ", util.StringifyAny(newAccount))
+	createdAccount := &accountResponse{
+		ID:        newAccount.ID,
+		Name:      newAccount.Name,
+		Currency:  newAccount.Currency,
+		Color:     newAccount.Color,
+		Balance:   0,
+		CreatedAt: newAccount.CreatedAt,
+		UpdatedAt: newAccount.UpdatedAt,
+	}
+
+	return createdAccount, nil
 }
 
 func (r *repository) updateAccount(userId, accountId uint, account updateAccountDTO) (*accountResponse, error) {

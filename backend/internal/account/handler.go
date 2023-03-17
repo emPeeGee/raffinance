@@ -1,7 +1,6 @@
 package account
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -54,15 +53,13 @@ func (h *handler) createAccount(c *gin.Context) {
 		return
 	}
 
-	err = h.service.createAccount(*userId, input)
+	createdAccount, err := h.service.createAccount(*userId, input)
 	if err != nil {
 		errorutil.InternalServer(c, "It looks like name is already used", err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, map[string]interface{}{
-		"ok": true,
-	})
+	c.JSON(http.StatusOK, createdAccount)
 }
 
 func (h *handler) updateAccount(c *gin.Context) {
@@ -95,8 +92,6 @@ func (h *handler) updateAccount(c *gin.Context) {
 		errorutil.BadRequest(c, "error", err.Error())
 		return
 	}
-
-	fmt.Printf("\n Here, %v \n", updatedAccount)
 
 	c.JSON(http.StatusOK, updatedAccount)
 }

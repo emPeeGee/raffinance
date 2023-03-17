@@ -7,7 +7,7 @@ import (
 )
 
 type Service interface {
-	createAccount(userId uint, account createAccountDTO) error
+	createAccount(userId uint, account createAccountDTO) (*accountResponse, error)
 	deleteAccount(userId, id uint) error
 	getAccounts(userId uint) ([]accountResponse, error)
 	updateAccount(usedId, accountId uint, account updateAccountDTO) (*accountResponse, error)
@@ -22,19 +22,18 @@ func NewAccountService(repo Repository, logger log.Logger) *service {
 	return &service{repo: repo, logger: logger}
 }
 
-func (s *service) createAccount(userId uint, account createAccountDTO) error {
+func (s *service) createAccount(userId uint, account createAccountDTO) (*accountResponse, error) {
 	// check if such name or email already exists, email and name should be unique per user
-	ok, err := s.repo.accountExists(account.Name)
+	exists, err := s.repo.accountExists(account.Name)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	// If account doesn't exists, create it
-	if !ok {
-		return s.repo.createAccount(userId, account)
+	if exists {
+		return nil, fmt.Errorf("account with name %s exists", account.Name)
 	}
 
-	return fmt.Errorf("account with name %s exists", account.Name)
+	return s.repo.createAccount(userId, account)
 }
 
 func (s *service) deleteAccount(userId, id uint) error {

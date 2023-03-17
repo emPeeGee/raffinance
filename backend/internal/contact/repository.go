@@ -12,7 +12,7 @@ import (
 
 type Repository interface {
 	getContacts(userId uint) ([]contactResponse, error)
-	createContact(userId uint, contact createContactDTO) error
+	createContact(userId uint, contact createContactDTO) (*contactResponse, error)
 	updateContact(userId, contactId uint, contact updateContactDTO) (*contactResponse, error)
 	deleteContact(userId, id uint) error
 	contactExistsByID(id uint) error
@@ -29,7 +29,7 @@ func NewContactRepository(db *gorm.DB, logger log.Logger) *repository {
 	return &repository{db: db, logger: logger}
 }
 
-func (r *repository) createContact(userId uint, contact createContactDTO) error {
+func (r *repository) createContact(userId uint, contact createContactDTO) (*contactResponse, error) {
 	newContact := entity.Contact{
 		Name:   contact.Name,
 		Email:  contact.Email,
@@ -38,10 +38,19 @@ func (r *repository) createContact(userId uint, contact createContactDTO) error 
 	}
 
 	if err := r.db.Create(&newContact).Error; err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	createdContact := &contactResponse{
+		ID:        newContact.ID,
+		Name:      newContact.Name,
+		Phone:     newContact.Phone,
+		Email:     newContact.Email,
+		CreatedAt: newContact.CreatedAt,
+		UpdatedAt: newContact.UpdatedAt,
+	}
+
+	return createdContact, nil
 }
 
 func (r *repository) updateContact(userId, contactId uint, contact updateContactDTO) (*contactResponse, error) {
@@ -115,6 +124,7 @@ func (r *repository) contactExistsByID(id uint) error {
 	return nil // contact exists
 }
 
+// TODO: use count in query ???
 func (r *repository) contactExists(name, email string) error {
 	var contact entity.Contact
 	if err := r.db.Where("name = ? OR email = ?", name, email).First(&contact).Error; err != nil {

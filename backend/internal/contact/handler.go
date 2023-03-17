@@ -52,15 +52,13 @@ func (h *handler) createContact(c *gin.Context) {
 		return
 	}
 
-	err = h.service.createContact(*userId, input)
+	createdContact, err := h.service.createContact(*userId, input)
 	if err != nil {
 		errorutil.InternalServer(c, "It looks like email or name are already used", err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, map[string]interface{}{
-		"ok": true,
-	})
+	c.JSON(http.StatusOK, createdContact)
 }
 
 func (h *handler) updateContact(c *gin.Context) {

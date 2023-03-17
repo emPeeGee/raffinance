@@ -7,7 +7,7 @@ import (
 )
 
 type Service interface {
-	createContact(userId uint, contact createContactDTO) error
+	createContact(userId uint, contact createContactDTO) (*contactResponse, error)
 	deleteContact(userId, id uint) error
 	getContacts(userId uint) ([]contactResponse, error)
 	updateContact(userId, contactId uint, contact updateContactDTO) (*contactResponse, error)
@@ -22,11 +22,11 @@ func NewContactService(repo Repository, logger log.Logger) *service {
 	return &service{repo: repo, logger: logger}
 }
 
-func (s *service) createContact(userId uint, contact createContactDTO) error {
+func (s *service) createContact(userId uint, contact createContactDTO) (*contactResponse, error) {
 	// check if such name or email already exists, email and name should be unique per user
 	err := s.repo.contactExists(contact.Name, contact.Email)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	return s.repo.createContact(userId, contact)
