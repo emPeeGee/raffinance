@@ -16,9 +16,10 @@ type Transaction struct {
 	Description string    `json:"description"`
 	Location    string    `json:"location" gorm:"size:128"`
 
-	// TODO: Uncomment when category and tag are done
-	// CategoryID uint `json:"categoryId" gorm:"notNull"`
-	// TagID      uint `json:"tagId" gorm:"notNull"`
+	// `Transaction` belongs to `Category`, `CategoryID` is the foreign key
+	CategoryID uint     `json:"categoryId"`
+	Category   Category `gorm:"foreignKey:CategoryID"`
+	Tags       []Tag    `gorm:"many2many:transaction_tags"`
 
 	TransactionTypeID *uint `json:"transactionTypeID"`
 	// TransactionType   TransactionType `gorm:"foreignKey:TransactionTypeID"`

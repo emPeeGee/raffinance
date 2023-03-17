@@ -16,6 +16,7 @@ import (
 	"github.com/emPeeGee/raffinance/internal/contact"
 	"github.com/emPeeGee/raffinance/internal/entity"
 	"github.com/emPeeGee/raffinance/internal/seeder"
+	"github.com/emPeeGee/raffinance/internal/tag"
 	"github.com/emPeeGee/raffinance/internal/transaction"
 	"github.com/emPeeGee/raffinance/pkg/log"
 	"github.com/emPeeGee/raffinance/pkg/validatorutil"
@@ -48,7 +49,7 @@ func main() {
 		logger.Fatalf("failed to initialize db: %s", err.Error())
 	}
 
-	err = db.AutoMigrate(&entity.User{}, &entity.Contact{}, &entity.Account{}, &entity.Transaction{}, &entity.TransactionType{}, &entity.Category{})
+	err = db.AutoMigrate(&entity.User{}, &entity.Contact{}, &entity.Account{}, &entity.Transaction{}, &entity.TransactionType{}, &entity.Category{}, &entity.Tag{})
 	if err != nil {
 		logger.Fatalf("failed to auto migrate gorm", err.Error())
 	}
@@ -130,6 +131,13 @@ func buildHandler(db *gorm.DB, valid *validator.Validate, logger log.Logger) htt
 	category.RegisterHandlers(
 		apiRg,
 		category.NewCategoryService(category.NewCategoryRepository(db, logger), logger),
+		valid,
+		logger,
+	)
+
+	tag.RegisterHandlers(
+		apiRg,
+		tag.NewTagService(tag.NewTagRepository(db, logger), logger),
 		valid,
 		logger,
 	)

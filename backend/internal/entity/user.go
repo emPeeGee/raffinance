@@ -13,8 +13,8 @@ type User struct {
 	Password     string         `json:"password" gorm:"notNull;size:256"`
 	Phone        string         `json:"phone" gorm:"size:16"`
 	LatestLogins pq.StringArray `json:"latestLogins" gorm:"type:varchar(64)[]"`
-
-	Accounts []Account
-	Contacts []Contact
-	Category []Category
+	Accounts     []Account
+	Contacts     []Contact
+	Categories   []Category
+	Tags         []Tag
 }

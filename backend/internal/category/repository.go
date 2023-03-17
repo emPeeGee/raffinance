@@ -84,7 +84,7 @@ func (r *repository) getCategories(userId uint) ([]categoryResponse, error) {
 
 	r.logger.Debug(user)
 
-	for _, category := range user.Category {
+	for _, category := range user.Categories {
 		categories = append(categories, categoryResponse{
 			ID:        category.ID,
 			Name:      category.Name,
