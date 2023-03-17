@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
@@ -14,6 +15,7 @@ import (
 	"github.com/emPeeGee/raffinance/internal/contact"
 	"github.com/emPeeGee/raffinance/internal/entity"
 	"github.com/emPeeGee/raffinance/internal/seeder"
+	"github.com/emPeeGee/raffinance/internal/transaction"
 	"github.com/emPeeGee/raffinance/pkg/log"
 	"github.com/emPeeGee/raffinance/pkg/validatorutil"
 
@@ -65,6 +67,9 @@ func main() {
 		logger.Fatalf("failed to register transaction type validator: %s", err.Error())
 	}
 
+	// TODO: I can import from transaction idk why
+	valid.RegisterStructValidation(ValidateTransaction, transaction.CreateTransactionDTO{})
+
 	go func() {
 		if err := server.Run(cfg.Server, buildHandler(db, valid, logger)); err != nil {
 			logger.Fatalf("Error occurred while running http server: %s", err.Error())
@@ -114,5 +119,20 @@ func buildHandler(db *gorm.DB, valid *validator.Validate, logger log.Logger) htt
 		logger,
 	)
 
+	transaction.RegisterHandlers(
+		apiRg,
+		transaction.NewTransactionService(transaction.NewTransactionRepository(db, logger), logger),
+		valid,
+		logger,
+	)
+
 	return router
+}
+
+func ValidateTransaction(sl validator.StructLevel) {
+	transaction := sl.Current().Interface().(transaction.CreateTransactionDTO)
+
+	if transaction.TransactionTypeID == 1 {
+		fmt.Print("\n Hello struct valid\n")
+	}
 }
