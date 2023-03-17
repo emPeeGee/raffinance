@@ -130,9 +130,23 @@ func buildHandler(db *gorm.DB, valid *validator.Validate, logger log.Logger) htt
 }
 
 func ValidateTransaction(sl validator.StructLevel) {
-	transaction := sl.Current().Interface().(transaction.CreateTransactionDTO)
+	txn := sl.Current().Interface().(transaction.CreateTransactionDTO)
+	txnType := transaction.TransactionType(txn.TransactionTypeID)
 
-	if transaction.TransactionTypeID == 1 {
-		fmt.Print("\n Hello struct valid\n")
+	switch txnType {
+	case transaction.EXPENSE:
+		{
+			fmt.Print("\n Hello struct valid\n")
+		}
+
+	case transaction.INCOME:
+		{
+
+		}
+	case transaction.TRANSFER:
+		{
+
+		}
 	}
+
 }

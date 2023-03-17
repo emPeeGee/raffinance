@@ -2,6 +2,7 @@ package seeder
 
 import (
 	"github.com/emPeeGee/raffinance/internal/entity"
+	"github.com/emPeeGee/raffinance/internal/transaction"
 	"github.com/emPeeGee/raffinance/pkg/log"
 	"gorm.io/gorm"
 )
@@ -31,10 +32,11 @@ func (s *seeder) Run() error {
 }
 
 func (s *seeder) seedTransactionTypes() error {
+	// Note: conversion to byte, I don't want to import this type in entity
 	types := []entity.TransactionType{
-		{ID: 1, Name: "INCOME"},
-		{ID: 2, Name: "EXPENSE"},
-		{ID: 3, Name: "TRANSFER"},
+		{ID: byte(transaction.INCOME), Name: "INCOME"},
+		{ID: byte(transaction.EXPENSE), Name: "EXPENSE"},
+		{ID: byte(transaction.TRANSFER), Name: "TRANSFER"},
 	}
 
 	for _, trType := range types {

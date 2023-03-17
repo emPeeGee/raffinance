@@ -20,7 +20,7 @@ type transactionResponse struct {
 
 	FromAccountID     uint  `json:"fromAccountId"`
 	ToAccountID       *uint `json:"toAccountId"`
-	TransactionTypeID uint  `json:"transactionTypeId"`
+	TransactionTypeID byte  `json:"transactionTypeId"`
 }
 
 type CreateTransactionDTO struct {
@@ -35,7 +35,7 @@ type CreateTransactionDTO struct {
 
 	FromAccountID     *uint `json:"fromAccountId" validate:"omitempty,numeric"`
 	ToAccountID       uint  `json:"toAccountId" validate:"numeric"`
-	TransactionTypeID uint  `json:"transactionTypeId" validate:"numeric,transactiontype"`
+	TransactionTypeID byte  `json:"transactionTypeId" validate:"numeric,transactiontype"`
 }
 
 type updateTransactionDTO struct {
