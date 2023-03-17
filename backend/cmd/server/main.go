@@ -51,7 +51,9 @@ func main() {
 
 	server := new(connection.Server)
 	valid := validator.New()
-	valid.RegisterValidation("currency", validatorutil.CurrencyValidator)
+	if err := valid.RegisterValidation("currency", validatorutil.CurrencyValidator); err != nil {
+		logger.Fatalf("failed to register currency validator: %s", err.Error())
+	}
 
 	go func() {
 		if err := server.Run(cfg.Server, buildHandler(db, valid, logger)); err != nil {
