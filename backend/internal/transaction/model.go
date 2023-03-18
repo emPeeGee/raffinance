@@ -5,7 +5,6 @@ import (
 
 	"github.com/emPeeGee/raffinance/internal/category"
 	"github.com/emPeeGee/raffinance/internal/tag"
-	"github.com/go-playground/validator"
 	"gorm.io/gorm"
 )
 
@@ -23,7 +22,7 @@ type transactionResponse struct {
 	Description string    `json:"description"`
 	Location    string    `json:"location"`
 
-	FromAccountID     *uint                          `json:"fromAccountId"`
+	FromAccountID     *uint                          `json:"fromAccountId,omitempty"`
 	ToAccountID       uint                           `json:"toAccountId"`
 	TransactionTypeID byte                           `json:"transactionTypeId"`
 	Category          category.CategoryShortResponse `json:"category"`
@@ -45,7 +44,7 @@ type CreateTransactionDTO struct {
 	TransactionTypeID byte  `json:"transactionTypeId" validate:"numeric,transactiontype"`
 }
 
-type updateTransactionDTO struct {
+type UpdateTransactionDTO struct {
 	Date        time.Time `json:"date" validate:"required"`
 	Amount      float64   `json:"amount" validate:"required,gt=0"`
 	Description string    `json:"description" validate:"omitempty"`
@@ -59,25 +58,4 @@ type updateTransactionDTO struct {
 	FromAccountID     *uint `json:"fromAccountId" validate:"omitempty,numeric"`
 	ToAccountID       uint  `json:"toAccountId" validate:"required,numeric"`
 	TransactionTypeID byte  `json:"transactionTypeId" validate:"numeric,transactiontype"`
-}
-
-func ValidateTransaction(sl validator.StructLevel) {
-	txn := sl.Current().Interface().(CreateTransactionDTO)
-	txnType := TransactionType(txn.TransactionTypeID)
-
-	switch txnType {
-	case EXPENSE, INCOME:
-		{
-			if txn.FromAccountID != nil {
-				sl.ReportError(txn.FromAccountID, "fromAccount", "FromAccountID", "prohibited", "")
-			}
-		}
-	case TRANSFER:
-		{
-			if txn.FromAccountID == nil {
-				sl.ReportError(txn.FromAccountID, "fromAccount", "FromAccountID", "required", "")
-			}
-		}
-	}
-
 }

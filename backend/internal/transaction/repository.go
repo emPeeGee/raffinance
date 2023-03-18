@@ -1,21 +1,21 @@
 package transaction
 
 import (
+	"fmt"
+
 	"github.com/emPeeGee/raffinance/internal/category"
 	"github.com/emPeeGee/raffinance/internal/entity"
 	"github.com/emPeeGee/raffinance/internal/tag"
 	"github.com/emPeeGee/raffinance/pkg/log"
-	"github.com/emPeeGee/raffinance/pkg/util"
 	"gorm.io/gorm"
 )
 
 type Repository interface {
 	getTransactions(userId uint) ([]transactionResponse, error)
-	createTransaction(userId uint, Transaction CreateTransactionDTO) (*transactionResponse, error)
-	// updateTransaction(userId, TransactionId uint, Transaction updateTransactionDTO) (*transactionResponse, error)
-	// deleteTransaction(userId, id uint) error
-	// TransactionExists(name string) (bool, error)
-	// TransactionExistsAndBelongsToUser(userId, id uint) (bool, error)
+	createTransaction(userId uint, transaction CreateTransactionDTO) (*transactionResponse, error)
+	updateTransaction(transactionId uint, transaction UpdateTransactionDTO) (*transactionResponse, error)
+	deleteTransaction(userId, id uint) error
+	transactionExistsAndBelongsToUser(userId, id uint) (bool, error)
 	accountExistsAndBelongsToUser(userId, accountId uint) (bool, error)
 	categoryExistsAndBelongsToUser(userId, categoryId uint) (bool, error)
 	tagsExistsAndBelongsToUser(userId uint, tagsId []uint) (bool, error)
@@ -56,10 +56,10 @@ func (r *repository) createTransaction(userId uint, transaction CreateTransactio
 		return nil, err
 	}
 
-	r.logger.Info("new Transaction, ", util.StringifyAny(newTransaction))
-
 	var createdTransaction *entity.Transaction
-	if err := r.db.Preload("Tags").Preload("Category").First(&createdTransaction, newTransaction.ID).Error; err != nil {
+	if err := r.db.Preload("Tags").
+		Preload("Category").
+		First(&createdTransaction, newTransaction.ID).Error; err != nil {
 		return nil, err
 	}
 
@@ -68,32 +68,96 @@ func (r *repository) createTransaction(userId uint, transaction CreateTransactio
 	return &tr, nil
 }
 
-// func (r *repository) updateTransaction(userId, TransactionId uint, Transaction updateTransactionDTO) (*TransactionResponse, error) {
-// 	// NOTE: When update with struct, GORM will only update non-zero fields, you might want to use
-// 	// map to update attributes or use Select to specify fields to update
-// 	if err := r.db.Model(&entity.Transaction{}).Where("id = ?", TransactionId).Updates(map[string]interface{}{
-// 		"name":     Transaction.Name,
-// 		"currency": Transaction.Currency,
-// 		"color":    Transaction.Color,
-// 	}).Error; err != nil {
-// 		return nil, err
-// 	}
+func (r *repository) updateTransaction(transactionId uint, transaction UpdateTransactionDTO) (*transactionResponse, error) {
+	tx := r.db.Begin()
 
-// 	// TODO: when transactions will be, on currency update should change all transaction currency
-// 	// TODO: when transactions will be, on balance update should create new transaction
+	if err := tx.Error; err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
 
-// 	var updatedTransaction TransactionResponse
-// 	if err := r.db.Model(&entity.Transaction{}).First(&updatedTransaction, TransactionId).Error; err != nil {
-// 		return nil, err
-// 	}
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+			return
+		}
+	}()
 
-// 	return &updatedTransaction, nil
-// }
+	// NOTE: When update with struct, GORM will only update non-zero fields, you might want to use
+	// map to update attributes or use Select to specify fields to update
+	if err := tx.Model(&entity.Transaction{}).
+		Where("id = ?", transactionId).
+		Updates(map[string]interface{}{
+			"date":                transaction.Date,
+			"amount":              transaction.Amount,
+			"description":         transaction.Description,
+			"location":            transaction.Location,
+			"to_account_id":       transaction.ToAccountID,
+			"from_account_id":     transaction.FromAccountID,
+			"category_id":         transaction.CategoryID,
+			"transaction_type_id": transaction.TransactionTypeID,
+		}).Error; err != nil {
+		return nil, err
+	}
 
-// // TODO: check when there will Transaction will contain transactions
-// func (r *repository) deleteTransaction(userId, id uint) error {
-// 	return r.db.Delete(&entity.Transaction{}, id).Error
-// }
+	var tr entity.Transaction
+	if err := tx.First(&tr, transactionId).Error; err != nil {
+		return nil, fmt.Errorf("failed to find transaction: %w", err)
+
+	}
+
+	var tags []entity.Tag
+	if err := tx.Find(&tags, transaction.TagIDs).Error; err != nil {
+		return nil, fmt.Errorf("failed to find tags: %w", err)
+	}
+
+	// Replace the tags associated with the transaction
+	if err := tx.
+		Model(&tr).
+		Association("Tags").
+		Replace(tags); err != nil {
+		return nil, fmt.Errorf("failed to update transaction tags: %w", err)
+	}
+
+	if err := tx.
+		Model(&entity.Transaction{}).
+		Preload("Category").
+		Preload("Tags").
+		First(&tr, transactionId).Error; err != nil {
+		return nil, fmt.Errorf("failed to load transaction after update: %w", err)
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return nil, fmt.Errorf("failed to commit transaction: %w", err)
+	}
+
+	response := entityToResponse(&tr)
+	return &response, nil
+}
+
+func (r *repository) deleteTransaction(userId, id uint) error {
+	var transaction entity.Transaction
+
+	if err := r.db.Preload("Tags").First(&transaction, id).Error; err != nil {
+		return err
+	}
+
+	// Delete the transaction and its associated tags
+	if err := r.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(&transaction).Association("Tags").Delete(&transaction.Tags); err != nil {
+			return err
+		}
+
+		if err := tx.Delete(&transaction).Error; err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return err
+	}
+
+	return nil
+}
 
 // NOTE: Will be used in the dashboard
 func (r *repository) getTransactions(userId uint) ([]transactionResponse, error) {
@@ -118,15 +182,19 @@ func (r *repository) getTransactions(userId uint) ([]transactionResponse, error)
 	return trans, nil
 }
 
-// func (r *repository) TransactionExistsAndBelongsToUser(userId, id uint) (bool, error) {
-// 	var count int64
+func (r *repository) transactionExistsAndBelongsToUser(userId, id uint) (bool, error) {
+	var count int64
 
-// 	if err := r.db.Model(&entity.Transaction{}).Where("id = ? AND user_id = ?", id, userId).Count(&count).Error; err != nil {
-// 		return false, err
-// 	}
+	if err := r.db.
+		Model(&entity.Transaction{}).
+		Joins("INNER JOIN accounts ON transactions.to_account_id = accounts.id").
+		Where("transactions.id = ? AND accounts.user_id = ?", id, userId).
+		Count(&count).Error; err != nil {
+		return false, err
+	}
 
-// 	return count > 0, nil
-// }
+	return count > 0, nil
+}
 
 // func (r *repository) TransactionExists(name string) (bool, error) {
 // 	var count int64
