@@ -1,6 +1,8 @@
 package category
 
 import (
+	"fmt"
+
 	"github.com/emPeeGee/raffinance/internal/entity"
 	"github.com/emPeeGee/raffinance/pkg/log"
 	"github.com/emPeeGee/raffinance/pkg/util"
@@ -15,6 +17,7 @@ type Repository interface {
 	deleteCategory(userId, id uint) error
 	categoryExists(name string) (bool, error)
 	categoryExistsAndBelongsToUser(userId, id uint) (bool, error)
+	categoryIsUsed(tagId uint) error
 }
 
 type repository struct {
@@ -116,4 +119,21 @@ func (r *repository) categoryExists(name string) (bool, error) {
 	}
 
 	return count > 0, nil
+}
+
+// TODO: Can this be achieved using constraints ???
+func (r *repository) categoryIsUsed(tagId uint) error {
+	var count int64
+	if err := r.db.Model(&entity.Category{}).
+		Joins("JOIN transactions ON transactions.category_id = categories.id").
+		Where("categories.id = ?", tagId).
+		Count(&count).Error; err != nil {
+		return err
+	}
+
+	if count > 0 {
+		return fmt.Errorf("cannot delete category %d that is used in %d transactions", tagId, count)
+	}
+
+	return nil
 }

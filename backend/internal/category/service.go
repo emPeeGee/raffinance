@@ -46,6 +46,10 @@ func (s *service) deleteCategory(userId, id uint) error {
 		return fmt.Errorf("category with ID %d does not exist or belong to user with ID %d", id, userId)
 	}
 
+	if err := s.repo.categoryIsUsed(id); err != nil {
+		return err
+	}
+
 	return s.repo.deleteCategory(userId, id)
 }
 

@@ -47,6 +47,10 @@ func (s *service) deleteTag(userId, id uint) error {
 		return fmt.Errorf("tag with ID %d does not exist or belong to user with ID %d", id, userId)
 	}
 
+	if err := s.repo.tagIsUsed(id); err != nil {
+		return err
+	}
+
 	return s.repo.deleteTag(userId, id)
 }
 

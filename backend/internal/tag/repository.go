@@ -1,6 +1,8 @@
 package tag
 
 import (
+	"fmt"
+
 	"github.com/emPeeGee/raffinance/internal/entity"
 	"github.com/emPeeGee/raffinance/pkg/log"
 	"github.com/emPeeGee/raffinance/pkg/util"
@@ -15,6 +17,7 @@ type Repository interface {
 	deleteTag(userId, id uint) error
 	tagExists(name string) (bool, error)
 	tagExistsAndBelongsToUser(userId, id uint) (bool, error)
+	tagIsUsed(tagId uint) error
 }
 
 type repository struct {
@@ -118,4 +121,21 @@ func (r *repository) tagExists(name string) (bool, error) {
 	}
 
 	return count > 0, nil
+}
+
+// TODO: Can this be achieved using constraints ???
+func (r *repository) tagIsUsed(tagId uint) error {
+	var count int64
+	if err := r.db.Model(&entity.Tag{}).
+		Joins("JOIN transaction_tags ON transaction_tags.tag_id = tags.id").
+		Where("transaction_tags.tag_id = ?", tagId).
+		Count(&count).Error; err != nil {
+		return err
+	}
+
+	if count > 0 {
+		return fmt.Errorf("cannot delete tag %d that is used in %d transactions", tagId, count)
+	}
+
+	return nil
 }
