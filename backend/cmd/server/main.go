@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
@@ -70,7 +69,7 @@ func main() {
 	}
 
 	// TODO: I can import from transaction idk why
-	valid.RegisterStructValidation(ValidateTransaction, transaction.CreateTransactionDTO{})
+	valid.RegisterStructValidation(transaction.ValidateTransaction, transaction.CreateTransactionDTO{})
 
 	go func() {
 		if err := server.Run(cfg.Server, buildHandler(db, valid, logger)); err != nil {
@@ -143,26 +142,4 @@ func buildHandler(db *gorm.DB, valid *validator.Validate, logger log.Logger) htt
 	)
 
 	return router
-}
-
-func ValidateTransaction(sl validator.StructLevel) {
-	txn := sl.Current().Interface().(transaction.CreateTransactionDTO)
-	txnType := transaction.TransactionType(txn.TransactionTypeID)
-
-	switch txnType {
-	case transaction.EXPENSE:
-		{
-			fmt.Print("\n Hello struct valid\n")
-		}
-
-	case transaction.INCOME:
-		{
-
-		}
-	case transaction.TRANSFER:
-		{
-
-		}
-	}
-
 }

@@ -15,7 +15,7 @@ func RegisterHandlers(apiRg *gin.RouterGroup, service Service, validate *validat
 
 	api := apiRg.Group("/transactions")
 	{
-		// api.GET("", h.getTransactions)
+		api.GET("", h.getTransactions)
 		// TODO: make it when transactions are available
 		// api.GET("/:id", h.getTransaction)
 		api.POST("", h.createTransaction)
@@ -119,18 +119,18 @@ func (h *handler) createTransaction(c *gin.Context) {
 // 	})
 // }
 
-// func (h *handler) getTransactions(c *gin.Context) {
-// 	userId, err := auth.GetUserId(c)
-// 	if err != nil || userId == nil {
-// 		errorutil.Unauthorized(c, err.Error(), "you are not authorized")
-// 		return
-// 	}
+func (h *handler) getTransactions(c *gin.Context) {
+	userId, err := auth.GetUserId(c)
+	if err != nil || userId == nil {
+		errorutil.Unauthorized(c, err.Error(), "you are not authorized")
+		return
+	}
 
-// 	Transactions, err := h.service.getTransactions(*userId)
-// 	if err != nil {
-// 		errorutil.InternalServer(c, "something went wrong, we are working", err.Error())
-// 		return
-// 	}
+	transactions, err := h.service.getTransactions(*userId)
+	if err != nil {
+		errorutil.InternalServer(c, err.Error(), err.Error())
+		return
+	}
 
-// 	c.JSON(http.StatusOK, Transactions)
-// }
+	c.JSON(http.StatusOK, transactions)
+}

@@ -9,7 +9,7 @@ import (
 type Transaction struct {
 	gorm.Model
 	FromAccountID *uint `json:"fromAccountID" gorm:"foreignkey:accountId"`
-	ToAccountID   *uint `json:"toAccountID" gorm:"foreignkey:accountId;notNull"`
+	ToAccountID   uint  `json:"toAccountID" gorm:"foreignkey:accountId;notNull"`
 
 	Date        time.Time `json:"date" gorm:"notNull"`
 	Amount      float64   `json:"amount" gorm:"notNull"`
@@ -17,10 +17,10 @@ type Transaction struct {
 	Location    string    `json:"location" gorm:"size:128"`
 
 	// `Transaction` belongs to `Category`, `CategoryID` is the foreign key
-	CategoryID uint     `json:"categoryId"`
+	CategoryID uint
 	Category   Category `gorm:"foreignKey:CategoryID"`
 	Tags       []Tag    `gorm:"many2many:transaction_tags"`
 
-	TransactionTypeID *uint `json:"transactionTypeID"`
+	TransactionTypeID byte `json:"transactionTypeID" gorm:"notNull"`
 	// TransactionType   TransactionType `gorm:"foreignKey:TransactionTypeID"`
 }
