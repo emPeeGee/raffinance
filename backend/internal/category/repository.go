@@ -78,7 +78,7 @@ func (r *repository) getCategories(userId uint) ([]categoryResponse, error) {
 	var categories []categoryResponse = make([]categoryResponse, 0)
 	var user entity.User
 
-	if err := r.db.Preload("Category").Where("id = ?", userId).First(&user).Error; err != nil {
+	if err := r.db.Preload("Categories").Where("id = ?", userId).First(&user).Error; err != nil {
 		return nil, err
 	}
 
