@@ -48,7 +48,7 @@ func main() {
 		logger.Fatalf("failed to initialize db: %s", err.Error())
 	}
 
-	err = db.AutoMigrate(&entity.User{}, &entity.Contact{}, &entity.Account{}, &entity.Transaction{}, &entity.TransactionType{}, &entity.Category{}, &entity.Tag{})
+	err = db.AutoMigrate(&entity.User{}, &entity.Contact{}, &entity.Account{}, &entity.Transaction{}, &entity.TransactionType{}, &entity.Category{}, &entity.Tag{}, &entity.TransactionTag{})
 	if err != nil {
 		logger.Fatalf("failed to auto migrate gorm", err.Error())
 	}
@@ -69,7 +69,8 @@ func main() {
 	}
 
 	// TODO: I can import from transaction idk why
-	valid.RegisterStructValidation(transaction.ValidateTransaction, transaction.CreateTransactionDTO{})
+	valid.RegisterStructValidation(transaction.ValidateCreateTransaction, transaction.CreateTransactionDTO{})
+	valid.RegisterStructValidation(transaction.ValidateUpdateTransaction, transaction.UpdateTransactionDTO{})
 
 	go func() {
 		if err := server.Run(cfg.Server, buildHandler(db, valid, logger)); err != nil {
