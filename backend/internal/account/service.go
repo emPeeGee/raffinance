@@ -46,6 +46,11 @@ func (s *service) deleteAccount(userId, id uint) error {
 		return fmt.Errorf("account with ID %d does not exist or belong to user with ID %d", id, userId)
 	}
 
+	// account with references is prohibited to delete
+	if err := s.repo.accountIsUsed(id); err != nil {
+		return err
+	}
+
 	return s.repo.deleteAccount(userId, id)
 }
 

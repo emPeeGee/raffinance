@@ -1,6 +1,8 @@
 package account
 
 import (
+	"fmt"
+
 	"github.com/emPeeGee/raffinance/internal/entity"
 	"github.com/emPeeGee/raffinance/pkg/log"
 	"github.com/emPeeGee/raffinance/pkg/util"
@@ -15,6 +17,7 @@ type Repository interface {
 	deleteAccount(userId, id uint) error
 	accountExists(name string) (bool, error)
 	accountExistsAndBelongsToUser(userId, id uint) (bool, error)
+	accountIsUsed(accountId uint) error
 }
 
 type repository struct {
@@ -126,4 +129,19 @@ func (r *repository) accountExists(name string) (bool, error) {
 	}
 
 	return count > 0, nil
+}
+
+// TODO: Can this be achieved using constraints ???
+func (r *repository) accountIsUsed(accountId uint) error {
+	var count int64
+
+	r.db.Model(&entity.Transaction{}).
+		Where("from_account_id = ? OR to_account_id = ?", accountId, accountId).
+		Count(&count)
+
+	if count > 0 {
+		return fmt.Errorf("cannot delete account with ID %d because it is used by %d transactions", accountId, count)
+	}
+
+	return nil
 }

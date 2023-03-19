@@ -136,3 +136,5 @@ func (r *repository) contactExists(name, email string) error {
 
 	return fmt.Errorf("name or email already taken")
 }
+
+// TODO: prohibit contact deletion if used
