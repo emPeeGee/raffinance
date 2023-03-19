@@ -156,3 +156,16 @@ ALTER TABLE Goals ADD FOREIGN KEY (userID) REFERENCES users (userID);
 --   ('Ionel', 'ionel@mail.com', '1111', '012345');
 
 select * from transactions inner join transaction_types on transactions.transaction_type_id = transaction_types.id;
+
+-- Get the account balance
+SELECT 
+	COALESCE(SUM(CASE WHEN transaction_type_id = ? THEN amount ELSE -amount END), 0) 
+	+ COALESCE((SELECT SUM(CASE WHEN to_account_id = ? THEN amount ELSE -amount END) 
+				FROM transactions 
+				WHERE deleted_at is null 
+				AND (to_account_id = ? OR from_account_id = ?) 
+				AND transaction_type_id = ?), 0) 
+FROM transactions 
+WHERE deleted_at is null 
+AND to_account_id = ? 
+AND transaction_type_id <> ?;

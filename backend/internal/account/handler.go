@@ -22,6 +22,7 @@ func RegisterHandlers(apiRg *gin.RouterGroup, service Service, validate *validat
 		api.POST("", h.createAccount)
 		api.PUT("/:id", h.updateAccount)
 		api.DELETE("/:id", h.deleteAccount)
+		api.GET("/:id", h.balance)
 
 	}
 }
@@ -134,4 +135,37 @@ func (h *handler) getAccounts(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, accounts)
+}
+
+func (h *handler) balance(c *gin.Context) {
+	userId, err := auth.GetUserId(c)
+	if err != nil || userId == nil {
+		errorutil.Unauthorized(c, err.Error(), "you are not authorized")
+		return
+	}
+
+	accountId, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		errorutil.BadRequest(c, err.Error(), "the id must be an integer")
+		return
+	}
+
+	bal, err := h.service.getAccountBalance(*userId, uint(accountId))
+	if err != nil {
+		h.logger.Info(err.Error())
+		errorutil.NotFound(c, err.Error(), "Not found")
+		return
+	}
+
+	userBal, err := h.service.getUserBalance(*userId)
+	if err != nil {
+		h.logger.Info(err.Error())
+		errorutil.NotFound(c, err.Error(), "Not found")
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"ok":      bal,
+		"userBal": userBal,
+	})
 }

@@ -1,9 +1,11 @@
 package account
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/emPeeGee/raffinance/internal/entity"
+	"github.com/emPeeGee/raffinance/internal/transaction"
 	"github.com/emPeeGee/raffinance/pkg/log"
 	"github.com/emPeeGee/raffinance/pkg/util"
 
@@ -18,6 +20,8 @@ type Repository interface {
 	accountExists(name string) (bool, error)
 	accountExistsAndBelongsToUser(userId, id uint) (bool, error)
 	accountIsUsed(accountId uint) error
+	getAccountBalance(id uint) (float64, error)
+	getUserBalance(userID uint) (float64, error)
 }
 
 type repository struct {
@@ -144,4 +148,68 @@ func (r *repository) accountIsUsed(accountId uint) error {
 	}
 
 	return nil
+}
+
+func (r *repository) getAccountBalance(id uint) (float64, error) {
+	// Calculate the total balance of this account
+	var balanceExcludingTransfers, transfersTotal float64
+	err := r.db.Transaction(func(tx *gorm.DB) error {
+		// Calculate the non-transfer total balance
+		err := tx.Table("transactions").
+			Where("deleted_at is null and to_account_id = ? and transaction_type_id <> ?", id, transaction.TRANSFER).
+			Select("COALESCE(SUM(CASE WHEN transaction_type_id = ? THEN amount ELSE -amount END), 0)", transaction.INCOME).
+			Row().
+			Scan(&balanceExcludingTransfers)
+		if err != nil {
+			return err
+		}
+
+		// Calculate the transfer total balance
+		err = tx.Table("transactions").
+			Where("deleted_at is null and (to_account_id = ? or from_account_id = ?) and transaction_type_id = ?", id, id, transaction.TRANSFER).
+			Select("COALESCE(SUM(CASE WHEN to_account_id = ? THEN amount ELSE -amount END), 0)", id).
+			Row().
+			Scan(&transfersTotal)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return 0, errors.New("account balance not found")
+		}
+
+		return 0, err
+	}
+
+	r.logger.Infof("Account %d balance: balance excluding transfers %f, transfer total %f", id, balanceExcludingTransfers, transfersTotal)
+
+	return balanceExcludingTransfers + transfersTotal, nil
+}
+
+func (r *repository) getUserBalance(userID uint) (float64, error) {
+	var totalBalance float64
+
+	// Retrieve all accounts associated with the user
+	var accounts []entity.Account
+	if err := r.db.Where("user_id = ?", userID).Find(&accounts).Error; err != nil {
+		return 0, err
+	}
+
+	// Iterate over each account to calculate the total balance
+	for _, account := range accounts {
+		accountBalance, err := r.getAccountBalance(account.ID)
+		if err != nil {
+			return 0, err
+		}
+
+		totalBalance += accountBalance
+	}
+
+	r.logger.Infof("User %d balance: %f", userID, totalBalance)
+
+	return totalBalance, nil
 }

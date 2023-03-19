@@ -33,6 +33,8 @@ Loans: InterestRate, DurationInMonths, GracePeriodInMonths
 1. Users.
   I. Latest logins. Display by aggregating them by day
   II. Limit latest logins by 50 
+1. Reports
+1. The balance aggregated by tags, categories, period and so on...
 
 ## Features
 1. Transactions: compact view and more detailed view
@@ -62,8 +64,10 @@ Loans: InterestRate, DurationInMonths, GracePeriodInMonths
 
 
 ## Thoughts
-It depends on the goals and priorities of your project. If you have a tight deadline or need to quickly demonstrate some functionality, it may be best to focus on one part of the stack first and then move to the other.
+How the latest data will be send ? Long polling or a websocket?
 
-However, if you have the luxury of time and resources, it may be beneficial to work on both parts in parallel. This can help you identify any potential issues or roadblocks earlier in the development process, and allow you to make changes to the stack as a whole instead of having to refactor large portions of the application later on.
-
-Regardless of which approach you take, it's important to continuously test and iterate on both the front-end and back-end components to ensure they work together seamlessly.
+## Versioning
+### Alpha
+users, account, transactions, categories, tags, contacts | reports
+### Beta 
+Loans

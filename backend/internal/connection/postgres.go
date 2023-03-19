@@ -6,6 +6,7 @@ import (
 	"github.com/emPeeGee/raffinance/internal/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 func NewPostgresDB(cfg config.DB) (*gorm.DB, error) {
@@ -15,7 +16,7 @@ func NewPostgresDB(cfg config.DB) (*gorm.DB, error) {
 	gormDB, err := gorm.Open(postgres.New(postgres.Config{
 		DSN:                  dsn,
 		PreferSimpleProtocol: true,
-	}), &gorm.Config{})
+	}), &gorm.Config{Logger: logger.Default.LogMode(logger.Info)})
 
 	if err != nil {
 		return nil, err

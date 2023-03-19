@@ -11,6 +11,8 @@ type Service interface {
 	deleteAccount(userId, id uint) error
 	getAccounts(userId uint) ([]accountResponse, error)
 	updateAccount(usedId, accountId uint, account updateAccountDTO) (*accountResponse, error)
+	getAccountBalance(userId, id uint) (float64, error)
+	getUserBalance(userId uint) (float64, error)
 }
 
 type service struct {
@@ -79,4 +81,23 @@ func (s *service) updateAccount(userId, accountId uint, account updateAccountDTO
 	}
 
 	return s.repo.updateAccount(userId, accountId, account)
+}
+
+// TODO: this should be part of user log
+func (s *service) getAccountBalance(userId, id uint) (float64, error) {
+	ok, err := s.repo.accountExistsAndBelongsToUser(userId, id)
+	if err != nil {
+		return -1, err
+	}
+
+	if !ok {
+		return -1, fmt.Errorf("account with ID %d does not exist or belong to user with ID %d", id, userId)
+	}
+
+	return s.repo.getAccountBalance(id)
+}
+
+// TODO: to be moved in user
+func (s *service) getUserBalance(userId uint) (float64, error) {
+	return s.repo.getUserBalance(userId)
 }
