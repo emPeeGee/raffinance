@@ -20,6 +20,7 @@ type Repository interface {
 	accountExists(name string) (bool, error)
 	accountExistsAndBelongsToUser(userId, id uint) (bool, error)
 	accountIsUsed(accountId uint) error
+	// TODO: rename to calculate*****
 	getAccountBalance(id uint) (float64, error)
 	getUserBalance(userID uint) (float64, error)
 }
@@ -107,7 +108,7 @@ func (r *repository) getAccounts(userId uint) ([]accountResponse, error) {
 		// TODO: get the account balance dynamically. Is there better way for it?
 		accountBalance, err := r.getAccountBalance(account.ID)
 		if err != nil {
-			return []accountResponse{}, nil
+			return []accountResponse{}, err
 		}
 
 		accounts = append(accounts, accountResponse{
