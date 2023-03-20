@@ -2,7 +2,9 @@ package account
 
 import (
 	"fmt"
+	"math"
 
+	"github.com/emPeeGee/raffinance/internal/transaction"
 	"github.com/emPeeGee/raffinance/pkg/log"
 )
 
@@ -16,12 +18,18 @@ type Service interface {
 }
 
 type service struct {
-	repo   Repository
-	logger log.Logger
+	repo Repository
+	// TODO: I need this service to make transaction on account
+	transactionService transaction.Service
+	logger             log.Logger
 }
 
-func NewAccountService(repo Repository, logger log.Logger) *service {
-	return &service{repo: repo, logger: logger}
+func NewAccountService(transactionService transaction.Service, repo Repository, logger log.Logger) *service {
+	return &service{
+		transactionService: transactionService,
+		repo:               repo,
+		logger:             logger,
+	}
 }
 
 func (s *service) createAccount(userId uint, account createAccountDTO) (*accountResponse, error) {
@@ -35,7 +43,21 @@ func (s *service) createAccount(userId uint, account createAccountDTO) (*account
 		return nil, fmt.Errorf("account with name %s exists", account.Name)
 	}
 
-	return s.repo.createAccount(userId, account)
+	// First, create account and then if needed the first transaction
+	createdAccount, err := s.repo.createAccount(userId, account)
+	if err != nil {
+		return nil, err
+	}
+
+	// In case the account is created with some default balance, create a transaction
+	if account.Balance > 0 {
+		_, err := s.transactionService.CreateInitialTransaction(userId, createdAccount.ID, account.Balance)
+		if err != nil {
+			return nil, fmt.Errorf("could not create an initial balance of %f for account %d", account.Balance, createdAccount.ID)
+		}
+	}
+
+	return createdAccount, nil
 }
 
 func (s *service) deleteAccount(userId, id uint) error {
@@ -80,10 +102,34 @@ func (s *service) updateAccount(userId, accountId uint, account updateAccountDTO
 		return nil, fmt.Errorf("account with name %s already exists", account.Name)
 	}
 
+	// If the balance is modified, get the current one
+	currentAccountBalance, err := s.getAccountBalance(userId, accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	// calculate the difference
+	// current 100, modified 200 => 100 - 200 = -100. If adjustment is negative. It means we should make an income with adjusted amount to adjust balance
+	// current 200, modified 100 => 200 - 100 = 100. If adjustment is positive. It means we should make an expense with adjusted amount to adjust balance
+	adjustedAmount := currentAccountBalance - account.Balance
+
+	if adjustedAmount > 0 {
+		_, err := s.transactionService.CreateAdjustmentTransaction(userId, accountId, math.Abs(adjustedAmount), transaction.EXPENSE)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create an adjustment balance for account %d with err: %s", accountId, err.Error())
+		}
+	} else if adjustedAmount < 0 {
+		_, err := s.transactionService.CreateAdjustmentTransaction(userId, accountId, math.Abs(adjustedAmount), transaction.INCOME)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create an adjustment balance for account %d with err: %s", accountId, err.Error())
+		}
+	}
+
 	return s.repo.updateAccount(userId, accountId, account)
 }
 
-// TODO: this should be part of user log
+// TODO: this should be a part of user log.
+// / WTF comment above means ???
 func (s *service) getAccountBalance(userId, id uint) (float64, error) {
 	ok, err := s.repo.accountExistsAndBelongsToUser(userId, id)
 	if err != nil {

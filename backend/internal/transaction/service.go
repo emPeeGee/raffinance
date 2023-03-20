@@ -2,12 +2,16 @@ package transaction
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/emPeeGee/raffinance/pkg/log"
 )
 
 type Service interface {
 	createTransaction(userId uint, transaction CreateTransactionDTO) (*transactionResponse, error)
+	// TODO: They are not validated, validation is in handler
+	CreateAdjustmentTransaction(userId, accountId uint, amount float64, trType TransactionType) (*transactionResponse, error)
+	CreateInitialTransaction(userId, accountId uint, amount float64) (*transactionResponse, error)
 	deleteTransaction(userId, id uint) error
 	updateTransaction(usedId, transactionId uint, transaction UpdateTransactionDTO) (*transactionResponse, error)
 	getTransactions(userId uint) ([]transactionResponse, error)
@@ -46,6 +50,36 @@ func (s *service) createTransaction(userId uint, transaction CreateTransactionDT
 	}
 
 	return s.repo.createTransaction(userId, transaction)
+}
+
+func (s *service) CreateInitialTransaction(userId, accountId uint, amount float64) (*transactionResponse, error) {
+	transaction := CreateTransactionDTO{
+		Date:        time.Now(),
+		Amount:      amount,
+		Description: "Initial balance",
+		Location:    "",
+		ToAccountID: accountId,
+		// TODO:
+		CategoryID:        2,
+		TransactionTypeID: byte(INCOME),
+	}
+
+	return s.createTransaction(userId, transaction)
+}
+
+func (s *service) CreateAdjustmentTransaction(userId, accountId uint, amount float64, trType TransactionType) (*transactionResponse, error) {
+	transaction := CreateTransactionDTO{
+		Date:        time.Now(),
+		Amount:      amount,
+		Description: "Adjusted balance",
+		Location:    "",
+		ToAccountID: accountId,
+		// TODO:
+		CategoryID:        2,
+		TransactionTypeID: byte(trType),
+	}
+
+	return s.createTransaction(userId, transaction)
 }
 
 func (s *service) deleteTransaction(userId, id uint) error {

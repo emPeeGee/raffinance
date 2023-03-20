@@ -35,6 +35,7 @@ Loans: InterestRate, DurationInMonths, GracePeriodInMonths
   II. Limit latest logins by 50 
 1. Reports
 1. The balance aggregated by tags, categories, period and so on...
+1. [x] Creating/updating account with a balance.
 
 ## Features
 1. Transactions: compact view and more detailed view
@@ -71,3 +72,10 @@ How the latest data will be send ? Long polling or a websocket?
 users, account, transactions, categories, tags, contacts | reports
 ### Beta 
 Loans
+
+
+
+### ???
+Event-driven architecture: Instead of having services directly call each other, you can use events to communicate between services. When a service performs an action, it can publish an event describing what has happened. Other services can then subscribe to these events and perform their own actions accordingly. This approach can help to decouple services and make them more independent.
+API gateway: An API gateway is a server that acts as an entry point for multiple microservices. The API gateway can handle incoming requests from clients and route them to the appropriate microservice. This approach can help to simplify client code, as it only needs to communicate with one endpoint (the API gateway) instead of multiple microservices.
+Service mesh: A service mesh is a dedicated infrastructure layer for managing service-to-service communication within a microservices architecture. The service mesh provides features such as service discovery, load balancing, and traffic management, which can help to simplify service communication and make it more reliable.

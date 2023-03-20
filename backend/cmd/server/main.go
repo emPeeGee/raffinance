@@ -68,7 +68,7 @@ func main() {
 		logger.Fatalf("failed to register transaction type validator: %s", err.Error())
 	}
 
-	// TODO: I can import from transaction idk why
+	// TODO: Error handling here
 	valid.RegisterStructValidation(transaction.ValidateCreateTransaction, transaction.CreateTransactionDTO{})
 	valid.RegisterStructValidation(transaction.ValidateUpdateTransaction, transaction.UpdateTransactionDTO{})
 
@@ -91,6 +91,8 @@ func main() {
 	}
 }
 
+// TODO: How the dependencies injection can be done better?
+// TODO: Logger is not passed as ref
 // buildHandler sets up the HTTP routing and builds an HTTP handler.
 func buildHandler(db *gorm.DB, valid *validator.Validate, logger log.Logger) http.Handler {
 	router := gin.New()
@@ -98,6 +100,9 @@ func buildHandler(db *gorm.DB, valid *validator.Validate, logger log.Logger) htt
 
 	authRg := router.Group("/auth")
 	apiRg := router.Group("/api", auth.HandleUserIdentity(logger))
+
+	// transaction service is used in account as well
+	transactionService := transaction.NewTransactionService(transaction.NewTransactionRepository(db, logger), logger)
 
 	auth.RegisterHandlers(
 		authRg,
@@ -116,14 +121,14 @@ func buildHandler(db *gorm.DB, valid *validator.Validate, logger log.Logger) htt
 
 	account.RegisterHandlers(
 		apiRg,
-		account.NewAccountService(account.NewAccountRepository(db, logger), logger),
+		account.NewAccountService(transactionService, account.NewAccountRepository(db, logger), logger),
 		valid,
 		logger,
 	)
 
 	transaction.RegisterHandlers(
 		apiRg,
-		transaction.NewTransactionService(transaction.NewTransactionRepository(db, logger), logger),
+		transactionService,
 		valid,
 		logger,
 	)

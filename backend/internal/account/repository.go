@@ -52,7 +52,7 @@ func (r *repository) createAccount(userId uint, account createAccountDTO) (*acco
 		Name:      newAccount.Name,
 		Currency:  newAccount.Currency,
 		Color:     newAccount.Color,
-		Balance:   0,
+		Balance:   account.Balance,
 		CreatedAt: newAccount.CreatedAt,
 		UpdatedAt: newAccount.UpdatedAt,
 	}
@@ -79,6 +79,14 @@ func (r *repository) updateAccount(userId, accountId uint, account updateAccount
 		return nil, err
 	}
 
+	// Calculating the balance dynamically
+	accountBalance, err := r.getAccountBalance(accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	updatedAccount.Balance = accountBalance
+
 	return &updatedAccount, nil
 }
 
@@ -95,23 +103,24 @@ func (r *repository) getAccounts(userId uint) ([]accountResponse, error) {
 		return nil, err
 	}
 
-	r.logger.Debug(user)
-
-	// TODO: TODO: TODO: Calculate the balance dynamically
-
 	for _, account := range user.Accounts {
+		// TODO: get the account balance dynamically. Is there better way for it?
+		accountBalance, err := r.getAccountBalance(account.ID)
+		if err != nil {
+			return []accountResponse{}, nil
+		}
+
 		accounts = append(accounts, accountResponse{
 			ID:        account.ID,
 			Name:      account.Name,
 			Currency:  account.Currency,
-			Balance:   0,
+			Balance:   accountBalance,
 			Color:     account.Color,
 			CreatedAt: account.CreatedAt,
 			UpdatedAt: account.UpdatedAt,
 		})
 	}
 
-	// TODO: when empty sends nill, instead of []
 	return accounts, nil
 }
 

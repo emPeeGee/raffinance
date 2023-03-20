@@ -137,6 +137,7 @@ func (h *handler) getAccounts(c *gin.Context) {
 	c.JSON(http.StatusOK, accounts)
 }
 
+// TODO: The func is useless now. Just for test purpose it exists
 func (h *handler) balance(c *gin.Context) {
 	userId, err := auth.GetUserId(c)
 	if err != nil || userId == nil {
@@ -165,7 +166,7 @@ func (h *handler) balance(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, map[string]interface{}{
-		"ok":      bal,
-		"userBal": userBal,
+		"accountBal": bal,
+		"userBal":    userBal,
 	})
 }
