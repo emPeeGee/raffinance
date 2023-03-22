@@ -123,18 +123,20 @@ function App() {
             {isAppReady && (
               <AppShell>
                 <Header />
-                {!isOnline ? (
-                  <Offline />
-                ) : (
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/sign-in" element={<SignIn />} />
-                    <Route element={<ProtectedRoute isAllowed={isLogged} />}>
-                      <Route path="/profile" element={<Profile />} />
-                    </Route>
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                )}
+                <div style={{ minHeight: '40vh' }}>
+                  {!isOnline ? (
+                    <Offline />
+                  ) : (
+                    <Routes>
+                      <Route path="/" element={<Home />} />
+                      <Route path="/sign-in" element={<SignIn />} />
+                      <Route element={<ProtectedRoute isAllowed={isLogged} />}>
+                        <Route path="/profile" element={<Profile />} />
+                      </Route>
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  )}
+                </div>
                 <Footer />
               </AppShell>
             )}
