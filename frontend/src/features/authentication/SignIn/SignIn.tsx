@@ -1,10 +1,56 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Container, LoadingOverlay, PasswordInput, TextInput, Title } from '@mantine/core';
+import {
+  Text,
+  Anchor,
+  Button,
+  Checkbox,
+  Container,
+  LoadingOverlay,
+  Paper,
+  PasswordInput,
+  TextInput,
+  Title,
+  createStyles,
+  rem
+} from '@mantine/core';
 import { IconArrowBackUp, IconBolt, IconLock, IconUserCircle } from '@tabler/icons-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { AuthenticationResponse, CredentialsModel, UserContext } from 'features/authentication';
 import { api } from 'services/http';
+
+const useStyles = createStyles((theme) => ({
+  // TODO: Light and dark
+  wrapper: {
+    minHeight: rem(900),
+    filter: 'grayscale(100%)',
+    backgroundSize: 'cover',
+    backgroundPosition: '-350%',
+    backgroundRepeat: 'no-repeat',
+    // back theme and light
+    backgroundImage:
+      // 'url(https://images.unsplash.com/photo-1484242857719-4b9144542727?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1280&q=80)'
+      'url(http://thailandsapria.myspecies.info/sites/thailandsapria.myspecies.info/files/%E0%B8%A3%E0%B8%B9%E0%B8%9B%E0%B8%A0%E0%B8%B2%E0%B8%9E9.png)'
+  },
+
+  form: {
+    borderRight: `${rem(1)} solid ${
+      theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[3]
+    }`,
+    minHeight: rem(900),
+    maxWidth: rem(450),
+    paddingTop: rem(80),
+
+    [theme.fn.smallerThan('sm')]: {
+      maxWidth: '100%'
+    }
+  },
+
+  title: {
+    color: theme.colorScheme === 'dark' ? theme.white : theme.black,
+    fontFamily: `Greycliff CF, ${theme.fontFamily}`
+  }
+}));
 
 export function SignIn() {
   const {
@@ -15,6 +61,7 @@ export function SignIn() {
     mode: 'onChange'
   });
 
+  const { classes } = useStyles();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const userContext = useContext(UserContext);
@@ -47,14 +94,11 @@ export function SignIn() {
   };
 
   return (
-    <Container>
+    <div className={classes.wrapper}>
       <LoadingOverlay visible={isLoading} />
 
-      <Title order={1} my="lg">
-        Sign In
-      </Title>
-
-      <form onSubmit={handleSubmit(signIn)}>
+      {/* <form onSubmit={handleSubmit(signIn)}>
+        // TODO: form validation integration
         <TextInput
           {...register('username', { required: true, value: '' })}
           required
@@ -95,7 +139,27 @@ export function SignIn() {
             Go home
           </Button>
         </Container>
-      </form>
-    </Container>
+      </form> */}
+
+      <Paper className={classes.form} radius={0} p={30}>
+        <Title order={2} className={classes.title} ta="center" mt="md" mb={50}>
+          Welcome back to Mantine!
+        </Title>
+
+        <TextInput label="Email address" placeholder="hello@gmail.com" size="md" />
+        <PasswordInput label="Password" placeholder="Your password" mt="md" size="md" />
+        <Checkbox label="Keep me logged in" mt="xl" size="md" />
+        <Button fullWidth mt="xl" size="md">
+          Login
+        </Button>
+
+        <Text ta="center" mt="md">
+          Don&apos;t have an account?{' '}
+          <Anchor<'a'> href="#" weight={700} onClick={(event) => event.preventDefault()}>
+            Register
+          </Anchor>
+        </Text>
+      </Paper>
+    </div>
   );
 }
