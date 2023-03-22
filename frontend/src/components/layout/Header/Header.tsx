@@ -12,26 +12,14 @@ import {
   Drawer,
   ScrollArea,
   rem,
-  Container
+  Container,
+  Text
 } from '@mantine/core';
 import { Link } from 'react-router-dom';
 
 import { useDisclosure } from '@mantine/hooks';
 import { UserContext } from 'features/authentication/';
-// import rafflesia2 from 'assets/rafflesia2.svg';
-// import { ReactComponent as Logo } from 'assets/rafflesia4.svg';
-import { ReactComponent as Logo } from 'assets/rafflesia2.svg';
-// import { Anchor } from 'components';
-// import logo from 'assets/logo.svg';
-// import {
-//   IconGroup,
-//   Icon,
-//   Items,
-//   ItemsRight,
-//   ListItem,
-//   UnorderedList,
-//   Wrapper
-// } from './Header.styles';
+import { Logo } from 'components';
 
 import { IconMoonStars, IconSun } from '@tabler/icons-react';
 
@@ -80,29 +68,22 @@ export function Header() {
   const userContext = useContext(UserContext);
 
   useEffect(() => {
-    console.log(colorScheme);
-
     setIsDark(colorScheme === 'dark');
   }, [colorScheme]);
 
   const logout = () => {
-    console.log('Logout');
     userContext?.setUser(null);
     userContext?.setToken(null);
   };
 
-  console.log(logout, isDark, toggleColorScheme);
-
   return (
-    <Box pb={16}>
+    <Box>
       <MantineHeader height={60} px="md">
         <Container sx={{ height: 60 }}>
-          <Group align="center" position="apart" sx={{ height: '100%' }}>
-            <Link to="/">
-              <div style={{ width: '40px', height: '40px' }}>
-                <Logo fill={theme.colors.blue[6]} width="100%" height="100%" stroke="green" />
-              </div>
-            </Link>
+          <Group align="center" position="apart" sx={{ height: '100%', width: '100%' }}>
+            <div>
+              <Logo />
+            </div>
 
             <Group sx={{ height: '100%' }} spacing={0} className={classes.hiddenMobile}>
               <Link to="/" className={classes.link}>
@@ -121,18 +102,17 @@ export function Header() {
                 variant="outline"
                 color={isDark ? 'yellow' : 'blue'}
                 onClick={() => {
-                  console.log('click');
                   toggleColorScheme();
                 }}
                 title="Toggle color scheme">
                 {isDark ? <IconSun size={18} /> : <IconMoonStars size={18} />}
               </ActionIcon>
-              <Link to="/sign-in">
-                <Button variant="default">Log in</Button>
-              </Link>
-              <Link to="/sign-up">
-                <Button>Sign up</Button>
-              </Link>
+              <Button component={Link} to="/sign-in" variant="default">
+                Log in
+              </Button>
+              <Button component={Link} to="/sign-up" variant="default">
+                Sign up
+              </Button>
             </Group>
 
             <Burger
@@ -168,16 +148,11 @@ export function Header() {
           <Divider my="sm" color={theme.colorScheme === 'dark' ? 'dark.5' : 'gray.1'} />
 
           <Group position="center" grow pb="xl" px="md">
-            <Button onClick={() => console.log('q23')}>fdsfds</Button>
             <ActionIcon
               variant="outline"
               color={isDark ? 'yellow' : 'blue'}
-              onClick={() => {
-                console.log('click');
-                toggleColorScheme();
-              }}
+              onClick={() => toggleColorScheme()}
               title="Toggle color scheme">
-              fdsfds
               {isDark ? <IconSun size={18} /> : <IconMoonStars size={18} />}
             </ActionIcon>
             <Button variant="default">Log in</Button>
