@@ -1,67 +1,83 @@
 import React from 'react';
-import { Text, createStyles, Anchor } from '@mantine/core';
-import logo from 'assets/logo.svg';
+import { Text, createStyles, Anchor, ActionIcon, Container, Group, rem, Flex } from '@mantine/core';
+import { IconBrandTwitter, IconBrandYoutube, IconBrandInstagram } from '@tabler/icons-react';
+
+import { Logo } from 'components';
 
 const useStyles = createStyles((theme) => ({
   footer: {
-    marginTop: 'auto'
-  },
-
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginTop: '64px',
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[1],
-    padding: '16px 32px'
-  },
-
-  info: {
-    // ref: getRef('info'),
-    display: 'flex',
-    flexDirection: 'column',
-
-    p: {
-      margin: 0
-    }
-  },
-
-  links: {
-    padding: '2rem 0',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-
-    h4: {
-      margin: 0
-    },
-
-    ul: {
-      margin: 0,
-      padding: 0,
-      listStyle: 'none',
-      display: 'flex',
-      justifyContent: 'flex-start',
-      alignItems: 'center',
-
-      li: {
-        color: theme.colors.gray[7],
-        padding: '0 1rem'
-      }
-    }
+    paddingTop: `calc(${theme.spacing.xl} * 2)`,
+    paddingBottom: `calc(${theme.spacing.xl} * 2)`,
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+    borderTop: `${rem(1)} solid ${
+      theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[2]
+    }`
   },
 
   logo: {
+    maxWidth: rem(200),
+
+    [theme.fn.smallerThan('sm')]: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center'
+    }
+  },
+
+  description: {
+    marginTop: rem(5),
+
+    [theme.fn.smallerThan('sm')]: {
+      marginTop: theme.spacing.xs,
+      textAlign: 'center'
+    }
+  },
+
+  inner: {
     display: 'flex',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
+
+    [theme.fn.smallerThan('sm')]: {
+      flexDirection: 'column',
+      alignItems: 'center'
+    }
+  },
+
+  wrapper: {
+    width: rem(160)
+  },
+
+  link: {
+    display: 'block',
+    color: theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[6],
+    fontSize: theme.fontSizes.sm,
+    paddingTop: rem(3),
+    paddingBottom: rem(3),
+
+    '&:hover': {
+      textDecoration: 'underline'
+    }
+  },
+
+  afterFooter: {
+    display: 'flex',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    marginTop: theme.spacing.xl,
+    paddingTop: theme.spacing.xl,
+    paddingBottom: theme.spacing.xl,
+    borderTop: `${rem(1)} solid ${
+      theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[2]
+    }`,
 
-    h3: {
-      margin: 0
-    },
+    [theme.fn.smallerThan('sm')]: {
+      flexDirection: 'column'
+    }
+  },
 
-    img: {
-      width: '46px',
-      height: '46px'
+  social: {
+    [theme.fn.smallerThan('sm')]: {
+      marginTop: theme.spacing.xs
     }
   }
 }));
@@ -71,36 +87,40 @@ export function Footer() {
 
   return (
     <footer className={classes.footer}>
-      <div className={classes.container}>
-        <div className={classes.info}>
+      <Container className={classes.inner}>
+        <Group position="apart" sx={{ width: '100%' }}>
           <div className={classes.logo}>
-            <img src={logo} alt="" />
-            <h3>Toss that thought.</h3>
+            <Logo />
           </div>
           <div>
-            <Text color="dimmed">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad, alias aliquid animi{' '}
+            <Text size="xs" color="dimmed" className={classes.description}>
+              Bloom your finances with Raffinace&apos;s money management app
             </Text>
           </div>
-        </div>
+        </Group>
+      </Container>
+      <Container className={classes.afterFooter}>
+        <Flex direction="column" gap={4}>
+          <Text color="dimmed" size="sm">
+            © 2023 mantine.dev. All rights reserved.
+          </Text>
+          <Text color="dimmed" size="xs">
+            Build with 💙 by emPeeGee.
+          </Text>
+        </Flex>
 
-        <nav className={classes.links}>
-          <h4>Links</h4>
-          <ul>
-            <li>
-              <Anchor href="/">About</Anchor>
-            </li>
-            <li>
-              <Anchor href="/">Code</Anchor>
-            </li>
-            <li>
-              <Anchor href="/">Other</Anchor>
-            </li>
-          </ul>
-        </nav>
-
-        <Text color="gray">Build with 💙 by emPeeGee.</Text>
-      </div>
+        <Group spacing={0} className={classes.social} position="right" noWrap>
+          <ActionIcon size="lg">
+            <IconBrandTwitter size="1.05rem" stroke={1.5} />
+          </ActionIcon>
+          <ActionIcon size="lg">
+            <IconBrandYoutube size="1.05rem" stroke={1.5} />
+          </ActionIcon>
+          <ActionIcon size="lg">
+            <IconBrandInstagram size="1.05rem" stroke={1.5} />
+          </ActionIcon>
+        </Group>
+      </Container>
     </footer>
   );
 }
