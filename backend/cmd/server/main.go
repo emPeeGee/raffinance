@@ -29,6 +29,7 @@ import (
 const Version = "1.0.0"
 
 // TODO: jwt config to be extracted
+// TODO: more linting linters to be added, like the linter for err check
 
 // RUN: Before autoMigrate -> CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 func main() {

@@ -36,6 +36,9 @@ Loans: InterestRate, DurationInMonths, GracePeriodInMonths
 1. Reports
 1. The balance aggregated by tags, categories, period and so on...
 1. [x] Creating/updating account with a balance.
+1. Localisation
+1. Financial font for fe
+1. ESLint rules, better, some are not shown, imports
 
 1. You should push the necessary data over the websocket connection to update the balance and other related data in real-time
 ## Features
@@ -243,3 +246,18 @@ Loans
 Event-driven architecture: Instead of having services directly call each other, you can use events to communicate between services. When a service performs an action, it can publish an event describing what has happened. Other services can then subscribe to these events and perform their own actions accordingly. This approach can help to decouple services and make them more independent.
 API gateway: An API gateway is a server that acts as an entry point for multiple microservices. The API gateway can handle incoming requests from clients and route them to the appropriate microservice. This approach can help to simplify client code, as it only needs to communicate with one endpoint (the API gateway) instead of multiple microservices.
 Service mesh: A service mesh is a dedicated infrastructure layer for managing service-to-service communication within a microservices architecture. The service mesh provides features such as service discovery, load balancing, and traffic management, which can help to simplify service communication and make it more reliable.
+
+
+
+
+
+"Nurture your wealth like a Rafflesia flower with Raffinace"
+"Bloom your finances with Raffinace's money management app"
+"Harness the power of growth with Raffinace's money app"
+"Raffinace: Your one-stop shop for financial growth and management"
+"Grow your financial garden with Raffinace's money management app"
+"Raffinace: Your financial bloom companion"
+"Raffinace: Your tool for cultivating financial wellness"
+"Cultivate your wealth with Raffinace's money management app"
+"Raffinace: Where finance meets the beauty of the Rafflesia flower"
+"Let your finances bloom with Raffinace's money management app".
