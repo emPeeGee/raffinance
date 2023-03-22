@@ -11,11 +11,16 @@ import {
   Burger,
   Drawer,
   ScrollArea,
-  rem
+  rem,
+  Container
 } from '@mantine/core';
+import { Link } from 'react-router-dom';
 
 import { useDisclosure } from '@mantine/hooks';
 import { UserContext } from 'features/authentication/';
+// import rafflesia2 from 'assets/rafflesia2.svg';
+// import { ReactComponent as Logo } from 'assets/rafflesia4.svg';
+import { ReactComponent as Logo } from 'assets/rafflesia2.svg';
 // import { Anchor } from 'components';
 // import logo from 'assets/logo.svg';
 // import {
@@ -32,15 +37,14 @@ import { IconMoonStars, IconSun } from '@tabler/icons-react';
 
 const useStyles = createStyles((theme) => ({
   link: {
-    display: 'flex',
-    alignItems: 'center',
-    height: '100%',
-    paddingLeft: theme.spacing.md,
-    paddingRight: theme.spacing.md,
+    display: 'block',
+    lineHeight: 1,
+    padding: `${rem(8)} ${rem(12)}`,
+    borderRadius: theme.radius.sm,
     textDecoration: 'none',
-    color: theme.colorScheme === 'dark' ? theme.white : theme.black,
-    fontWeight: 500,
+    color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
     fontSize: theme.fontSizes.sm,
+    fontWeight: 500,
 
     [theme.fn.smallerThan('sm')]: {
       height: rem(42),
@@ -92,39 +96,52 @@ export function Header() {
   return (
     <Box pb={16}>
       <MantineHeader height={60} px="md">
-        <Group position="apart" sx={{ height: '100%' }}>
-          {/*  TODO: */}
-          {/* <MantineLogo size={30} /> */}
+        <Container sx={{ height: 60 }}>
+          <Group align="center" position="apart" sx={{ height: '100%' }}>
+            <Link to="/">
+              <div style={{ width: '40px', height: '40px' }}>
+                <Logo fill={theme.colors.blue[6]} width="100%" height="100%" stroke="green" />
+              </div>
+            </Link>
 
-          <Group sx={{ height: '100%' }} spacing={0} className={classes.hiddenMobile}>
-            <a href="todo" className={classes.link}>
-              Home
-            </a>
-            <a href="todo" className={classes.link}>
-              Learn
-            </a>
-            <a href="todo" className={classes.link}>
-              Academy
-            </a>
+            <Group sx={{ height: '100%' }} spacing={0} className={classes.hiddenMobile}>
+              <Link to="/" className={classes.link}>
+                Home
+              </Link>
+              <Link to="/" className={classes.link}>
+                Learn
+              </Link>
+              <Link to="/" className={classes.link}>
+                Academy
+              </Link>
+            </Group>
+
+            <Group className={classes.hiddenMobile}>
+              <ActionIcon
+                variant="outline"
+                color={isDark ? 'yellow' : 'blue'}
+                onClick={() => {
+                  console.log('click');
+                  toggleColorScheme();
+                }}
+                title="Toggle color scheme">
+                {isDark ? <IconSun size={18} /> : <IconMoonStars size={18} />}
+              </ActionIcon>
+              <Link to="/sign-in">
+                <Button variant="default">Log in</Button>
+              </Link>
+              <Link to="/sign-up">
+                <Button>Sign up</Button>
+              </Link>
+            </Group>
+
+            <Burger
+              opened={drawerOpened}
+              onClick={toggleDrawer}
+              className={classes.hiddenDesktop}
+            />
           </Group>
-
-          <Group className={classes.hiddenMobile}>
-            <ActionIcon
-              variant="outline"
-              color={isDark ? 'yellow' : 'blue'}
-              onClick={() => {
-                console.log('click');
-                toggleColorScheme();
-              }}
-              title="Toggle color scheme">
-              {isDark ? <IconSun size={18} /> : <IconMoonStars size={18} />}
-            </ActionIcon>
-            <Button variant="default">Log in</Button>
-            <Button>Sign up</Button>
-          </Group>
-
-          <Burger opened={drawerOpened} onClick={toggleDrawer} className={classes.hiddenDesktop} />
-        </Group>
+        </Container>
       </MantineHeader>
 
       <Drawer
