@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Code, Container, Text, Group, Title } from '@mantine/core';
+import { Code, Container, Text, Group, Title, Button } from '@mantine/core';
 import { UserContext } from 'features/authentication/user.context';
 
 export function Profile() {
@@ -8,7 +8,8 @@ export function Profile() {
   return (
     <Container>
       <Title order={1}>Profile</Title>
-      <Group direction="column">
+      <Group>
+        {/* <Group direction="column"> */}
         <Group>
           <Text>Your name: </Text>
           <Code color="violet" my="xs" style={{ fontSize: '20px' }}>

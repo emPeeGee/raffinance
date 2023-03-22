@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ColorScheme, ColorSchemeProvider, MantineProvider } from '@mantine/core';
 import { GlobalStyles } from 'assets/styles/globalStyles';
 import { api } from 'services/http';
-import { NotificationsProvider, showNotification } from '@mantine/notifications';
+import { Notifications, showNotification } from '@mantine/notifications';
 import { AppShell, Footer, NotFound, ProtectedRoute, Offline, Header } from 'components';
 import { Profile, SignIn, UserModel, UserContext } from 'features/authentication';
 import { useLocalStorage, useNetworkStatus } from 'hooks';
@@ -17,8 +17,9 @@ function App() {
     COLOR_SCHEME_STORAGE_KEY,
     Theme.Light
   );
-  const toggleColorScheme = (value?: ColorScheme) =>
-    setColorScheme(value || (colorScheme === Theme.Light ? Theme.Light : Theme.Dark));
+  const toggleColorScheme = (value?: ColorScheme) => {
+    setColorScheme(value || (colorScheme === Theme.Light ? Theme.Dark : Theme.Light));
+  };
   const isFirstRun = useRef(true);
   const [user, setUser] = useState<UserModel | null>(null);
   const userContextValue = useMemo(() => ({ user, setUser, token, setToken }), [user, token]);
@@ -75,64 +76,70 @@ function App() {
       <MantineProvider
         withGlobalStyles
         withNormalizeCSS
-        defaultProps={{
-          Container: {
-            sizes: {
-              xs: 540,
-              sm: 720,
-              md: 960,
-              lg: 1140,
-              xl: 1320
-            }
-          },
-          Button: { tabIndex: 0 },
-          Anchor: { tabIndex: 0 }
-        }}
-        styles={{
-          Button: (theme) => ({
-            root: {
-              '&:focus': {
-                outline: `2px solid ${theme.colors.orange[5]} !important`
-              }
-            }
-          }),
-          ActionIcon: (theme) => ({
-            root: {
-              '&:focus': {
-                outline: `2px solid ${theme.colors.orange[5]} !important`
-              }
-            }
-          })
-        }}
         theme={{
           colorScheme,
-          fontFamily: 'Open Sans, sans serif'
+          fontFamily: 'Open Sans, sans serif',
+          components: {
+            Button: {
+              styles: (theme: any) => ({
+                root: {
+                  '&:focus': {
+                    outline: `2px solid ${theme.colors.orange[5]} !important`
+                  }
+                }
+              })
+            },
+            ActionIcon: {
+              styles: (theme: any) => ({
+                root: {
+                  '&:focus': {
+                    outline: `2px solid ${theme.colors.orange[5]} !important`
+                  }
+                }
+              })
+            },
+
+            Container: {
+              styles: {
+                // sizes: {
+                //   xs: 540,
+                //   sm: 720,
+                //   md: 960,
+                //   lg: 1140,
+                //   xl: 1320
+                // }
+              }
+            }
+          }
         }}>
-        <NotificationsProvider>
-          <BrowserRouter>
-            <GlobalStyles />
-            <UserContext.Provider value={userContextValue}>
-              {isAppReady && (
-                <AppShell>
-                  <Header />
-                  {!isOnline ? (
-                    <Offline />
-                  ) : (
-                    <Routes>
-                      <Route path="/" element={<Home />} />
-                      <Route path="/sign-in" element={<SignIn />} />
-                      <Route element={<ProtectedRoute isAllowed={isLogged} />}>
-                        <Route path="/profile" element={<Profile />} />
-                      </Route>
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  )}
-                  <Footer />
-                </AppShell>
-              )}
-            </UserContext.Provider>
-          </BrowserRouter>
-        </NotificationsProvider>
+        {/* styles={{
+          Button: { tabIndex: 0 },
+          Anchor: { tabIndex: 0 }
+        }}> */}
+        <Notifications />
+        <BrowserRouter>
+          <GlobalStyles />
+          <UserContext.Provider value={userContextValue}>
+            {isAppReady && (
+              <AppShell>
+                <Header />
+                {!isOnline ? (
+                  <Offline />
+                ) : (
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/sign-in" element={<SignIn />} />
+                    <Route element={<ProtectedRoute isAllowed={isLogged} />}>
+                      <Route path="/profile" element={<Profile />} />
+                    </Route>
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                )}
+                <Footer />
+              </AppShell>
+            )}
+          </UserContext.Provider>
+        </BrowserRouter>
       </MantineProvider>
     </ColorSchemeProvider>
   );

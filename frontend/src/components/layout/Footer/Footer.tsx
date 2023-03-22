@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, createStyles, Anchor } from '@mantine/core';
 import logo from 'assets/logo.svg';
 
-const useStyles = createStyles((theme, _params, getRef) => ({
+const useStyles = createStyles((theme) => ({
   footer: {
     marginTop: 'auto'
   },
@@ -16,7 +16,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
 
   info: {
-    ref: getRef('info'),
+    // ref: getRef('info'),
     display: 'flex',
     flexDirection: 'column',
 

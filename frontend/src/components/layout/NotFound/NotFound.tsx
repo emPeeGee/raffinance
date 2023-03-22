@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Container, Paper, Text, Title } from '@mantine/core';
-import { ArrowBarLeft } from 'tabler-icons-react';
+import { IconArrowBarLeft } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
 
 export function NotFound() {
@@ -19,7 +19,7 @@ export function NotFound() {
           component={Link}
           variant="outline"
           my="md"
-          leftIcon={<ArrowBarLeft />}>
+          leftIcon={<IconArrowBarLeft />}>
           Back to main page
         </Button>
       </Paper>

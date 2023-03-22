@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Button, Container, LoadingOverlay, PasswordInput, TextInput, Title } from '@mantine/core';
-import { ArrowBackUp, Bolt, Lock, UserCircle } from 'tabler-icons-react';
+import { IconArrowBackUp, IconBolt, IconLock, IconUserCircle } from '@tabler/icons-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { AuthenticationResponse, CredentialsModel, UserContext } from 'features/authentication';
@@ -61,7 +61,7 @@ export function SignIn() {
           label="Username"
           placeholder="Enter your username"
           error={errors.username ? 'Username is required' : null}
-          icon={<UserCircle size={14} />}
+          icon={<IconUserCircle size={14} />}
         />
 
         <PasswordInput
@@ -72,7 +72,7 @@ export function SignIn() {
           placeholder="Enter your password"
           error={errors.password ? 'Password is required' : null}
           toggleTabIndex={0}
-          icon={<Lock size={16} />}
+          icon={<IconLock size={16} />}
         />
 
         <Container px={0} my="lg">
@@ -81,7 +81,7 @@ export function SignIn() {
             variant="light"
             color="primary"
             type="submit"
-            leftIcon={<Bolt size={24} />}>
+            leftIcon={<IconBolt size={24} />}>
             Sign in
           </Button>
           <Button<typeof Link>
@@ -91,7 +91,7 @@ export function SignIn() {
             variant="outline"
             color="gray"
             my="lg"
-            leftIcon={<ArrowBackUp size={24} />}>
+            leftIcon={<IconArrowBackUp size={24} />}>
             Go home
           </Button>
         </Container>
