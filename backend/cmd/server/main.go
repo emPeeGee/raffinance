@@ -13,10 +13,13 @@ import (
 	"github.com/emPeeGee/raffinance/internal/config"
 	"github.com/emPeeGee/raffinance/internal/connection"
 	"github.com/emPeeGee/raffinance/internal/contact"
+	"github.com/emPeeGee/raffinance/internal/cors"
 	"github.com/emPeeGee/raffinance/internal/entity"
 	"github.com/emPeeGee/raffinance/internal/seeder"
 	"github.com/emPeeGee/raffinance/internal/tag"
 	"github.com/emPeeGee/raffinance/internal/transaction"
+	"github.com/emPeeGee/raffinance/pkg/accesslog"
+	"github.com/emPeeGee/raffinance/pkg/errorutil"
 	"github.com/emPeeGee/raffinance/pkg/log"
 	"github.com/emPeeGee/raffinance/pkg/validatorutil"
 
@@ -97,7 +100,7 @@ func main() {
 // buildHandler sets up the HTTP routing and builds an HTTP handler.
 func buildHandler(db *gorm.DB, valid *validator.Validate, logger log.Logger) http.Handler {
 	router := gin.New()
-	// router.Use(accesslog.Handler(logger), flaw.Handler(logger), cors.Handler())
+	router.Use(accesslog.Handler(logger), errorutil.Handler(logger), cors.Handler())
 
 	authRg := router.Group("/auth")
 	apiRg := router.Group("/api", auth.HandleUserIdentity(logger))
