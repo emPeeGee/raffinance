@@ -31,15 +31,15 @@ export function SignIn() {
 
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const userContext = useContext(UserContext);
+  const { setToken, user } = useContext(UserContext);
 
   useEffect(() => {
-    if (userContext?.user) {
+    if (user) {
       navigate(`/profile/`, {
         replace: true
       });
     }
-  }, [userContext?.user]);
+  }, [user]);
 
   const signIn = (data: CredentialsModel) => {
     setIsLoading(true);
@@ -50,7 +50,7 @@ export function SignIn() {
         auth: true
       })
       .then((response) => {
-        userContext?.setToken(response.token);
+        setToken(response.token);
       })
       .catch((err) => {
         console.log(err);

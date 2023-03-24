@@ -12,16 +12,15 @@ import {
   Drawer,
   ScrollArea,
   rem,
-  Container,
-  Text
+  Container
 } from '@mantine/core';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { useDisclosure } from '@mantine/hooks';
 import { UserContext } from 'features/authentication/';
 import { Logo } from 'components';
 
-import { IconMoonStars, IconSun } from '@tabler/icons-react';
+import { IconMoonStars, IconSun, IconUser } from '@tabler/icons-react';
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -65,16 +64,21 @@ export function Header() {
 
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const [isDark, setIsDark] = useState(false);
-  const userContext = useContext(UserContext);
+  const { user, logout } = useContext(UserContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsDark(colorScheme === 'dark');
   }, [colorScheme]);
 
-  const logout = () => {
-    userContext?.setUser(null);
-    userContext?.setToken(null);
+  const logoutUser = () => {
+    logout();
+    navigate(`/`, {
+      replace: true
+    });
   };
+
+  console.log(user);
 
   return (
     <Box>
@@ -86,6 +90,7 @@ export function Header() {
             </div>
 
             <Group sx={{ height: '100%' }} spacing={0} className={classes.hiddenMobile}>
+              {/* TODO: Link to app section */}
               <Link to="/" className={classes.link}>
                 Home
               </Link>
@@ -107,12 +112,31 @@ export function Header() {
                 title="Toggle color scheme">
                 {isDark ? <IconSun size={18} /> : <IconMoonStars size={18} />}
               </ActionIcon>
-              <Button component={Link} to="/sign-in" variant="default">
-                Log in
-              </Button>
-              <Button component={Link} to="/sign-up" variant="default">
-                Sign up
-              </Button>
+
+              {user ? (
+                <>
+                  <Button
+                    component={Link}
+                    variant="default"
+                    to="profile"
+                    title="User profile"
+                    leftIcon={<IconUser />}>
+                    {user.username ?? 'Profile'}
+                  </Button>
+                  <Button variant="default" onClick={() => logoutUser()}>
+                    Log out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button component={Link} to="/sign-in" variant="default">
+                    Log in
+                  </Button>
+                  <Button component={Link} to="/sign-up" variant="default">
+                    Sign up
+                  </Button>
+                </>
+              )}
             </Group>
 
             <Burger

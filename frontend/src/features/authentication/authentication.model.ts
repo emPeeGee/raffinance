@@ -10,6 +10,9 @@ export interface AuthenticationResponse {
 export interface UserModel {
   name: string;
   username: string;
+  email: string;
+  phone: string;
+  latestLogins: [string];
   createdAt: string;
   updatedAt: string;
 }

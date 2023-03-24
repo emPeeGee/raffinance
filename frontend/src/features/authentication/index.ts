@@ -5,7 +5,7 @@ import {
   CredentialsModel,
   AuthenticationResponse
 } from 'features/authentication/authentication.model';
-import { UserContext, UserContextModel } from 'features/authentication/user.context';
+import { UserContext, UserContextModel, UserProvider } from 'features/authentication/user.context';
 
-export { Profile, SignIn, UserContext };
+export { Profile, SignIn, UserContext, UserProvider };
 export type { UserModel, CredentialsModel, AuthenticationResponse, UserContextModel };
