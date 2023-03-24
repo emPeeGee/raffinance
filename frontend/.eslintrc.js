@@ -14,7 +14,7 @@ module.exports = {
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: './frontend/tsconfig.json',
+    project: './tsconfig.json',
     ecmaFeatures: {
       jsx: true
     },
@@ -25,6 +25,7 @@ module.exports = {
   rules: {
     'import/prefer-default-export': 'off',
     'react/jsx-props-no-spreading': 'off',
+    'react/require-default-props': 'warn',
     'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': 'warn'
   }
