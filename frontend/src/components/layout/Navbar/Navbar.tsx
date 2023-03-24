@@ -17,9 +17,15 @@ import {
   IconUser,
   IconSettings,
   IconLogout,
-  IconSwitchHorizontal
+  IconSwitchHorizontal,
+  IconCategory2,
+  IconHash,
+  IconAddressBook,
+  IconExchange,
+  IconWallet,
+  IconRocket
 } from '@tabler/icons-react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { UserContext } from 'features/authentication';
 import { Logo } from '../..';
 
@@ -62,30 +68,45 @@ const useStyles = createStyles((theme) => ({
 interface NavbarLinkProps {
   icon: React.FC<any>;
   label: string;
+  route?: string;
   active?: boolean;
   onClick?(): void;
 }
 
 // TODO: not responsible at all
-export function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
+export function NavbarLink({ icon: Icon, route, label, active, onClick }: NavbarLinkProps) {
   const { classes, cx } = useStyles();
   return (
     <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
-      <UnstyledButton onClick={onClick} className={cx(classes.link, { [classes.active]: active })}>
-        <Icon size="1.2rem" stroke={1.5} />
-      </UnstyledButton>
+      {route ? (
+        <UnstyledButton
+          component={Link}
+          to={route}
+          onClick={onClick}
+          className={cx(classes.link, { [classes.active]: active })}>
+          <Icon size="1.2rem" stroke={1.5} />
+        </UnstyledButton>
+      ) : (
+        <UnstyledButton
+          onClick={onClick}
+          className={cx(classes.link, { [classes.active]: active })}>
+          <Icon size="1.2rem" stroke={1.5} />
+        </UnstyledButton>
+      )}
     </Tooltip>
   );
 }
 
-const mockdata = [
-  { icon: IconHome2, label: 'Home' },
-  { icon: IconGauge, label: 'Dashboard' },
-  { icon: IconDeviceDesktopAnalytics, label: 'Analytics' },
-  { icon: IconCalendarStats, label: 'Releases' },
-  { icon: IconUser, label: 'Account' },
-  { icon: IconFingerprint, label: 'Security' },
-  { icon: IconSettings, label: 'Settings' }
+const navbarLinks = [
+  // { icon: IconHome2, label: 'Home' },
+  { icon: IconGauge, label: 'Dashboard', route: '/' },
+  { icon: IconWallet, label: 'Accounts', route: '/' },
+  { icon: IconExchange, label: 'Transactions', route: '/' },
+  { icon: IconCategory2, label: 'Categories', route: '/' },
+  { icon: IconHash, label: 'Tags', route: '/' },
+  { icon: IconAddressBook, label: 'Contacts', route: '/' },
+  { icon: IconUser, label: 'User profile', route: '/profile' },
+  { icon: IconRocket, label: 'User profile', route: '/profile' }
 ];
 
 export function Navbar() {
@@ -94,7 +115,7 @@ export function Navbar() {
   const navigate = useNavigate();
   const { logout } = useContext(UserContext);
 
-  const links = mockdata.map((link, index) => (
+  const links = navbarLinks.map((link, index) => (
     <NavbarLink
       {...link}
       key={link.label}
@@ -122,13 +143,13 @@ export function Navbar() {
         <Logo onlyIcon color={theme.white} onClick={() => setActive(0)} />
       </Center>
       <MantineNavbar.Section grow mt={50}>
-        <Stack justify="center" spacing={0}>
+        <Stack justify="center" spacing={2}>
           {links}
         </Stack>
       </MantineNavbar.Section>
       <MantineNavbar.Section>
         <Stack justify="center" spacing={0}>
-          <NavbarLink icon={IconSwitchHorizontal} label="Change account" />
+          <NavbarLink icon={IconSettings} label="Settings" route="/settings" />
           <NavbarLink icon={IconLogout} label="Logout" onClick={logoutUser} />
         </Stack>
       </MantineNavbar.Section>
