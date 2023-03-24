@@ -9,16 +9,14 @@ import { Dashboard } from 'features/dashboard';
 const useStyles = createStyles(() => ({
   shell: {
     width: '100%',
-    minHeight: '100vh',
     padding: 0,
     margin: 0,
-    display: 'flex',
-    flexDirection: 'column',
 
     '& > *': {
       width: '100%'
     }
-  }
+  },
+  content: { minHeight: 'calc(100vh - 60px)', marginTop: 60 }
 }));
 
 export function AppShell() {
@@ -48,15 +46,19 @@ export function AppShell() {
           </Flex>
         </Flex>
       ) : (
-        <div style={{ minHeight: 'calc(100vh - 270px - 60px)' }}>
-          {/* Footer size 270 and header size 60                  */}
+        <div>
+          {/* header size 60                  */}
           <Header />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/sign-in" element={<SignIn />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <Footer />
+          <Flex direction="column" className={classes.content}>
+            <div style={{ flex: 1 }}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/sign-in" element={<SignIn />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </div>
+            <Footer />
+          </Flex>
         </div>
       )}
     </main>
