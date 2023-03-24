@@ -119,7 +119,7 @@ export function Navbar() {
         backgroundColor: th.fn.variant({ variant: 'filled', color: th.primaryColor }).background
       })}>
       <Center>
-        <Logo onlyIcon color={theme.white} />
+        <Logo onlyIcon color={theme.white} onClick={() => setActive(0)} />
       </Center>
       <MantineNavbar.Section grow mt={50}>
         <Stack justify="center" spacing={0}>

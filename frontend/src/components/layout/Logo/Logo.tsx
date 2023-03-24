@@ -3,6 +3,7 @@ import { Group, Text, createStyles, rem } from '@mantine/core';
 import { Link } from 'react-router-dom';
 
 import { ReactComponent as Rafflesia } from 'assets/rafflesia2.svg';
+import { noop } from 'utils';
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -27,13 +28,14 @@ const useStyles = createStyles((theme) => ({
 interface LogoProps {
   onlyIcon?: boolean;
   color?: string;
+  onClick?: () => void;
 }
 
-function Logo({ onlyIcon = false, color }: LogoProps) {
+function Logo({ onlyIcon = false, color, onClick = noop }: LogoProps) {
   const { classes, theme } = useStyles();
 
   return (
-    <Link to="/" className={classes.link}>
+    <Link to="/" className={classes.link} onClick={onClick}>
       <Group spacing={6}>
         <div style={{ width: '40px', height: '40px' }}>
           <Rafflesia
