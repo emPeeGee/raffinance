@@ -41,6 +41,7 @@ export function UserProvider({ children }: UserProviderProps): React.ReactElemen
   const logout = useCallback(() => {
     setUser(undefined);
     setToken(undefined);
+    setIsLogged(false);
     // setIsAppReady(true);
     console.log('logout');
   }, [setToken, setUser]);

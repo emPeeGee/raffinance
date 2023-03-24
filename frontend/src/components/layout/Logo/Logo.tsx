@@ -24,24 +24,36 @@ const useStyles = createStyles((theme) => ({
   }
 }));
 
-function Logo() {
+interface LogoProps {
+  onlyIcon?: boolean;
+  color?: string;
+}
+
+function Logo({ onlyIcon = false, color }: LogoProps) {
   const { classes, theme } = useStyles();
 
   return (
     <Link to="/" className={classes.link}>
       <Group spacing={6}>
         <div style={{ width: '40px', height: '40px' }}>
-          <Rafflesia fill={theme.colors.blue[6]} width="100%" height="100%" stroke="green" />
+          <Rafflesia
+            fill={color ?? theme.colors.blue[6]}
+            width="100%"
+            height="100%"
+            stroke="green"
+          />
         </div>
-        <Text
-          variant="gradient"
-          gradient={{ from: theme.colors.blue[9], to: 'cyan', deg: 45 }}
-          sx={{ fontFamily: 'Greycliff CF, sans-serif' }}
-          ta="center"
-          fz="xl"
-          fw={700}>
-          Raffinance
-        </Text>
+        {!onlyIcon && (
+          <Text
+            variant="gradient"
+            gradient={{ from: theme.colors.blue[9], to: 'cyan', deg: 45 }}
+            sx={{ fontFamily: 'Greycliff CF, sans-serif' }}
+            ta="center"
+            fz="xl"
+            fw={700}>
+            Raffinance
+          </Text>
+        )}
       </Group>
     </Link>
   );
