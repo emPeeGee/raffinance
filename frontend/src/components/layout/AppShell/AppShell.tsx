@@ -5,6 +5,7 @@ import { Route, Routes } from 'react-router-dom';
 import { Home } from 'features/home';
 import { Profile, SignIn, UserContext } from 'features/authentication';
 import { Dashboard } from 'features/dashboard';
+import { Accounts } from 'features/accounts';
 
 const useStyles = createStyles(() => ({
   shell: {
@@ -16,6 +17,8 @@ const useStyles = createStyles(() => ({
       width: '100%'
     }
   },
+
+  // header size 60
   content: { minHeight: 'calc(100vh - 60px)', marginTop: 60 }
 }));
 
@@ -34,20 +37,23 @@ export function AppShell() {
           <Navbar />
           <Flex direction="column" w="100%">
             <Header />
-            <div style={{ marginTop: 60 }}>
-              <Routes>
-                <Route element={<ProtectedRoute isAllowed={isLogged} />}>
-                  <Route path="/" element={<Dashboard />} />
-                  <Route path="/profile" element={<Profile />} />
-                </Route>
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </div>
+            <Flex direction="column" className={classes.content}>
+              <div style={{ flex: 1 }}>
+                <Routes>
+                  <Route element={<ProtectedRoute isAllowed={isLogged} />}>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/" element={<Accounts />} />
+                    <Route path="/profile" element={<Profile />} />
+                  </Route>
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </div>
+              <Footer />
+            </Flex>
           </Flex>
         </Flex>
       ) : (
         <div>
-          {/* header size 60                  */}
           <Header />
           <Flex direction="column" className={classes.content}>
             <div style={{ flex: 1 }}>
