@@ -4,7 +4,6 @@ import {
   createStyles,
   Header as MantineHeader,
   Group,
-  ActionIcon,
   Button,
   Divider,
   Box,
@@ -12,17 +11,25 @@ import {
   Drawer,
   ScrollArea,
   rem,
-  Container
+  Container,
+  Anchor
 } from '@mantine/core';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { useDisclosure } from '@mantine/hooks';
 import { UserContext } from 'features/authentication/';
-import { Logo } from 'components';
-
-import { IconMoonStars, IconSun, IconUser } from '@tabler/icons-react';
+import { Logo, ToggleColor } from 'components';
 
 const useStyles = createStyles((theme) => ({
+  header: {
+    position: 'fixed',
+    width: '100%',
+    height: '60px',
+    left: '50%',
+    top: '0%',
+    marginLeft: '-50%',
+    zIndex: 100
+  },
   link: {
     display: 'block',
     lineHeight: 1,
@@ -64,176 +71,98 @@ export function Header() {
 
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const [isDark, setIsDark] = useState(false);
-  const { user, logout } = useContext(UserContext);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    setIsDark(colorScheme === 'dark');
-  }, [colorScheme]);
-
-  const logoutUser = () => {
-    logout();
-    navigate(`/`, {
-      replace: true
-    });
-  };
+  const { isLogged, user } = useContext(UserContext);
 
   console.log(user);
 
   return (
     <Box>
-      <MantineHeader height={60} px="md">
-        <Container sx={{ height: 60 }}>
-          <Group align="center" position="apart" sx={{ height: '100%', width: '100%' }}>
-            <div>
-              <Logo />
-            </div>
-
-            <Group sx={{ height: '100%' }} spacing={0} className={classes.hiddenMobile}>
-              {/* TODO: Link to app section */}
-              <Link to="/" className={classes.link}>
-                Home
-              </Link>
-              <Link to="/" className={classes.link}>
-                Learn
-              </Link>
-              <Link to="/" className={classes.link}>
-                Academy
-              </Link>
-            </Group>
-
-            <Group className={classes.hiddenMobile}>
-              <ActionIcon
-                variant="outline"
-                color={isDark ? 'yellow' : 'blue'}
-                onClick={() => {
-                  toggleColorScheme();
-                }}
-                title="Toggle color scheme">
-                {isDark ? <IconSun size={18} /> : <IconMoonStars size={18} />}
-              </ActionIcon>
-
-              {user ? (
-                <>
-                  <Button
-                    component={Link}
-                    variant="default"
-                    to="profile"
-                    title="User profile"
-                    leftIcon={<IconUser />}>
-                    {user.username ?? 'Profile'}
-                  </Button>
-                  <Button variant="default" onClick={() => logoutUser()}>
-                    Log out
-                  </Button>
-                </>
+      <div className={classes.header}>
+        <MantineHeader height={60} px="md">
+          <Container sx={{ height: 60 }}>
+            <Group align="center" position="apart" sx={{ height: '100%', width: '100%' }}>
+              {isLogged ? (
+                <div />
               ) : (
-                <>
-                  <Button component={Link} to="/sign-in" variant="default">
-                    Log in
-                  </Button>
-                  <Button component={Link} to="/sign-up" variant="default">
-                    Sign up
-                  </Button>
-                </>
+                <div>
+                  <Logo />
+                </div>
               )}
+
+              {!isLogged && (
+                <Group sx={{ height: '100%' }} spacing={0} className={classes.hiddenMobile}>
+                  {/* TODO: Link to app section */}
+                  <Link to="/" className={classes.link}>
+                    Home
+                  </Link>
+                  <Link to="/" className={classes.link}>
+                    Learn
+                  </Link>
+                  <Link to="/" className={classes.link}>
+                    Academy
+                  </Link>
+                </Group>
+              )}
+
+              <Group className={classes.hiddenMobile}>
+                <ToggleColor />
+
+                {user ? (
+                  <Button component={Link} variant="default" to="profile" title="User profile">
+                    {user.username}
+                  </Button>
+                ) : (
+                  <>
+                    <Button component={Link} to="/sign-in" variant="default">
+                      Log in
+                    </Button>
+                    <Button component={Link} to="/sign-up" variant="default">
+                      Sign up
+                    </Button>
+                  </>
+                )}
+              </Group>
+
+              <Burger
+                opened={drawerOpened}
+                onClick={toggleDrawer}
+                className={classes.hiddenDesktop}
+              />
             </Group>
+          </Container>
+        </MantineHeader>
 
-            <Burger
-              opened={drawerOpened}
-              onClick={toggleDrawer}
-              className={classes.hiddenDesktop}
-            />
-          </Group>
-        </Container>
-      </MantineHeader>
+        <Drawer
+          opened={drawerOpened}
+          onClose={closeDrawer}
+          size="100%"
+          padding="md"
+          title="Navigation"
+          className={classes.hiddenDesktop}
+          zIndex={1000000}>
+          <ScrollArea h={`calc(100vh - ${rem(60)})`} mx="-md">
+            <Divider my="sm" color={theme.colorScheme === 'dark' ? 'dark.5' : 'gray.1'} />
 
-      <Drawer
-        opened={drawerOpened}
-        onClose={closeDrawer}
-        size="100%"
-        padding="md"
-        title="Navigation"
-        className={classes.hiddenDesktop}
-        zIndex={1000000}>
-        <ScrollArea h={`calc(100vh - ${rem(60)})`} mx="-md">
-          <Divider my="sm" color={theme.colorScheme === 'dark' ? 'dark.5' : 'gray.1'} />
+            <a href="todo" className={classes.link}>
+              Home
+            </a>
+            <a href="todo" className={classes.link}>
+              Learn
+            </a>
+            <a href="todo" className={classes.link}>
+              Academy
+            </a>
 
-          <a href="todo" className={classes.link}>
-            Home
-          </a>
-          <a href="todo" className={classes.link}>
-            Learn
-          </a>
-          <a href="todo" className={classes.link}>
-            Academy
-          </a>
+            <Divider my="sm" color={theme.colorScheme === 'dark' ? 'dark.5' : 'gray.1'} />
 
-          <Divider my="sm" color={theme.colorScheme === 'dark' ? 'dark.5' : 'gray.1'} />
-
-          <Group position="center" grow pb="xl" px="md">
-            <ActionIcon
-              variant="outline"
-              color={isDark ? 'yellow' : 'blue'}
-              onClick={() => toggleColorScheme()}
-              title="Toggle color scheme">
-              {isDark ? <IconSun size={18} /> : <IconMoonStars size={18} />}
-            </ActionIcon>
-            <Button variant="default">Log in</Button>
-            <Button>Sign up</Button>
-          </Group>
-        </ScrollArea>
-      </Drawer>
+            <Group position="center" grow pb="xl" px="md">
+              <ToggleColor />
+              <Button variant="default">Log in</Button>
+              <Button>Sign up</Button>
+            </Group>
+          </ScrollArea>
+        </Drawer>
+      </div>
     </Box>
   );
-
-  // return (
-  //   <Wrapper>
-  //     <Items>
-  //       <IconGroup to="/" tabIndex={0}>
-  //         <Icon src={logo} alt="Application logo" />
-  //         <Text weight={700} color={isDark ? 'white' : 'black'}>
-  //           Toss That Thought
-  //         </Text>
-  //       </IconGroup>
-  //       <ItemsRight>
-  //         <UnorderedList>
-  //           <ListItem>
-  //             <ActionIcon
-  //               variant="outline"
-  //               color={isDark ? 'yellow' : 'blue'}
-  //               onClick={() => toggleColorScheme()}
-  //               title="Toggle color scheme">
-  //               {isDark ? <Sun size={18} /> : <MoonStars size={18} />}
-  //             </ActionIcon>
-  //           </ListItem>
-
-  //           {userContext?.user ? (
-  //             <>
-  //               <ListItem>
-  //                 <Anchor to="profile" title={userContext?.user?.username ?? 'Profile'} />
-  //               </ListItem>
-  //               <ListItem>
-  //                 <Anchor to="profile/recent" title="Recent thoughts" />
-  //               </ListItem>
-  //               <ListItem onClick={() => logout()}>
-  //                 <Anchor to="/" title="Log out" />
-  //               </ListItem>
-  //             </>
-  //           ) : (
-  //             <>
-  //               <ListItem>
-  //                 <Anchor to="sign-in" title="Sign In" />
-  //               </ListItem>
-
-  //               <ListItem>
-  //                 <Anchor to="sign-up" title="Sign Up" />
-  //               </ListItem>
-  //             </>
-  //           )}
-  //         </UnorderedList>
-  //       </ItemsRight>
-  //     </Items>
-  //   </Wrapper>
-  // );
 }
