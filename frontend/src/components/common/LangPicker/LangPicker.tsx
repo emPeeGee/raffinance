@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+
 import { createStyles, UnstyledButton, Menu, Image, Group, rem } from '@mantine/core';
 import { IconChevronDown } from '@tabler/icons-react';
+
 import { useI18nStore } from 'store';
 import { languages } from 'utils';
 

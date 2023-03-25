@@ -1,12 +1,14 @@
 import React, { useContext } from 'react';
+
 import { Flex, LoadingOverlay, createStyles } from '@mantine/core';
-import { Footer, Header, Navbar, NotFound, ProtectedRoute } from 'components';
 import { Route, Routes } from 'react-router-dom';
-import { Landing } from 'features/home';
-import { Profile, SignIn, UserContext } from 'features/authentication';
-import { Dashboard } from 'features/dashboard';
+
+import { Footer, Header, Navbar, NotFound, ProtectedRoute } from 'components';
 import { Accounts } from 'features/accounts';
 import { AccountCreate } from 'features/accounts/CreateAccount/CreateAccount';
+import { Profile, SignIn, UserContext } from 'features/authentication';
+import { Dashboard } from 'features/dashboard';
+import { Landing } from 'features/home';
 
 const useStyles = createStyles(() => ({
   shell: {

@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+
 import {
   Navbar as MantineNavbar,
   Center,
@@ -21,7 +22,9 @@ import {
   IconRocket
 } from '@tabler/icons-react';
 import { Link, useNavigate } from 'react-router-dom';
+
 import { UserContext } from 'features/authentication';
+
 import Logo from '../Logo/Logo';
 
 // TODO: idk circular dep

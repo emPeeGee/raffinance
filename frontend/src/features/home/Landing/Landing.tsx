@@ -1,5 +1,7 @@
 import React from 'react';
+
 import { Container, createStyles } from '@mantine/core';
+
 import { Features, Home, UseCases } from '..';
 
 const useStyles = createStyles((theme) => ({

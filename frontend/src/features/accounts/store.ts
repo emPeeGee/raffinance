@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 import { api } from 'services/http';
+
 import { AccountModel, CreateAccountDTO, ViewMode } from './accounts.model';
 
 type AccountsStore = {

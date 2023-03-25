@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+
 import {
   Text,
   Anchor,
@@ -12,13 +13,14 @@ import {
   Group,
   Loader
 } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
 import { IconArrowBackUp, IconBolt, IconLock, IconUserCircle } from '@tabler/icons-react';
-import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router-dom';
+
 import { AuthenticationResponse, CredentialsModel, UserContext } from 'features/authentication';
 import { api } from 'services/http';
 import { DateUnit } from 'utils';
-import { showNotification } from '@mantine/notifications';
 
 export function SignIn() {
   const {

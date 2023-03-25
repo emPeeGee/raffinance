@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   createStyles,
   Image,
@@ -9,8 +10,9 @@ import {
   SimpleGrid,
   rem
 } from '@mantine/core';
-import image from 'assets/404.svg';
 import { Link } from 'react-router-dom';
+
+import image from 'assets/404.svg';
 
 const useStyles = createStyles((theme) => ({
   root: {

@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
+
 import { Button, Container, Group, Title, createStyles, rem, Blockquote } from '@mantine/core';
-import { useIntl } from 'react-intl';
 import { IconHeartPlus, IconInfoCircle } from '@tabler/icons-react';
+import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
-import { NoAccounts } from '../NoAccounts/NoAccounts';
+
+import { AccountsList, AccountViewSwitcher, NoAccounts } from 'features/accounts';
+
 import { useAccountStore } from '../store';
-import { AccountViewSwitcher } from '../AccountViewSwitcher/AccountViewSwitcher';
-import { AccountsList } from '../AccountsList/AccountList';
 
 // TODO: Breadcrumbs ???
 

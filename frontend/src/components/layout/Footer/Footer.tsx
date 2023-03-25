@@ -1,6 +1,8 @@
 import React from 'react';
-import { Text, createStyles, Anchor, ActionIcon, Container, Group, rem, Flex } from '@mantine/core';
+
+import { Text, createStyles, ActionIcon, Container, Group, rem, Flex } from '@mantine/core';
 import { IconBrandTwitter, IconBrandYoutube, IconBrandInstagram } from '@tabler/icons-react';
+
 import Logo from '../Logo/Logo';
 
 const useStyles = createStyles((theme) => ({

@@ -1,6 +1,6 @@
-import uk from 'assets/flags/uk.svg';
 import ro from 'assets/flags/ro.svg';
 import ru from 'assets/flags/ru.svg';
+import uk from 'assets/flags/uk.svg';
 
 export type SupportedLanguages = 'ro' | 'en' | 'ru';
 

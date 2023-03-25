@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   Table,
   Text,
@@ -11,9 +12,10 @@ import {
   SimpleGrid,
   UnstyledButton
 } from '@mantine/core';
+import { IconArrowUpRight, IconRocket } from '@tabler/icons-react';
 import { FormattedDate, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
-import { IconArrowUpRight, IconRocket } from '@tabler/icons-react';
+
 import { getContrastColor } from 'utils';
 
 import { useAccountStore } from '../store';

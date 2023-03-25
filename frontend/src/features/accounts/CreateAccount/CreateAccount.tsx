@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import {
   TextInput,
   Select,
@@ -13,7 +14,7 @@ import {
   Group,
   Loader
 } from '@mantine/core';
-import { useIntl } from 'react-intl';
+import { showNotification } from '@mantine/notifications';
 import {
   IconArrowBackUp,
   IconBolt,
@@ -21,10 +22,12 @@ import {
   IconMoneybag,
   IconSignature
 } from '@tabler/icons-react';
-import { Link, useNavigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
-import { showNotification } from '@mantine/notifications';
+import { useIntl } from 'react-intl';
+import { Link, useNavigate } from 'react-router-dom';
+
 import { CURRENCY_LIST, DateUnit, SWATCHES, noop } from 'utils';
+
 import { CreateAccountDTO } from '../accounts.model';
 import { useAccountStore } from '../store';
 

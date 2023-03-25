@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { useMantineColorScheme, Group, Switch, useMantineTheme } from '@mantine/core';
 import { IconMoonStars, IconSun } from '@tabler/icons-react';
 

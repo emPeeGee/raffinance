@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter } from 'react-router-dom';
+
 import {
   ColorScheme,
   ColorSchemeProvider,
@@ -8,12 +8,14 @@ import {
 } from '@mantine/core';
 import { Notifications, showNotification } from '@mantine/notifications';
 import { IntlProvider } from 'react-intl';
+import { BrowserRouter } from 'react-router-dom';
+
 import { AppShell, Offline } from 'components';
 import { UserProvider } from 'features/authentication';
 import { useLocalStorage, useNetworkStatus } from 'hooks';
-import { COLOR_SCHEME_STORAGE_KEY, Theme, DateUnit } from 'utils';
 import messages from 'i18n';
 import { useI18nStore } from 'store';
+import { COLOR_SCHEME_STORAGE_KEY, Theme, DateUnit } from 'utils';
 
 // '*': {
 //   box-sizing: border-box,

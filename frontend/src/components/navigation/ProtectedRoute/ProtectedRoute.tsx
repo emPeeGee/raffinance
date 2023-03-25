@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+
 import { Navigate, Outlet } from 'react-router-dom';
 
 interface ProtectedRouteProps {

@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+
 import {
   Code,
   Container,
@@ -13,8 +14,10 @@ import {
   Paper
 } from '@mantine/core';
 import { IconAt, IconCalendarBolt, IconEdit, IconPhoneCall } from '@tabler/icons-react';
-import { UserContext } from 'features/authentication/user.context';
+
 import avatar from 'assets/logo.png';
+import { UserContext } from 'features/authentication/user.context';
+
 import { UserModel } from '../authentication.model';
 
 const useStyles = createStyles((theme) => ({

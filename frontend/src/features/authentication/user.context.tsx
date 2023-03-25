@@ -1,10 +1,11 @@
 import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+
+import { useNavigate } from 'react-router-dom';
+
 import { UserModel } from 'features/authentication/authentication.model';
 import { useLocalStorage } from 'hooks';
-import { TOKEN_STORAGE_KEY } from 'utils';
 import { api } from 'services/http';
-import { Navigate, useNavigate } from 'react-router-dom';
-import { LoadingOverlay } from '@mantine/core';
+import { TOKEN_STORAGE_KEY } from 'utils';
 
 export interface UserContextModel {
   isAppReady: boolean;

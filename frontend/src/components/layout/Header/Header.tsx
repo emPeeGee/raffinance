@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+
 import {
   createStyles,
   Header as MantineHeader,
@@ -12,11 +13,12 @@ import {
   rem,
   Container
 } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { Link } from 'react-router-dom';
 
-import { useDisclosure } from '@mantine/hooks';
-import { UserContext } from 'features/authentication/';
 import { ToggleColor, LanguagePicker } from 'components';
+import { UserContext } from 'features/authentication/';
+
 import Logo from '../Logo/Logo';
 
 const useStyles = createStyles((theme) => ({
