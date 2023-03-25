@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Button, Container, Group, Title, createStyles, rem, Blockquote } from '@mantine/core';
 import { useIntl } from 'react-intl';
 import { IconHeartPlus, IconInfoCircle } from '@tabler/icons-react';
+import { Link } from 'react-router-dom';
 import { NoAccounts } from '../NoAccounts/NoAccounts';
 import { useAccountStore } from '../store';
 import { AccountViewSwitcher } from '../AccountViewSwitcher/AccountViewSwitcher';
@@ -59,15 +60,11 @@ export function Accounts() {
     getAccounts();
   }, []);
 
-  const createAccount = () => {
-    console.log('Create');
-  };
-
   return (
     <Container className={classes.root}>
       <Group position="apart" py="sm">
         <Title className={classes.title}>{formatMessage({ id: 'accounts' })}</Title>
-        <Button variant="light" leftIcon={<IconHeartPlus />} onClick={createAccount}>
+        <Button component={Link} to="/accounts/create" variant="light" leftIcon={<IconHeartPlus />}>
           {formatMessage({ id: 'account-create' })}
         </Button>
       </Group>
@@ -82,7 +79,7 @@ export function Accounts() {
         <AccountViewSwitcher />
       </Group>
 
-      {accounts.length > 0 ? <AccountsList /> : <NoAccounts onCreateAccount={createAccount} />}
+      {accounts.length > 0 ? <AccountsList /> : <NoAccounts />}
     </Container>
   );
 }

@@ -9,3 +9,10 @@ export interface AccountModel {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface CreateAccountDTO {
+  name: string;
+  currency: string;
+  balance: number;
+  color: string;
+}

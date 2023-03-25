@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 import { api } from 'services/http';
-import { AccountModel, ViewMode } from './accounts.model';
+import { AccountModel, CreateAccountDTO, ViewMode } from './accounts.model';
 
 type AccountsStore = {
   viewMode: ViewMode;
@@ -10,7 +10,7 @@ type AccountsStore = {
   accounts: AccountModel[];
   fetchAccounts: () => void;
   getAccounts: () => void;
-  // addAccount: (account: AccountModel) => void;
+  addAccount: (account: CreateAccountDTO) => Promise<boolean>;
   // removeAccount: (id: string) => void;
 };
 
@@ -36,14 +36,25 @@ export const useAccountStore = create<AccountsStore>()(
         const accounts = await api.get<AccountModel[]>({ url: 'accounts', token: tok });
         console.log(accounts);
         set({ accounts });
+      },
+
+      addAccount: async (account: CreateAccountDTO): Promise<boolean> => {
+        const { accounts } = get();
+
+        try {
+          const response = await api.post<CreateAccountDTO, AccountModel>({
+            url: 'accounts',
+            body: account,
+            token: tok
+          });
+          console.log(response);
+          set({ ...get(), accounts: [...accounts, response] });
+          return true;
+        } catch (reason) {
+          console.log(reason);
+          return false;
+        }
       }
-
-      // addAccount: (account: AccountModel) =>
-      //   set((state) => ({ accounts: [...state.accounts, account] }))
-      // removeAccount: (id: string) =>
-      //   set((state) => ({ accounts: state.accounts.filter((a) => a.id !== id) }))
-
-      // setLocale: (locale) => set((prev) => ({ locale }), false, 'setLocaale')
     }),
     {
       store: accountStore

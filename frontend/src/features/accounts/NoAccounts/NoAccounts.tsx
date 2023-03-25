@@ -18,10 +18,9 @@ import {
   IconPlus
 } from '@tabler/icons-react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
 
-interface NoAccountsProps {
-  onCreateAccount: () => void;
-}
+interface NoAccountsProps {}
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -46,7 +45,7 @@ const useStyles = createStyles((theme) => ({
   }
 }));
 
-export function NoAccounts({ onCreateAccount }: NoAccountsProps) {
+export function NoAccounts(props: NoAccountsProps) {
   const { classes, theme } = useStyles();
   const { formatMessage } = useIntl();
 
@@ -80,9 +79,10 @@ export function NoAccounts({ onCreateAccount }: NoAccountsProps) {
       </Center>
 
       <Button
+        component={Link}
+        to="/accounts/create"
         variant="outline"
         color="blue"
-        onClick={onCreateAccount}
         style={{ marginTop: theme.spacing.lg }}
         leftIcon={<IconPlus />}>
         {formatMessage({ id: 'account-create' })}

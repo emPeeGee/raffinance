@@ -6,6 +6,7 @@ import { Home } from 'features/home';
 import { Profile, SignIn, UserContext } from 'features/authentication';
 import { Dashboard } from 'features/dashboard';
 import { Accounts } from 'features/accounts';
+import { AccountCreate } from 'features/accounts/CreateAccount/CreateAccount';
 
 const useStyles = createStyles(() => ({
   shell: {
@@ -43,6 +44,7 @@ export function AppShell() {
                   <Route element={<ProtectedRoute isAllowed={isLogged} />}>
                     <Route path="/" element={<Dashboard />} />
                     <Route path="/accounts" element={<Accounts />} />
+                    <Route path="/accounts/create" element={<AccountCreate />} />
                     <Route path="/profile" element={<Profile />} />
                   </Route>
                   <Route path="*" element={<NotFound />} />

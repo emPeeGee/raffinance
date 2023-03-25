@@ -7,3 +7,5 @@ export * from './constants/storage-keys';
 export * from './constants/languages';
 export * from './noop';
 export * from './contrast-color';
+export * from './constants/currencies';
+export * from './constants/swatches';

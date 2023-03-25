@@ -10,11 +10,16 @@
   "co-color": "Color",
   "co-las-up": "Last update",
   "co-exp-csv": "Export to CSV",
+  "co-no-opts": "No options",
+  "co-step": "From 0 to Infinity",
+  "co-create": "Create",
+  "co-back": "Back",
 
   "accounts": "Accounts",
   "account-create": "Create account",
   "accounts-info": "Accounts represent a user's financial entity, such as a bank account, credit card, or investment account. You can add, edit, and delete accounts in the app to track their balances and transactions.",
-
+  "acc-f-title": "Delivery creation failed",
+  "acc-f-desc": "There was an error creating the delivery. Please try again later. If the problem persists, please contact customer support.",
   "no-acc-found": "No accounts found",
   "no-acc-yet": "You haven't added any accounts yet. To get started: ",
   "no-acc-1": "Click the \"Create an account\" button below.",
