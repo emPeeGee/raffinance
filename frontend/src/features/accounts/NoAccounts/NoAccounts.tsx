@@ -17,6 +17,7 @@ import {
   IconPigMoney,
   IconPlus
 } from '@tabler/icons-react';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 interface NoAccountsProps {
   onCreateAccount: () => void;
@@ -47,16 +48,17 @@ const useStyles = createStyles((theme) => ({
 
 export function NoAccounts({ onCreateAccount }: NoAccountsProps) {
   const { classes, theme } = useStyles();
+  const { formatMessage } = useIntl();
 
   return (
     <Card withBorder p="2rem" my="2rem" className={classes.root}>
       <IconPigMoney size="5rem" className={classes.icon} />
 
       <Title order={2} mb="1rem" weight={700}>
-        No accounts found
+        {formatMessage({ id: 'no-acc-found' })}
       </Title>
       <Text pb="sm" c="dimmed">
-        You haven&apos;t added any accounts yet. To get started:
+        {formatMessage({ id: 'no-acc-yet' })}
       </Text>
       <Center>
         <List
@@ -70,14 +72,10 @@ export function NoAccounts({ onCreateAccount }: NoAccountsProps) {
               <IconPaw size="1.25rem" />
             </ThemeIcon>
           }>
-          <List.Item>Click the &quot;Create an account&quot; button below.</List.Item>
-          <List.Item>
-            Choose the type of account you want to add (e.g. checking, savings, credit card).
-          </List.Item>
-          <List.Item>
-            Enter the account details, including the name, currency, and initial balance.
-          </List.Item>
-          <List.Item>Click &quot;Save&quot; to create the account.</List.Item>
+          <List.Item>{formatMessage({ id: 'no-acc-1' })}</List.Item>
+          <List.Item>{formatMessage({ id: 'no-acc-2' })}</List.Item>
+          <List.Item>{formatMessage({ id: 'no-acc-3' })}</List.Item>
+          <List.Item>{formatMessage({ id: 'no-acc-4' })}</List.Item>
         </List>
       </Center>
 
@@ -87,7 +85,7 @@ export function NoAccounts({ onCreateAccount }: NoAccountsProps) {
         onClick={onCreateAccount}
         style={{ marginTop: theme.spacing.lg }}
         leftIcon={<IconPlus />}>
-        Create an account
+        {formatMessage({ id: 'account-create' })}
       </Button>
     </Card>
   );

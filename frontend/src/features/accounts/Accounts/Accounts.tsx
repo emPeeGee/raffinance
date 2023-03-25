@@ -68,19 +68,16 @@ export function Accounts() {
   return (
     <Container className={classes.root}>
       <Group position="apart" py="sm">
-        <Title className={classes.title}>Accounts</Title>
+        <Title className={classes.title}>{formatMessage({ id: 'accounts' })}</Title>
         <Button variant="light" leftIcon={<IconHeartPlus />} onClick={createAccount}>
-          Create account
+          {formatMessage({ id: 'account-create' })}
         </Button>
       </Group>
-      <Text>{formatMessage({ id: 'test' })}</Text>
       <Blockquote
         fz={rem('1rem')}
         c="dimmed"
         icon={<IconInfoCircle size="2rem" className={classes.icon} />}>
-        Accounts represent a user&apos;s financial entity, such as a bank account, credit card, or
-        investment account. You can add, edit, and delete accounts in the app to track their
-        balances and transactions.
+        {formatMessage({ id: 'accounts-info' })}
       </Blockquote>
       <NoAccounts onCreateAccount={createAccount} />
       <SimpleGrid spacing={80} cols={2} breakpoints={[{ maxWidth: 'sm', cols: 1, spacing: 40 }]}>

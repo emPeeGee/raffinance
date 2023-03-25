@@ -106,7 +106,7 @@ const navbarLinks = [
   { icon: IconHash, label: 'Tags', route: '/' },
   { icon: IconAddressBook, label: 'Contacts', route: '/' },
   { icon: IconUser, label: 'User profile', route: '/profile' },
-  { icon: IconRocket, label: 'User profile', route: '/profile' }
+  { icon: IconRocket, label: 'Rocket', route: '/profile' }
 ];
 
 // TODO: string based highlight, not index, for example read from route and match

@@ -1,3 +1,13 @@
 {
-  "test": "eng test"
+  "test": "eng test",
+  "accounts": "Accounts",
+  "account-create": "Create account",
+  "accounts-info": "Accounts represent a user's financial entity, such as a bank account, credit card, or investment account. You can add, edit, and delete accounts in the app to track their balances and transactions.",
+
+  "no-acc-found": "No accounts found",
+  "no-acc-yet": "You haven't added any accounts yet. To get started: ",
+  "no-acc-1": "Click the \"Create an account\" button below.",
+  "no-acc-2": "Choose the type of account you want to add (e.g. checking, savings, credit card).  ",
+  "no-acc-3": "Enter the account details, including the name, currency, and initial balance.  ",
+  "no-acc-4": "Click \"Save\" to create the account."
 }
