@@ -19,6 +19,7 @@ import { Link } from 'react-router-dom';
 import { useDisclosure } from '@mantine/hooks';
 import { UserContext } from 'features/authentication/';
 import { Logo, ToggleColor } from 'components';
+import { LanguagePicker } from 'components/common/LangPicker/LangPicker';
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -89,6 +90,7 @@ export function Header() {
                 </div>
               )}
 
+              <LanguagePicker />
               {!isLogged && (
                 <Group sx={{ height: '100%' }} spacing={0} className={classes.hiddenMobile}>
                   {/* TODO: Link to app section */}

@@ -11,6 +11,7 @@ import {
   Blockquote
 } from '@mantine/core';
 import { Link } from 'react-router-dom';
+import { useIntl } from 'react-intl';
 import { IconHeartPlus, IconInfoCircle } from '@tabler/icons-react';
 import { NoAccounts } from '../NoAccounts/NoAccounts';
 
@@ -57,6 +58,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export function Accounts() {
+  const { formatMessage } = useIntl();
   const { classes } = useStyles();
 
   const createAccount = () => {
@@ -71,6 +73,7 @@ export function Accounts() {
           Create account
         </Button>
       </Group>
+      <Text>{formatMessage({ id: 'test' })}</Text>
       <Blockquote
         fz={rem('1rem')}
         c="dimmed"

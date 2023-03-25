@@ -6,12 +6,15 @@ import {
   MantineProvider,
   MantineThemeOverride
 } from '@mantine/core';
-import { GlobalStyles } from 'assets/styles/globalStyles';
 import { Notifications, showNotification } from '@mantine/notifications';
+import { IntlProvider } from 'react-intl';
+import { GlobalStyles } from 'assets/styles/globalStyles';
 import { AppShell, Offline } from 'components';
 import { UserProvider } from 'features/authentication';
 import { useLocalStorage, useNetworkStatus } from 'hooks';
 import { COLOR_SCHEME_STORAGE_KEY, Theme, DateUnit } from 'utils';
+import messages from 'i18n';
+import { useI18nStore } from 'store';
 
 const customTheme = (colorScheme: 'light' | 'dark'): MantineThemeOverride => ({
   colorScheme,
@@ -48,6 +51,8 @@ function App() {
     setColorScheme(value || (colorScheme === Theme.Light ? Theme.Dark : Theme.Light));
   };
 
+  const { locale } = useI18nStore();
+
   useEffect(() => {
     showNotification({
       title: isOnline ? 'You are online' : 'Oops. No internet connection.',
@@ -66,13 +71,16 @@ function App() {
         <BrowserRouter>
           <GlobalStyles />
 
-          {!isOnline ? (
-            <Offline />
-          ) : (
-            <UserProvider>
-              <AppShell />
-            </UserProvider>
-          )}
+          {/* // TODO: Per feature locale string? */}
+          <IntlProvider messages={messages[locale.value]} locale={locale.value}>
+            {!isOnline ? (
+              <Offline />
+            ) : (
+              <UserProvider>
+                <AppShell />
+              </UserProvider>
+            )}
+          </IntlProvider>
         </BrowserRouter>
       </MantineProvider>
     </ColorSchemeProvider>
