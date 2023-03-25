@@ -3,7 +3,6 @@ import React from 'react';
 import { createStyles, Container, Text, Button, Group, rem } from '@mantine/core';
 import { IconBrandGithub } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
-import { Features, UseCases } from '..';
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -112,8 +111,6 @@ export function Home() {
           </Button>
         </Group>
       </Container>
-      <Features />
-      <UseCases />
     </div>
   );
 }

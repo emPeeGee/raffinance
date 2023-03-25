@@ -40,7 +40,7 @@ const useStyles = createStyles((theme, { opened }: { opened: boolean }) => ({
   }
 }));
 
-export function LanguagePicker() {
+function LanguagePicker() {
   const { locale, setLocale } = useI18nStore();
   const [opened, setOpened] = useState(false);
   const { classes } = useStyles({ opened });
@@ -78,3 +78,5 @@ export function LanguagePicker() {
     </Menu>
   );
 }
+
+export default LanguagePicker;

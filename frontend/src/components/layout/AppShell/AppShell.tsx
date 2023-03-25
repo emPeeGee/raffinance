@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Flex, LoadingOverlay, createStyles } from '@mantine/core';
 import { Footer, Header, Navbar, NotFound, ProtectedRoute } from 'components';
 import { Route, Routes } from 'react-router-dom';
-import { Home } from 'features/home';
+import { Landing } from 'features/home';
 import { Profile, SignIn, UserContext } from 'features/authentication';
 import { Dashboard } from 'features/dashboard';
 import { Accounts } from 'features/accounts';
@@ -60,7 +60,7 @@ export function AppShell() {
           <Flex direction="column" className={classes.content}>
             <div style={{ flex: 1 }}>
               <Routes>
-                <Route path="/" element={<Home />} />
+                <Route path="/" element={<Landing />} />
                 <Route path="/sign-in" element={<SignIn />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>

@@ -8,7 +8,6 @@ import {
 } from '@mantine/core';
 import { Notifications, showNotification } from '@mantine/notifications';
 import { IntlProvider } from 'react-intl';
-import { GlobalStyles } from 'assets/styles/globalStyles';
 import { AppShell, Offline } from 'components';
 import { UserProvider } from 'features/authentication';
 import { useLocalStorage, useNetworkStatus } from 'hooks';
@@ -16,6 +15,15 @@ import { COLOR_SCHEME_STORAGE_KEY, Theme, DateUnit } from 'utils';
 import messages from 'i18n';
 import { useI18nStore } from 'store';
 
+// '*': {
+//   box-sizing: border-box,
+// },
+
+// 'body': {
+//   margin: 0,
+//   padding: 0,
+//   fontFamily: 'Open Sans sans-serif',
+// }
 const customTheme = (colorScheme: 'light' | 'dark'): MantineThemeOverride => ({
   colorScheme,
   fontFamily: 'Open Sans, sans serif',
@@ -69,8 +77,6 @@ function App() {
       <MantineProvider withGlobalStyles withNormalizeCSS theme={customTheme(colorScheme)}>
         <Notifications />
         <BrowserRouter>
-          <GlobalStyles />
-
           {/* // TODO: Per feature locale string? */}
           <IntlProvider messages={messages[locale.value]} locale={locale.value}>
             {!isOnline ? (

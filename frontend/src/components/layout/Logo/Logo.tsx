@@ -61,4 +61,4 @@ function Logo({ onlyIcon = false, color, onClick = noop }: LogoProps) {
   );
 }
 
-export { Logo };
+export default Logo;

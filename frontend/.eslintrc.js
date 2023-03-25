@@ -15,6 +15,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: './tsconfig.json',
+    tsconfigRootDir: __dirname,
     ecmaFeatures: {
       jsx: true
     },
@@ -28,5 +29,13 @@ module.exports = {
     'react/require-default-props': 'warn',
     'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': 'warn'
+  },
+  settings: {
+    'import/resolver': {
+      // typescript: {},
+      node: {
+        paths: ['src', 'src/components/*']
+      }
+    }
   }
 };

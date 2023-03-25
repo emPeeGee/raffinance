@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import {
-  useMantineColorScheme,
   createStyles,
   Header as MantineHeader,
   Group,
@@ -11,15 +10,14 @@ import {
   Drawer,
   ScrollArea,
   rem,
-  Container,
-  Anchor
+  Container
 } from '@mantine/core';
 import { Link } from 'react-router-dom';
 
 import { useDisclosure } from '@mantine/hooks';
 import { UserContext } from 'features/authentication/';
-import { Logo, ToggleColor } from 'components';
-import { LanguagePicker } from 'components/common/LangPicker/LangPicker';
+import { ToggleColor, LanguagePicker } from 'components';
+import Logo from '../Logo/Logo';
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -66,12 +64,9 @@ const useStyles = createStyles((theme) => ({
   }
 }));
 
-export function Header() {
+function Header() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
   const { classes, theme } = useStyles();
-
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const [isDark, setIsDark] = useState(false);
   const { isLogged, user } = useContext(UserContext);
 
   console.log(user);
@@ -168,3 +163,5 @@ export function Header() {
     </Box>
   );
 }
+
+export default Header;

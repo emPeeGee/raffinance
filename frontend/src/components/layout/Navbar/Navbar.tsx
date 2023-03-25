@@ -9,15 +9,10 @@ import {
   rem
 } from '@mantine/core';
 import {
-  IconHome2,
   IconGauge,
-  IconDeviceDesktopAnalytics,
-  IconFingerprint,
-  IconCalendarStats,
   IconUser,
   IconSettings,
   IconLogout,
-  IconSwitchHorizontal,
   IconCategory2,
   IconHash,
   IconAddressBook,
@@ -27,7 +22,9 @@ import {
 } from '@tabler/icons-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserContext } from 'features/authentication';
-import { Logo } from '../..';
+import Logo from '../Logo/Logo';
+
+// TODO: idk circular dep
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -74,7 +71,7 @@ interface NavbarLinkProps {
 }
 
 // TODO: not responsible at all
-export function NavbarLink({ icon: Icon, route, label, active, onClick }: NavbarLinkProps) {
+function NavbarLink({ icon: Icon, route, label, active, onClick }: NavbarLinkProps) {
   const { classes, cx } = useStyles();
   return (
     <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
@@ -111,7 +108,7 @@ const navbarLinks = [
 
 // TODO: string based highlight, not index, for example read from route and match
 
-export function Navbar() {
+function Navbar() {
   const [active, setActive] = useState(2);
   const { classes, theme } = useStyles();
   const navigate = useNavigate();
@@ -158,3 +155,5 @@ export function Navbar() {
     </MantineNavbar>
   );
 }
+
+export default Navbar;
