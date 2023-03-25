@@ -1,5 +1,16 @@
 {
   "test": "eng test",
+  "co-table": "Table",
+  "co-card": "Card",
+  "co-view": "View",
+  "ac-name": "Account name",
+  "co-bal": "Balance",
+  "co-cur": "Currency",
+  "co-actions": "Actions",
+  "co-color": "Color",
+  "co-las-up": "Last update",
+  "co-exp-csv": "Export to CSV",
+
   "accounts": "Accounts",
   "account-create": "Create account",
   "accounts-info": "Accounts represent a user's financial entity, such as a bank account, credit card, or investment account. You can add, edit, and delete accounts in the app to track their balances and transactions.",

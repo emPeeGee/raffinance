@@ -1,19 +1,11 @@
-import React from 'react';
-import {
-  Text,
-  Button,
-  Container,
-  Group,
-  SimpleGrid,
-  Title,
-  createStyles,
-  rem,
-  Blockquote
-} from '@mantine/core';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Button, Container, Group, Title, createStyles, rem, Blockquote } from '@mantine/core';
 import { useIntl } from 'react-intl';
 import { IconHeartPlus, IconInfoCircle } from '@tabler/icons-react';
 import { NoAccounts } from '../NoAccounts/NoAccounts';
+import { useAccountStore } from '../store';
+import { AccountViewSwitcher } from '../AccountViewSwitcher/AccountViewSwitcher';
+import { AccountsList } from '../AccountsList/AccountList';
 
 // TODO: Breadcrumbs ???
 
@@ -61,6 +53,12 @@ export function Accounts() {
   const { formatMessage } = useIntl();
   const { classes } = useStyles();
 
+  const { accounts, getAccounts } = useAccountStore();
+
+  useEffect(() => {
+    getAccounts();
+  }, []);
+
   const createAccount = () => {
     console.log('Create');
   };
@@ -75,24 +73,16 @@ export function Accounts() {
       </Group>
       <Blockquote
         fz={rem('1rem')}
+        px={0}
         c="dimmed"
         icon={<IconInfoCircle size="2rem" className={classes.icon} />}>
         {formatMessage({ id: 'accounts-info' })}
       </Blockquote>
-      <NoAccounts onCreateAccount={createAccount} />
-      <SimpleGrid spacing={80} cols={2} breakpoints={[{ maxWidth: 'sm', cols: 1, spacing: 40 }]}>
-        <div>
-          <Button
-            to="/"
-            component={Link}
-            variant="outline"
-            size="md"
-            mt="xl"
-            className={classes.control}>
-            Get back to home page
-          </Button>
-        </div>
-      </SimpleGrid>
+      <Group>
+        <AccountViewSwitcher />
+      </Group>
+
+      {accounts.length > 0 ? <AccountsList /> : <NoAccounts onCreateAccount={createAccount} />}
     </Container>
   );
 }

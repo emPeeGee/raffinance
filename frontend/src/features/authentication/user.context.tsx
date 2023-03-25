@@ -59,6 +59,7 @@ export function UserProvider({ children }: UserProviderProps): React.ReactElemen
       return;
     }
 
+    // TODO: MOVE to service
     api
       .get<UserModel>({
         url: `user`,
