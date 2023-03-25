@@ -6,3 +6,4 @@ export * from './constants/theme';
 export * from './constants/storage-keys';
 export * from './constants/languages';
 export * from './noop';
+export * from './contrast-color';
