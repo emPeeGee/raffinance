@@ -42,7 +42,7 @@ export function AppShell() {
                 <Routes>
                   <Route element={<ProtectedRoute isAllowed={isLogged} />}>
                     <Route path="/" element={<Dashboard />} />
-                    <Route path="/" element={<Accounts />} />
+                    <Route path="/accounts" element={<Accounts />} />
                     <Route path="/profile" element={<Profile />} />
                   </Route>
                   <Route path="*" element={<NotFound />} />

@@ -1,3 +1,4 @@
 import { Accounts } from './Accounts/Accounts';
+import { NoAccounts } from './NoAccounts/NoAccounts';
 
-export { Accounts };
+export { Accounts, NoAccounts };

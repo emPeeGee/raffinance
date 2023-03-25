@@ -100,7 +100,7 @@ export function NavbarLink({ icon: Icon, route, label, active, onClick }: Navbar
 const navbarLinks = [
   // { icon: IconHome2, label: 'Home' },
   { icon: IconGauge, label: 'Dashboard', route: '/' },
-  { icon: IconWallet, label: 'Accounts', route: '/' },
+  { icon: IconWallet, label: 'Accounts', route: '/accounts' },
   { icon: IconExchange, label: 'Transactions', route: '/' },
   { icon: IconCategory2, label: 'Categories', route: '/' },
   { icon: IconHash, label: 'Tags', route: '/' },
@@ -108,6 +108,8 @@ const navbarLinks = [
   { icon: IconUser, label: 'User profile', route: '/profile' },
   { icon: IconRocket, label: 'User profile', route: '/profile' }
 ];
+
+// TODO: string based highlight, not index, for example read from route and match
 
 export function Navbar() {
   const [active, setActive] = useState(2);

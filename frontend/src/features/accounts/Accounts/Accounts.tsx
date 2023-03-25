@@ -7,14 +7,23 @@ import {
   SimpleGrid,
   Title,
   createStyles,
-  rem
+  rem,
+  Blockquote
 } from '@mantine/core';
 import { Link } from 'react-router-dom';
+import { IconHeartPlus, IconInfoCircle } from '@tabler/icons-react';
+import { NoAccounts } from '../NoAccounts/NoAccounts';
+
+// TODO: Breadcrumbs ???
 
 const useStyles = createStyles((theme) => ({
   root: {
     paddingTop: rem(120),
     paddingBottom: rem(120)
+  },
+
+  icon: {
+    color: theme.colorScheme === 'dark' ? theme.colors.dark[3] : theme.colors.gray[5]
   },
 
   title: {
@@ -50,16 +59,29 @@ const useStyles = createStyles((theme) => ({
 export function Accounts() {
   const { classes } = useStyles();
 
+  const createAccount = () => {
+    console.log('Create');
+  };
+
   return (
     <Container className={classes.root}>
+      <Group position="apart" py="sm">
+        <Title className={classes.title}>Accounts</Title>
+        <Button variant="light" leftIcon={<IconHeartPlus />} onClick={createAccount}>
+          Create account
+        </Button>
+      </Group>
+      <Blockquote
+        fz={rem('1rem')}
+        c="dimmed"
+        icon={<IconInfoCircle size="2rem" className={classes.icon} />}>
+        Accounts represent a user&apos;s financial entity, such as a bank account, credit card, or
+        investment account. You can add, edit, and delete accounts in the app to track their
+        balances and transactions.
+      </Blockquote>
+      <NoAccounts onCreateAccount={createAccount} />
       <SimpleGrid spacing={80} cols={2} breakpoints={[{ maxWidth: 'sm', cols: 1, spacing: 40 }]}>
         <div>
-          <Title className={classes.title}>Accounts</Title>
-          <Text color="dimmed" size="lg">
-            Page you are trying to open does not exist. You may have mistyped the address, or the
-            page has been moved to another URL. If you think this is an error contact support.
-          </Text>
-
           <Button
             to="/"
             component={Link}
