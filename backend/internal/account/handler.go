@@ -3,6 +3,7 @@ package account
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/emPeeGee/raffinance/internal/auth"
 	"github.com/emPeeGee/raffinance/pkg/errorutil"
@@ -16,14 +17,14 @@ func RegisterHandlers(apiRg *gin.RouterGroup, service Service, validate *validat
 
 	api := apiRg.Group("/accounts")
 	{
-		api.GET("", h.getAccounts)
-		// TODO: make it when transactions are available
-		// api.GET("/:id", h.getAccount)
 		api.POST("", h.createAccount)
 		api.PUT("/:id", h.updateAccount)
 		api.DELETE("/:id", h.deleteAccount)
-		api.GET("/:id", h.balance)
+		api.GET("/:id/bal", h.balance)
 
+		api.GET("", h.getAccounts)
+		api.GET("/:id", h.getAccount)
+		api.GET("/:id/transactions", h.getAccountTransactionsByMonth)
 	}
 }
 
@@ -135,6 +136,60 @@ func (h *handler) getAccounts(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, accounts)
+}
+
+func (h *handler) getAccount(c *gin.Context) {
+	userId, err := auth.GetUserId(c)
+	if err != nil || userId == nil {
+		errorutil.Unauthorized(c, err.Error(), "you are not authorized")
+		return
+	}
+
+	accountId, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		errorutil.BadRequest(c, err.Error(), "the id must be an integer")
+		return
+	}
+
+	accounts, err := h.service.getAccount(*userId, uint(accountId))
+	if err != nil {
+		errorutil.InternalServer(c, "something went wrong, we are working", err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, accounts)
+}
+
+func (h *handler) getAccountTransactionsByMonth(c *gin.Context) {
+	accountIdStr := c.Param("id")
+	yearStr := c.Query("year")
+	monthStr := c.Query("month")
+
+	accountId, err := strconv.ParseUint(accountIdStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid account ID"})
+		return
+	}
+
+	year, err := strconv.Atoi(yearStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid year"})
+		return
+	}
+
+	month, err := strconv.Atoi(monthStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid month"})
+		return
+	}
+
+	transactions, err := h.service.getAccountTransactionsByMonth(uint(accountId), year, time.Month(month))
+	if err != nil {
+		errorutil.InternalServer(c, "Failed to get transactions", err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, transactions)
 }
 
 // TODO: The func is useless now. Just for test purpose it exists

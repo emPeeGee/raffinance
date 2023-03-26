@@ -2,6 +2,7 @@ package transaction
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/emPeeGee/raffinance/internal/category"
 	"github.com/emPeeGee/raffinance/internal/entity"
@@ -11,9 +12,10 @@ import (
 )
 
 type Repository interface {
-	getTransactions(userId uint) ([]transactionResponse, error)
-	createTransaction(userId uint, transaction CreateTransactionDTO) (*transactionResponse, error)
-	updateTransaction(transactionId uint, transaction UpdateTransactionDTO) (*transactionResponse, error)
+	getTransactions(userId uint) ([]TransactionResponse, error)
+	getAccountTransactionsByMonth(accountId uint, year int, month time.Month) ([]TransactionResponse, error)
+	createTransaction(userId uint, transaction CreateTransactionDTO) (*TransactionResponse, error)
+	updateTransaction(transactionId uint, transaction UpdateTransactionDTO) (*TransactionResponse, error)
 	deleteTransaction(userId, id uint) error
 	transactionExistsAndBelongsToUser(userId, id uint) (bool, error)
 	accountExistsAndBelongsToUser(userId, accountId uint) (bool, error)
@@ -30,7 +32,7 @@ func NewTransactionRepository(db *gorm.DB, logger log.Logger) *repository {
 	return &repository{db: db, logger: logger}
 }
 
-func (r *repository) createTransaction(userId uint, transaction CreateTransactionDTO) (*transactionResponse, error) {
+func (r *repository) createTransaction(userId uint, transaction CreateTransactionDTO) (*TransactionResponse, error) {
 	newTransaction := entity.Transaction{
 		Date:              transaction.Date,
 		Amount:            transaction.Amount,
@@ -68,7 +70,7 @@ func (r *repository) createTransaction(userId uint, transaction CreateTransactio
 	return &tr, nil
 }
 
-func (r *repository) updateTransaction(transactionId uint, transaction UpdateTransactionDTO) (*transactionResponse, error) {
+func (r *repository) updateTransaction(transactionId uint, transaction UpdateTransactionDTO) (*TransactionResponse, error) {
 	tx := r.db.Begin()
 
 	if err := tx.Error; err != nil {
@@ -160,7 +162,7 @@ func (r *repository) deleteTransaction(userId, id uint) error {
 }
 
 // NOTE: Will be used in the dashboard
-func (r *repository) getTransactions(userId uint) ([]transactionResponse, error) {
+func (r *repository) getTransactions(userId uint) ([]TransactionResponse, error) {
 	var transactions []entity.Transaction
 
 	if err := r.db.
@@ -174,12 +176,36 @@ func (r *repository) getTransactions(userId uint) ([]transactionResponse, error)
 		return nil, err
 	}
 
-	var trans []transactionResponse = make([]transactionResponse, 0)
+	var trans []TransactionResponse = make([]TransactionResponse, 0)
 	for _, transaction := range transactions {
 		trans = append(trans, entityToResponse(&transaction))
 	}
 
 	return trans, nil
+}
+
+func (r *repository) getAccountTransactionsByMonth(accountId uint, year int, month time.Month) ([]TransactionResponse, error) {
+	// Get the start and end of the month in the provided year and month
+	//TODO: hard-coded the timezone to UTC
+	startOfMonth := time.Date(year, month, 1, 0, 0, 0, 0, time.UTC)
+	endOfMonth := startOfMonth.AddDate(0, 1, 0).Add(-time.Nanosecond)
+
+	var transactions []entity.Transaction
+	if err := r.db.Where("from_account_id = ? OR to_account_id = ?", accountId, accountId).
+		Where("date >= ? AND date <= ?", startOfMonth, endOfMonth).
+		Preload("Tags").
+		Preload("Category").
+		Order("date desc").
+		Find(&transactions).Error; err != nil {
+		return nil, err
+	}
+
+	response := make([]TransactionResponse, len(transactions))
+	for i, t := range transactions {
+		response[i] = entityToResponse(&t)
+	}
+
+	return response, nil
 }
 
 func (r *repository) transactionExistsAndBelongsToUser(userId, id uint) (bool, error) {
@@ -237,7 +263,7 @@ func (r *repository) tagsExistsAndBelongsToUser(userId uint, tagIds []uint) (boo
 	return count == int64(len(tagIds)), nil
 }
 
-func entityToResponse(trx *entity.Transaction) transactionResponse {
+func entityToResponse(trx *entity.Transaction) TransactionResponse {
 	var tags []tag.TagShortResponse
 
 	for _, trTag := range trx.Tags {
@@ -249,7 +275,7 @@ func entityToResponse(trx *entity.Transaction) transactionResponse {
 		})
 	}
 
-	transaction := transactionResponse{
+	transaction := TransactionResponse{
 		ID:          trx.ID,
 		Description: trx.Description,
 		Date:        trx.Date,

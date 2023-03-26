@@ -16,12 +16,13 @@ func RegisterHandlers(apiRg *gin.RouterGroup, service Service, validate *validat
 
 	api := apiRg.Group("/transactions")
 	{
-		api.GET("", h.getTransactions)
-		// TODO: make it when transactions are available
-		// api.GET("/:id", h.getTransaction)
 		api.POST("", h.createTransaction)
 		api.PUT("/:id", h.updateTransaction)
 		api.DELETE("/:id", h.deleteTransaction)
+
+		api.GET("", h.getTransactions)
+		// TODO: make it when transactions are available
+		// api.GET("/:id", h.getTransaction)
 	}
 }
 
@@ -44,8 +45,6 @@ func (h *handler) createTransaction(c *gin.Context) {
 		errorutil.BadRequest(c, "your request looks incorrect", err.Error())
 		return
 	}
-
-	h.logger.Debug(input)
 
 	if err := h.validate.Struct(input); err != nil {
 		errorutil.BadRequest(c, "your request did not pass validation", err.Error())

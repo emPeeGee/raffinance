@@ -14,6 +14,7 @@ import (
 
 type Repository interface {
 	getAccounts(userId uint) ([]accountResponse, error)
+	getAccount(accountId uint) (*accountDetailsResponse, error)
 	createAccount(userId uint, Account createAccountDTO) (*accountResponse, error)
 	updateAccount(userId, accountId uint, account updateAccountDTO) (*accountResponse, error)
 	deleteAccount(userId, id uint) error
@@ -222,4 +223,31 @@ func (r *repository) getUserBalance(userID uint) (float64, error) {
 	r.logger.Infof("User %d balance: %f", userID, totalBalance)
 
 	return totalBalance, nil
+}
+
+// TODO: get transaction from this month only
+func (r *repository) getAccount(accountId uint) (*accountDetailsResponse, error) {
+	var account *accountDetailsResponse
+
+	if err := r.db.Model(&entity.Account{}).First(&account, accountId).Error; err != nil {
+		return nil, err
+	}
+
+	// All the account transactions here
+	// MOdel should be :  Transactions []entity.Transaction `json:"transactions" gorm:"foreignkey:to_account_id"`
+
+	// if err := r.db.Model(&entity.Account{}).
+	// 	Preload("Transactions", func(db *gorm.DB) *gorm.DB {
+	// 		return db.
+	// 			Preload("Tags").
+	// 			Preload("Category").
+	// 			Order("date DESC")
+	// 	}).
+	// 	Limit(50).
+	// 	Where("id = ?", accountId).
+	// 	First(&account).Error; err != nil {
+	// 	return nil, err
+	// }
+
+	return account, nil
 }

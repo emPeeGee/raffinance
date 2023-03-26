@@ -13,7 +13,7 @@ type Category struct {
 	Name string `json:"name"`
 }
 
-type transactionResponse struct {
+type TransactionResponse struct {
 	ID          uint      `json:"id" gorm:"primaryKey"`
 	Date        time.Time `json:"date"`
 	CreatedAt   time.Time `json:"createdAt"`

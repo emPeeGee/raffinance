@@ -2,6 +2,8 @@ package account
 
 import (
 	"time"
+
+	"github.com/emPeeGee/raffinance/internal/transaction"
 )
 
 type accountResponse struct {
@@ -12,6 +14,17 @@ type accountResponse struct {
 	Color     string    `json:"color"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+type accountDetailsResponse struct {
+	ID           uint                              `json:"id"`
+	Name         string                            `json:"name"`
+	Currency     string                            `json:"currency"`
+	Balance      float64                           `json:"balance" gorm:"-"`
+	Color        string                            `json:"color"`
+	CreatedAt    time.Time                         `json:"createdAt"`
+	UpdatedAt    time.Time                         `json:"updatedAt"`
+	Transactions []transaction.TransactionResponse `json:"transactions" gorm:"foreignkey:to_account_id"`
 }
 
 type createAccountDTO struct {
