@@ -4,7 +4,7 @@ import { Flex, LoadingOverlay, createStyles } from '@mantine/core';
 import { Route, Routes } from 'react-router-dom';
 
 import { Footer, Header, Navbar, NotFound, ProtectedRoute } from 'components';
-import { Accounts } from 'features/accounts';
+import { AccountDetail, Accounts } from 'features/accounts';
 import { AccountCreate } from 'features/accounts/CreateAccount/CreateAccount';
 import { Profile, SignIn, UserContext } from 'features/authentication';
 import { Dashboard } from 'features/dashboard';
@@ -46,6 +46,7 @@ export function AppShell() {
                   <Route element={<ProtectedRoute isAllowed={isLogged} />}>
                     <Route path="/" element={<Dashboard />} />
                     <Route path="/accounts" element={<Accounts />} />
+                    <Route path="/accounts/:id" element={<AccountDetail />} />
                     <Route path="/accounts/create" element={<AccountCreate />} />
                     <Route path="/profile" element={<Profile />} />
                   </Route>

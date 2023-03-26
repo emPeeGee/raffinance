@@ -8,13 +8,14 @@ import (
 )
 
 type Service interface {
-	createTransaction(userId uint, transaction CreateTransactionDTO) (*transactionResponse, error)
+	createTransaction(userId uint, transaction CreateTransactionDTO) (*TransactionResponse, error)
+	GetAccountTransactionsByMonth(accountId uint, year int, month time.Month) ([]TransactionResponse, error)
 	// TODO: They are not validated, validation is in handler
-	CreateAdjustmentTransaction(userId, accountId uint, amount float64, trType TransactionType) (*transactionResponse, error)
-	CreateInitialTransaction(userId, accountId uint, amount float64) (*transactionResponse, error)
+	CreateAdjustmentTransaction(userId, accountId uint, amount float64, trType TransactionType) (*TransactionResponse, error)
+	CreateInitialTransaction(userId, accountId uint, amount float64) (*TransactionResponse, error)
 	deleteTransaction(userId, id uint) error
-	updateTransaction(usedId, transactionId uint, transaction UpdateTransactionDTO) (*transactionResponse, error)
-	getTransactions(userId uint) ([]transactionResponse, error)
+	updateTransaction(usedId, transactionId uint, transaction UpdateTransactionDTO) (*TransactionResponse, error)
+	getTransactions(userId uint) ([]TransactionResponse, error)
 }
 
 type service struct {
@@ -26,7 +27,7 @@ func NewTransactionService(repo Repository, logger log.Logger) *service {
 	return &service{repo: repo, logger: logger}
 }
 
-func (s *service) createTransaction(userId uint, transaction CreateTransactionDTO) (*transactionResponse, error) {
+func (s *service) createTransaction(userId uint, transaction CreateTransactionDTO) (*TransactionResponse, error) {
 	ok, err := s.repo.accountExistsAndBelongsToUser(userId, transaction.ToAccountID)
 	if err != nil || !ok {
 		return nil, fmt.Errorf("toAccountId with id %d doesn't exist or belong to user", transaction.ToAccountID)
@@ -52,7 +53,7 @@ func (s *service) createTransaction(userId uint, transaction CreateTransactionDT
 	return s.repo.createTransaction(userId, transaction)
 }
 
-func (s *service) CreateInitialTransaction(userId, accountId uint, amount float64) (*transactionResponse, error) {
+func (s *service) CreateInitialTransaction(userId, accountId uint, amount float64) (*TransactionResponse, error) {
 	transaction := CreateTransactionDTO{
 		Date:        time.Now(),
 		Amount:      amount,
@@ -67,7 +68,7 @@ func (s *service) CreateInitialTransaction(userId, accountId uint, amount float6
 	return s.createTransaction(userId, transaction)
 }
 
-func (s *service) CreateAdjustmentTransaction(userId, accountId uint, amount float64, trType TransactionType) (*transactionResponse, error) {
+func (s *service) CreateAdjustmentTransaction(userId, accountId uint, amount float64, trType TransactionType) (*TransactionResponse, error) {
 	transaction := CreateTransactionDTO{
 		Date:        time.Now(),
 		Amount:      amount,
@@ -95,11 +96,24 @@ func (s *service) deleteTransaction(userId, id uint) error {
 	return s.repo.deleteTransaction(userId, id)
 }
 
-func (s *service) getTransactions(userId uint) ([]transactionResponse, error) {
+func (s *service) getTransactions(userId uint) ([]TransactionResponse, error) {
 	return s.repo.getTransactions(userId)
 }
 
-func (s *service) updateTransaction(userId, transactionId uint, transaction UpdateTransactionDTO) (*transactionResponse, error) {
+func (s *service) GetAccountTransactionsByMonth(accountId uint, year int, month time.Month) ([]TransactionResponse, error) {
+	// TODO: move in validation ??? or it is a query param
+	if year < 1900 || year > time.Now().Year()+10 {
+		return nil, fmt.Errorf("error getting transactions for account: invalid year provided: %d", year)
+	}
+
+	if month < 1 || month > 12 {
+		return nil, fmt.Errorf("error getting transactions for account: invalid month provided: %d", month)
+	}
+
+	return s.repo.getAccountTransactionsByMonth(accountId, year, month)
+}
+
+func (s *service) updateTransaction(userId, transactionId uint, transaction UpdateTransactionDTO) (*TransactionResponse, error) {
 	exists, err := s.repo.transactionExistsAndBelongsToUser(userId, transactionId)
 	if err != nil {
 		return nil, err

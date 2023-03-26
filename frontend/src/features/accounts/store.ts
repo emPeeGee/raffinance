@@ -3,7 +3,7 @@ import { devtools } from 'zustand/middleware';
 
 import { api } from 'services/http';
 
-import { AccountModel, CreateAccountDTO, ViewMode } from './accounts.model';
+import { AccountDetailsModel, AccountModel, CreateAccountDTO, ViewMode } from './accounts.model';
 
 type AccountsStore = {
   viewMode: ViewMode;
@@ -11,13 +11,15 @@ type AccountsStore = {
   accounts: AccountModel[];
   fetchAccounts: () => void;
   getAccounts: () => void;
+  // TODO: should it be in store??? because it doesn't store anything
+  getAccount: (id: string) => Promise<AccountDetailsModel>;
   addAccount: (account: CreateAccountDTO) => Promise<boolean>;
   // removeAccount: (id: string) => void;
 };
 
 const accountStore = 'Accounts store';
 const tok =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2Nzk3ODUxODYsImlhdCI6MTY3OTc0MTk4NiwidXNlcklkIjoxfQ.v6JxlWbb8GkoxzDY8bK0YKGZUcyUbWIQdXmp6OyIAhw';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2Nzk4NTQ3MDEsImlhdCI6MTY3OTgxMTUwMSwidXNlcklkIjoxfQ.4XxC6y9LiJhz5uzQt0wE6-7-VHF-lBdKn71pWm31Njc';
 
 export const useAccountStore = create<AccountsStore>()(
   devtools(
@@ -32,6 +34,11 @@ export const useAccountStore = create<AccountsStore>()(
         if (accounts.length === 0) {
           get().fetchAccounts();
         }
+      },
+      getAccount: async (id: string): Promise<AccountDetailsModel> => {
+        const account = await api.get<AccountDetailsModel>({ url: `accounts/${id}`, token: tok });
+        console.log(account);
+        return account;
       },
       fetchAccounts: async () => {
         const accounts = await api.get<AccountModel[]>({ url: 'accounts', token: tok });
