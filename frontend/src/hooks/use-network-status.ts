@@ -1,7 +1,8 @@
 import { useState } from 'react';
 
 export const useNetworkStatus = () => {
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  // TODO: why always true ??? navigator.onLine
+  const [isOnline, setIsOnline] = useState(true);
 
   window.addEventListener('online', () => {
     setIsOnline(true);

@@ -16,7 +16,16 @@ import {
   Badge
 } from '@mantine/core';
 import { MonthPicker } from '@mantine/dates';
-import { IconMinus, IconPlus } from '@tabler/icons-react';
+import {
+  IconArrowBigRight,
+  IconArrowNarrowRight,
+  IconArrowsExchange,
+  IconCashBanknote,
+  IconCashBanknoteOff,
+  IconMinus,
+  IconPlus,
+  IconReplace
+} from '@tabler/icons-react';
 import { FormattedDate, useIntl } from 'react-intl';
 
 import { TransactionType, AccountViewSwitcher, ViewMode } from 'features/accounts';
@@ -38,6 +47,11 @@ const useStyles = createStyles((theme) => ({
 
   value: {
     fontSize: rem(28),
+    fontWeight: 700,
+    lineHeight: 1
+  },
+  currency: {
+    fontSize: rem(24),
     fontWeight: 700,
     lineHeight: 1
   }
@@ -113,11 +127,9 @@ export function TransactionsList({ transactions, viewMode, currency }: Props) {
               ]}>
               {transactions.map(
                 ({ id: txnId, description, date, amount, category, transactionTypeId, tags }) => {
-                  // const textColor = getContrastColor(color);
-
                   return (
                     <Paper withBorder p="md" radius="md" key={`${description}${date}`}>
-                      <Group mb="xs">
+                      <Group mb="xs" spacing={0}>
                         <Badge c={category.color}>{category.name}</Badge>
                       </Group>
                       <UnstyledButton onClick={gotoTransaction(txnId)}>
@@ -127,29 +139,38 @@ export function TransactionsList({ transactions, viewMode, currency }: Props) {
                           </Title>
                         </Group>
 
-                        <Group align="flex-end" mb="xs">
-                          <div>
-                            {transactionTypeId === TransactionType.INCOME && (
+                        <Group align="center" mb="xs" spacing="0.25rem">
+                          {transactionTypeId === TransactionType.INCOME && (
+                            <>
+                              <IconCashBanknote color="green" size="2rem" />
                               <Text className={classes.value} color="green">
-                                <IconPlus color="green" /> {amount}
+                                {amount}
                               </Text>
-                            )}
+                            </>
+                          )}
 
-                            {transactionTypeId === TransactionType.EXPENSE && (
+                          {transactionTypeId === TransactionType.EXPENSE && (
+                            <>
+                              <IconCashBanknoteOff color="red" size="2rem" />
                               <Text className={classes.value} color="red">
-                                <IconMinus /> {amount}
+                                {amount}
                               </Text>
-                            )}
+                            </>
+                          )}
 
-                            {transactionTypeId === TransactionType.TRANSFER && (
+                          {transactionTypeId === TransactionType.TRANSFER && (
+                            <>
+                              <IconArrowsExchange color="violet" size="2rem" />
+
                               <Text className={classes.value} color="violet">
-                                {' '}
-                                <IconPlus /> {amount}
+                                {amount}
                               </Text>
-                            )}
-                          </div>
+                            </>
+                          )}
 
-                          <Text>{currency}</Text>
+                          <Text className={classes.currency} size="sm" fw={500}>
+                            {currency}
+                          </Text>
                         </Group>
 
                         <Group mb="sm">
@@ -169,6 +190,15 @@ export function TransactionsList({ transactions, viewMode, currency }: Props) {
                             </Badge>
                           ))}
                         </Group>
+
+                        {transactionTypeId === TransactionType.TRANSFER && (
+                          <Group spacing="0rem">
+                            {/* TODO: real names */}
+                            <Badge c={category.color}>from</Badge>
+                            <IconArrowNarrowRight />
+                            <Badge c={category.color}>to</Badge>
+                          </Group>
+                        )}
                       </UnstyledButton>
                     </Paper>
                   );
@@ -177,6 +207,7 @@ export function TransactionsList({ transactions, viewMode, currency }: Props) {
             </SimpleGrid>
           )}
 
+          {/* TODO: Table is not looking good */}
           {viewMode === 'table' && (
             <div>
               <Paper withBorder radius="md">
