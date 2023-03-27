@@ -29,7 +29,7 @@ import {
 import { FormattedDate, useIntl } from 'react-intl';
 
 import { TransactionType, AccountViewSwitcher, ViewMode } from 'features/accounts';
-import { NoTransactions, Transaction } from 'features/transactions';
+import { NoTransactions, Transaction, TransactionCard } from 'features/transactions';
 import { getContrastColor } from 'utils';
 
 const useStyles = createStyles((theme) => ({
@@ -125,85 +125,13 @@ export function TransactionsList({ transactions, viewMode, currency }: Props) {
                 { maxWidth: 'md', cols: 2 },
                 { maxWidth: 'xs', cols: 1 }
               ]}>
-              {transactions.map(
-                ({ id: txnId, description, date, amount, category, transactionTypeId, tags }) => {
-                  return (
-                    <Paper withBorder p="md" radius="md" key={`${description}${date}`}>
-                      <Group mb="xs" spacing={0}>
-                        <Badge c={category.color}>{category.name}</Badge>
-                      </Group>
-                      <UnstyledButton onClick={gotoTransaction(txnId)}>
-                        <Group position="apart">
-                          <Title order={5} mb="sm" className={classes.transactionTitle}>
-                            {description}
-                          </Title>
-                        </Group>
-
-                        <Group align="center" mb="xs" spacing="0.25rem">
-                          {transactionTypeId === TransactionType.INCOME && (
-                            <>
-                              <IconCashBanknote color="green" size="2rem" />
-                              <Text className={classes.value} color="green">
-                                {amount}
-                              </Text>
-                            </>
-                          )}
-
-                          {transactionTypeId === TransactionType.EXPENSE && (
-                            <>
-                              <IconCashBanknoteOff color="red" size="2rem" />
-                              <Text className={classes.value} color="red">
-                                {amount}
-                              </Text>
-                            </>
-                          )}
-
-                          {transactionTypeId === TransactionType.TRANSFER && (
-                            <>
-                              <IconArrowsExchange color="violet" size="2rem" />
-
-                              <Text className={classes.value} color="violet">
-                                {amount}
-                              </Text>
-                            </>
-                          )}
-
-                          <Text className={classes.currency} size="sm" fw={500}>
-                            {currency}
-                          </Text>
-                        </Group>
-
-                        <Group mb="sm">
-                          <Text color="dimmed">
-                            <FormattedDate value={date} dateStyle="short" timeStyle="short" />
-                          </Text>
-                        </Group>
-
-                        <Group mb="xs">
-                          {tags.map((tag) => (
-                            <Badge
-                              key={tag.id}
-                              bg={tag.color}
-                              c={getContrastColor(tag.color)}
-                              variant="filled">
-                              {tag.name}
-                            </Badge>
-                          ))}
-                        </Group>
-
-                        {transactionTypeId === TransactionType.TRANSFER && (
-                          <Group spacing="0rem">
-                            {/* TODO: real names */}
-                            <Badge c={category.color}>from</Badge>
-                            <IconArrowNarrowRight />
-                            <Badge c={category.color}>to</Badge>
-                          </Group>
-                        )}
-                      </UnstyledButton>
-                    </Paper>
-                  );
-                }
-              )}
+              {transactions.map((transaction) => (
+                <TransactionCard
+                  key={transaction.id}
+                  transaction={transaction}
+                  currency={currency}
+                />
+              ))}
             </SimpleGrid>
           )}
 
