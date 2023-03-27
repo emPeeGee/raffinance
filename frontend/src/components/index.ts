@@ -1,3 +1,4 @@
+import { Iconify, SupportedIcons } from './common/Iconify/Iconify';
 import LanguagePicker from './common/LangPicker/LangPicker';
 import { ToggleColor } from './common/ToggleColor/ToggleColor';
 import { AppShell } from './layout/AppShell/AppShell';
@@ -21,5 +22,7 @@ export {
   Offline,
   Navbar,
   ToggleColor,
-  LanguagePicker
+  LanguagePicker,
+  Iconify
 };
+export type { SupportedIcons };
