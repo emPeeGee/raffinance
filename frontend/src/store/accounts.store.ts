@@ -1,9 +1,13 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
+import {
+  AccountDetailsModel,
+  AccountModel,
+  CreateAccountDTO,
+  ViewMode
+} from 'features/accounts/accounts.model';
 import { api } from 'services/http';
-
-import { AccountDetailsModel, AccountModel, CreateAccountDTO, ViewMode } from './accounts.model';
 
 type AccountsStore = {
   viewMode: ViewMode;

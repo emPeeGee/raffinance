@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 
 import { AccountsList, AccountViewSwitcher, NoAccounts } from 'features/accounts';
 
-import { useAccountStore } from '../store';
+import { useAccountStore } from '../../../store/accounts.store';
 
 // TODO: Breadcrumbs ???
 

@@ -26,10 +26,10 @@ import { Controller, useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { useAccountStore } from 'store';
 import { CURRENCY_LIST, DateUnit, SWATCHES, noop } from 'utils';
 
 import { CreateAccountDTO } from '../accounts.model';
-import { useAccountStore } from '../store';
 
 const useStyles = createStyles((theme) => ({
   root: {

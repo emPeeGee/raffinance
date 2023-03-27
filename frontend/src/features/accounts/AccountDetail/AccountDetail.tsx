@@ -27,7 +27,7 @@ import { AccountDetailsModel } from 'features/accounts';
 import { TransactionsList } from 'features/transactions';
 import { getContrastColor } from 'utils';
 
-import { useAccountStore } from '../store';
+import { useAccountStore } from '../../../store/accounts.store';
 
 const useStyles = createStyles((theme) => ({
   root: {

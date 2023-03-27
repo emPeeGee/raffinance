@@ -4,8 +4,9 @@ import { Group, Button, SegmentedControl } from '@mantine/core';
 import { IconFileExport } from '@tabler/icons-react';
 import { useIntl } from 'react-intl';
 
+import { useAccountStore } from 'store';
+
 import { ViewMode } from '../accounts.model';
-import { useAccountStore } from '../store';
 
 export function AccountViewSwitcher() {
   const { viewMode, setViewMode } = useAccountStore();

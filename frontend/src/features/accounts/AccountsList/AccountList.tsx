@@ -18,7 +18,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { getContrastColor } from 'utils';
 
-import { useAccountStore } from '../store';
+import { useAccountStore } from '../../../store/accounts.store';
 
 const useStyles = createStyles((theme) => ({
   root: {
