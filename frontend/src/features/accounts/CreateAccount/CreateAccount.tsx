@@ -155,7 +155,7 @@ export function AccountCreate() {
           />
 
           <ColorInput
-            {...register('color', { required: true, minLength: 7, maxLength: 9, value: '' })}
+            {...register('color', { required: true, minLength: 7, maxLength: 7, value: '' })}
             withEyeDropper
             format="hex"
             autoComplete="off"

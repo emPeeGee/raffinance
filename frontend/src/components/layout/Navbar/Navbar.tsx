@@ -101,10 +101,10 @@ const navbarLinks = [
   // { icon: IconHome2, label: 'Home' },
   { icon: IconGauge, label: 'Dashboard', route: '/' },
   { icon: IconWallet, label: 'Accounts', route: '/accounts' },
-  { icon: IconExchange, label: 'Transactions', route: '/' },
-  { icon: IconCategory2, label: 'Categories', route: '/' },
-  { icon: IconHash, label: 'Tags', route: '/' },
-  { icon: IconAddressBook, label: 'Contacts', route: '/' },
+  { icon: IconExchange, label: 'Transactions', route: '/transactions' },
+  { icon: IconCategory2, label: 'Categories', route: '/categories' },
+  { icon: IconHash, label: 'Tags', route: '/tags' },
+  { icon: IconAddressBook, label: 'Contacts', route: '/contacts' },
   { icon: IconUser, label: 'User profile', route: '/profile' },
   { icon: IconRocket, label: 'Rocket', route: '/profile' }
 ];

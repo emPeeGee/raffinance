@@ -18,6 +18,7 @@
   "co-upd-at": "Updated at",
   "co-upd": "Update",
   "co-quick-act": "Quick actions",
+  "co-icon": "Icon",
 
   "accounts": "Accounts",
   "account-create": "Create account",
@@ -33,8 +34,16 @@
   "no-acc-3": "Enter the account details, including the name, currency, and initial balance.  ",
   "no-acc-4": "Click \"Save\" to create the account.",
 
-  "no-txn-found": " No transactions yet!",
+  "no-txn-found": "No transactions yet!",
   "no-txn-desc": "You can add a new transaction by clicking the button below.",
-  "txn-create": "Create Transaction",
-  "txn-add-t": "Add a new transaction"
+  "txn-create": "Create transaction",
+  "txn-add-t": "Add a new transaction",
+
+  "cat-categ": "Categories",
+  "cat-no-found": "No categories yet!",
+  "cat-no-desc": "You can add a new category by clicking the button below.",
+  "cat-create": "Create category",
+  "cat-name": "Category name",
+  "cat-f-title": "Category creation failed",
+  "cat-f-desc": "There was an error creating the category. Please try again later. If the problem persists, please contact customer support."
 }
