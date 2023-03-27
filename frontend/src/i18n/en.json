@@ -25,5 +25,9 @@
   "no-acc-1": "Click the \"Create an account\" button below.",
   "no-acc-2": "Choose the type of account you want to add (e.g. checking, savings, credit card).  ",
   "no-acc-3": "Enter the account details, including the name, currency, and initial balance.  ",
-  "no-acc-4": "Click \"Save\" to create the account."
+  "no-acc-4": "Click \"Save\" to create the account.",
+
+  "no-txn-found": " No transactions yet!",
+  "no-txn-desc": "You can add a new transaction by clicking the button below.",
+  "txn-create": "Create Transaction"
 }
