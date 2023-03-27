@@ -23,11 +23,9 @@ export function AccountViewSwitcher() {
         ]}
       />
 
-      {viewMode === 'table' ? (
-        <Button size="sm" variant="outline" leftIcon={<IconFileExport />}>
-          {formatMessage({ id: 'co-exp-csv' })}
-        </Button>
-      ) : null}
+      <Button size="sm" variant="outline" leftIcon={<IconFileExport />}>
+        {formatMessage({ id: 'co-exp-csv' })}
+      </Button>
     </Group>
   );
 }
