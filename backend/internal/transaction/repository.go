@@ -8,6 +8,7 @@ import (
 	"github.com/emPeeGee/raffinance/internal/entity"
 	"github.com/emPeeGee/raffinance/internal/tag"
 	"github.com/emPeeGee/raffinance/pkg/log"
+	"github.com/emPeeGee/raffinance/pkg/util"
 	"gorm.io/gorm"
 )
 
@@ -204,6 +205,8 @@ func (r *repository) getAccountTransactionsByMonth(accountId uint, year int, mon
 	for i, t := range transactions {
 		response[i] = entityToResponse(&t)
 	}
+
+	r.logger.Debug(util.StringifyAny(transactions))
 
 	return response, nil
 }

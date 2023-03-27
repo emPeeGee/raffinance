@@ -19,7 +19,7 @@ type AccountsStore = {
 
 const accountStore = 'Accounts store';
 const tok =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2Nzk4NTQ3MDEsImlhdCI6MTY3OTgxMTUwMSwidXNlcklkIjoxfQ.4XxC6y9LiJhz5uzQt0wE6-7-VHF-lBdKn71pWm31Njc';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2Nzk5Mzg1NTksImlhdCI6MTY3OTg5NTM1OSwidXNlcklkIjoxfQ.ZWoD-NPuNqznvqHKoBit-6vntYWeEvAWF_8w6wqSgKU';
 
 export const useAccountStore = create<AccountsStore>()(
   devtools(

@@ -1,5 +1,11 @@
 export type ViewMode = 'table' | 'card';
 
+export enum TransactionType {
+  'INCOME' = 1,
+  'EXPENSE' = 2,
+  'TRANSFER' = 3
+}
+
 export interface AccountModel {
   id: number;
   name: string;

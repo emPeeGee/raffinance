@@ -39,6 +39,7 @@ type CreateTransactionDTO struct {
 	// NOTE: valid order matters, unique can't be the last
 	TagIDs []uint `json:"tagIds" validate:"omitempty,unique,dive,numeric,gt=0"`
 
+	// TODO: Sending as string breaks the app
 	FromAccountID     *uint `json:"fromAccountId" validate:"omitempty,numeric"`
 	ToAccountID       uint  `json:"toAccountId" validate:"required,numeric"`
 	TransactionTypeID byte  `json:"transactionTypeId" validate:"numeric,transactiontype"`

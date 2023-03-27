@@ -8,3 +8,11 @@ export function getContrastColor(hexColor: string): string {
 
   return luma < 128 ? '#fff' : '#000';
 }
+
+export function hexToRgba(hex: string, alpha: number): string {
+  const hexWithoutHash = hex.replace('#', '');
+  const hexValues = hexWithoutHash.match(/.{1,2}/g) || [];
+  const rgbaValues = hexValues.map((value) => parseInt(value, 16));
+  rgbaValues.push(alpha);
+  return `rgba(${rgbaValues.join(', ')})`;
+}
