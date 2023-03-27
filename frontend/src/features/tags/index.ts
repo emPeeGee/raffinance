@@ -1,3 +1,3 @@
-import { Tag } from './tags.model';
+import { TagModel } from './tags.model';
 
-export type { Tag };
+export type { TagModel };

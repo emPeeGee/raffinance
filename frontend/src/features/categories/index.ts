@@ -1,3 +1,7 @@
-import { Category } from './categories.model';
+import { Categories } from './Categories/Categories';
+import { CategoryModel, CreateCategoryDTO } from './categories.model';
+import { CategoryCreate } from './CreateCategory/CreateCategory';
+import { NoCategories } from './NoCategories/NoCategories';
 
-export type { Category };
+export { NoCategories, Categories, CategoryCreate };
+export type { CategoryModel, CreateCategoryDTO };

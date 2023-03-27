@@ -1,5 +1,5 @@
-import { Category } from 'features/categories';
-import { Tag } from 'features/tags';
+import { CategoryModel } from 'features/categories';
+import { TagModel } from 'features/tags';
 
 // TODO: Global type
 export type ViewMode = 'table' | 'card';
@@ -21,6 +21,6 @@ export interface Transaction {
   location: string;
   toAccountId: number;
   transactionTypeId: number;
-  category: Category;
-  tags: Tag[];
+  category: CategoryModel;
+  tags: TagModel[];
 }

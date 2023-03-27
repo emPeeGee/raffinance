@@ -21,3 +21,5 @@ export const useI18nStore = create<StoreState>()(
     }
   )
 );
+
+// TODO: rename file

@@ -1,4 +1,4 @@
-export interface Tag {
+export interface TagModel {
   id: number;
   name: string;
   color: string;
