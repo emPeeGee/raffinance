@@ -61,9 +61,7 @@ export function AccountsList(props: Props) {
   const { formatMessage } = useIntl();
 
   const gotoAccount = (id: number) => () => {
-    navigate(`/accounts/${id}`, {
-      replace: true
-    });
+    navigate(`/accounts/${id}`);
   };
 
   /* eslint-disable  no-constant-condition */
@@ -122,7 +120,7 @@ export function AccountsList(props: Props) {
 
             return (
               <Paper withBorder p="md" radius="md" key={name} className={classes.root} bg={color}>
-                <UnstyledButton onClick={gotoAccount(id)}>
+                <UnstyledButton w="100%" onClick={gotoAccount(id)}>
                   <Group position="apart">
                     <Text size="xs" color={textColor} className={classes.title}>
                       {name}

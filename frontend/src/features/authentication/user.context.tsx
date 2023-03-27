@@ -70,9 +70,7 @@ export function UserProvider({ children }: UserProviderProps): React.ReactElemen
         setUser(response);
         setIsLogged(true);
         // TODO: Dashboard page
-        navigate(`/profile`, {
-          replace: true
-        });
+        navigate(`/profile`);
       })
       .catch(() => logout())
       .finally(() => {

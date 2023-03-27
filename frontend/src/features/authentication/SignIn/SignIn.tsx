@@ -37,9 +37,7 @@ export function SignIn() {
 
   useEffect(() => {
     if (user) {
-      navigate(`/profile/`, {
-        replace: true
-      });
+      navigate(`/profile/`);
     }
   }, [user]);
 

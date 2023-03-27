@@ -128,9 +128,7 @@ function Navbar() {
 
   const logoutUser = () => {
     logout();
-    navigate(`/`, {
-      replace: true
-    });
+    navigate(`/`);
   };
 
   return (
