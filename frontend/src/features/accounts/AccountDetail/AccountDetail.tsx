@@ -117,14 +117,14 @@ export function AccountDetail() {
               c={textColor}
               p="0.3rem 0.7rem"
               style={{ marginTop: '8px' }}>
-              Balance: {account.balance} {account.currency}
+              {formatMessage({ id: 'co-bal' })}: {account.balance} {account.currency}
             </Text>
           </div>
         </Group>
 
         <Group position="left">
           <Text fw={700} c={textColor} className={classes.accountText}>
-            Created at:
+            {formatMessage({ id: 'co-cre-at' })}:
           </Text>
           <Text c={textColor} my="xs" className={classes.accountText}>
             <FormattedDate value={account.createdAt} dateStyle="full" timeStyle="medium" />
@@ -133,7 +133,7 @@ export function AccountDetail() {
 
         <Group position="left">
           <Text fw={700} c={textColor} className={classes.accountText}>
-            Updated at:
+            {formatMessage({ id: 'co-cre-at' })}:
           </Text>
           <Text c={textColor} className={classes.accountText}>
             <FormattedDate value={account.updatedAt} dateStyle="full" timeStyle="medium" />
@@ -142,31 +142,29 @@ export function AccountDetail() {
       </Card>
 
       <Alert icon={<IconAlertCircle size="1rem" />} color="gray">
-        The page displays all the important information about your account including the account
-        name, balance, currency, and transaction history. You can view your transactions, filter
-        them by month, search for specific transactions, and create new transactions. Use this page
-        to get a detailed overview of your account and manage your transactions effectively.
+        {formatMessage({ id: 'acc-det-info' })}
       </Alert>
 
       <Card my="lg" withBorder radius="md">
         <Title order={4} mb="md" color="gray">
           <Group>
             <IconRocket color="gray" />
-            Quick actions
+
+            {formatMessage({ id: 'co-quick-act' })}
           </Group>
         </Title>
         <Group>
           <Button variant="outline" radius="md" leftIcon={<IconEdit />}>
             {/* TODO The selected account should be this one */}
-            Add a new transaction
+            {formatMessage({ id: 'txn-add-t' })}
           </Button>
 
           <Button variant="outline" color="orange" radius="md" leftIcon={<IconEdit />}>
-            Update
+            {formatMessage({ id: 'co-update' })}
           </Button>
 
           <Button color="red" variant="outline" radius="md" leftIcon={<IconTrash />}>
-            Delete Account
+            {formatMessage({ id: 'acc-del' })}
           </Button>
         </Group>
       </Card>

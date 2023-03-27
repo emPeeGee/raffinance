@@ -1,16 +1,6 @@
 import React from 'react';
 
-import {
-  Button,
-  Card,
-  Center,
-  List,
-  Text,
-  ThemeIcon,
-  Title,
-  createStyles,
-  rem
-} from '@mantine/core';
+import { Button, Card, Text, Title, createStyles, rem } from '@mantine/core';
 import { IconPlus, IconSearchOff } from '@tabler/icons-react';
 import { useIntl } from 'react-intl';
 

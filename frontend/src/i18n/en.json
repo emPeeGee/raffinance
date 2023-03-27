@@ -14,12 +14,18 @@
   "co-step": "From 0 to Infinity",
   "co-create": "Create",
   "co-back": "Back",
+  "co-cre-at": "Created at",
+  "co-upd-at": "Updated at",
+  "co-upd": "Update",
+  "co-quick-act": "Quick actions",
 
   "accounts": "Accounts",
   "account-create": "Create account",
   "accounts-info": "Accounts represent a user's financial entity, such as a bank account, credit card, or investment account. You can add, edit, and delete accounts in the app to track their balances and transactions.",
   "acc-f-title": "Delivery creation failed",
   "acc-f-desc": "There was an error creating the delivery. Please try again later. If the problem persists, please contact customer support.",
+  "acc-det-info": "The page displays all the important information about your account including the account name, balance, currency, and transaction history. You can view your transactions, filter them by month, search for specific transactions, and create new transactions. Use this page to get a detailed overview of your account and manage your transactions effectively.",
+  "acc-del": "Delete Account",
   "no-acc-found": "No accounts found",
   "no-acc-yet": "You haven't added any accounts yet. To get started: ",
   "no-acc-1": "Click the \"Create an account\" button below.",
@@ -29,5 +35,6 @@
 
   "no-txn-found": " No transactions yet!",
   "no-txn-desc": "You can add a new transaction by clicking the button below.",
-  "txn-create": "Create Transaction"
+  "txn-create": "Create Transaction",
+  "txn-add-t": "Add a new transaction"
 }
