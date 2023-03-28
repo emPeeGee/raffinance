@@ -25,9 +25,8 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import { AccountDetailsModel } from 'features/accounts';
 import { TransactionsList } from 'features/transactions';
+import { useAccountStore } from 'store';
 import { getContrastColor } from 'utils';
-
-import { useAccountStore } from '../../../store/accounts.store';
 
 const useStyles = createStyles((theme) => ({
   root: {

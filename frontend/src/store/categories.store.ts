@@ -16,7 +16,7 @@ type CategoriesStore = {
 
 const categoriesStore = 'Categories store';
 const tok =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2Nzk5ODQwMjAsImlhdCI6MTY3OTk0MDgyMCwidXNlcklkIjoxfQ.ZucjfEot33GBc34TkA047LW0PqXFDOnwevWf3VzXlVw';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODAwNDUxNzAsImlhdCI6MTY4MDAwMTk3MCwidXNlcklkIjoxfQ.X8zXtU-Jn80rrisUSAQEiXxHzhokKq3WIM5yN2IXXIs';
 
 export const useCategoriesStore = create<CategoriesStore>()(
   devtools(

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { forwardRef, useState } from 'react';
 
 import {
   TextInput,
@@ -6,20 +6,23 @@ import {
   Container,
   createStyles,
   rem,
+  Text,
   Title,
   Flex,
   ColorInput,
   Loader,
-  Group
+  Group,
+  Select
 } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
-import { IconArrowBackUp, IconBolt, IconMasksTheater, IconSignature } from '@tabler/icons-react';
-import { useForm } from 'react-hook-form';
+import { IconArrowBackUp, IconBolt, IconSignature } from '@tabler/icons-react';
+import { Controller, useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { Iconify } from 'components';
 import { useCategoriesStore } from 'store';
-import { DateUnit, SWATCHES, noop } from 'utils';
+import { DateUnit, ICONS, SWATCHES, noop } from 'utils';
 
 import { CreateCategoryDTO } from '../categories.model';
 
@@ -44,12 +47,30 @@ const useStyles = createStyles((theme) => ({
   }
 }));
 
+interface SelectItemProps extends React.ComponentPropsWithoutRef<'div'> {
+  label: string;
+  value: string;
+}
+
+const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
+  ({ label, value, ...others }: SelectItemProps, ref) => (
+    <div ref={ref} {...others}>
+      <Group noWrap>
+        <Iconify icon={value} />
+        <Text size="sm">{label}</Text>
+      </Group>
+    </div>
+  )
+);
+SelectItem.displayName = 'SelectItem';
+
 export function CategoryCreate() {
   const { formatMessage } = useIntl();
   const { classes } = useStyles();
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors }
   } = useForm<CreateCategoryDTO>({
     mode: 'onChange'
@@ -91,20 +112,37 @@ export function CategoryCreate() {
           <TextInput
             {...register('name', { required: true, minLength: 2, maxLength: 255, value: '' })}
             label={formatMessage({ id: 'cat-name' })}
+            description={formatMessage({ id: 'cat-c-name' })}
             size="md"
             icon={<IconSignature />}
             error={errors.name ? 'Field is invalid' : null}
             required
           />
 
-          {/* // TODO: Selector, but not input */}
-          <TextInput
-            {...register('icon', { required: true, minLength: 1, maxLength: 128, value: '' })}
-            label={formatMessage({ id: 'co-icon' })}
-            size="md"
-            icon={<IconMasksTheater />}
-            error={errors.icon ? 'Field is invalid' : null}
-            required
+          <Controller
+            name="icon"
+            control={control}
+            rules={{ required: true, maxLength: 64, minLength: 2 }}
+            render={({ field }) => (
+              <Select
+                {...field}
+                label={formatMessage({ id: 'co-icon' })}
+                nothingFound={formatMessage({ id: 'co-no-opts' })}
+                description={formatMessage({ id: 'cat-c-icon' })}
+                searchable
+                clearable
+                required
+                allowDeselect
+                size="md"
+                icon={<Iconify icon={field.value} />}
+                itemComponent={SelectItem}
+                data={ICONS}
+                error={errors.icon ? 'Field is invalid' : null}
+                filter={(value: string, item: SelectItemProps) =>
+                  item.label.toLowerCase().includes(value.toLowerCase().trim())
+                }
+              />
+            )}
           />
 
           <ColorInput
@@ -116,6 +154,7 @@ export function CategoryCreate() {
             size="md"
             swatches={SWATCHES}
             label={formatMessage({ id: 'co-color' })}
+            description={formatMessage({ id: 'cat-c-color' })}
             error={errors.color ? 'Field is invalid' : null}
             required
           />
@@ -130,3 +169,4 @@ export function CategoryCreate() {
     </Container>
   );
 }
+// what is deduplication ???

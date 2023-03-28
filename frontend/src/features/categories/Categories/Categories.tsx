@@ -17,7 +17,7 @@ import { IconHeartPlus, IconInfoCircle } from '@tabler/icons-react';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
-import { Iconify, SupportedIcons } from 'components';
+import { Iconify } from 'components';
 import { useCategoriesStore } from 'store';
 import { getContrastColor } from 'utils';
 
@@ -85,14 +85,9 @@ export function Categories() {
           {formatMessage({ id: 'cat-create' })}
         </Button>
       </Group>
-      <Alert
-        my="lg"
-        fz="1rem"
-        px={0}
-        c="dimmed"
-        icon={<IconInfoCircle size="2rem" className={classes.icon} />}>
-        {/* TODO: Text */}
-        {formatMessage({ id: 'category-info' })}
+
+      <Alert icon={<IconInfoCircle size="1rem" />} color="gray" my="lg">
+        {formatMessage({ id: 'cat-info' })}
       </Alert>
 
       {categories.length > 0 ? (
@@ -109,7 +104,7 @@ export function Categories() {
               <Paper withBorder p="md" radius="md" key={name} className={classes.root} bg={color}>
                 <UnstyledButton w="100%" onClick={gotoCategory(id)}>
                   <Group position="left">
-                    <Iconify icon={icon as SupportedIcons} color={textColor} />
+                    <Iconify icon={icon} color={textColor} />
                     <Text fz="1.5rem" fw={700} color={textColor}>
                       {name}
                     </Text>

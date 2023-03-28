@@ -33,6 +33,10 @@
   "no-acc-2": "Choose the type of account you want to add (e.g. checking, savings, credit card).  ",
   "no-acc-3": "Enter the account details, including the name, currency, and initial balance.  ",
   "no-acc-4": "Click \"Save\" to create the account.",
+  "acc-c-name": "The name of the account, e.g. 'Checking', 'Savings', 'Credit Card', etc.",
+  "acc-c-cur": "The currency associated with the account, e.g. USD, EUR, GBP, etc",
+  "acc-c-color": "The color associated with the account. This can be used for easy identification and organization of accounts",
+  "acc-c-bal": "The start balance of the account. This field is computed based on the transactions associated with the account, and is not directly editable by the user.",
 
   "no-txn-found": "No transactions yet!",
   "no-txn-desc": "You can add a new transaction by clicking the button below.",
@@ -40,10 +44,16 @@
   "txn-add-t": "Add a new transaction",
 
   "cat-categ": "Categories",
+  "cat-info": "Categories are a way for users to group their transactions based on their purpose or type. For example, a user may create categories such as 'Food & Dining', 'Transportation', 'Entertainment', etc. Categories can have a name, color, and icon for easy identification and organization. Users can assign categories to their transactions to keep track of their spending in different areas and gain insights into their financial habits.",
   "cat-no-found": "No categories yet!",
   "cat-no-desc": "You can add a new category by clicking the button below.",
   "cat-create": "Create category",
   "cat-name": "Category name",
   "cat-f-title": "Category creation failed",
-  "cat-f-desc": "There was an error creating the category. Please try again later. If the problem persists, please contact customer support."
+  "cat-f-desc": "There was an error creating the category. Please try again later. If the problem persists, please contact customer support.",
+  "cat-c-name": "The name of the category, e.g. 'Food & Dining', 'Transportation', 'Entertainment', etc.",
+  "cat-c-icon": "An icon that represents the category. This can also be used for easy identification and organization of transactions.",
+  "cat-c-color": " The color associated with the category. This can be used for easy identification and organization of transactions.",
+
+  "tag-info": "Tags are another way for users to organize their transactions, but they offer more flexibility than categories. Users can create tags based on any criteria they choose, such as the merchant name, the location, or the type of payment used. Tags can also have a name and color for easy identification. Users can assign multiple tags to a single transaction, allowing them to track their spending in more detail and analyze their financial behavior in different ways."
 }

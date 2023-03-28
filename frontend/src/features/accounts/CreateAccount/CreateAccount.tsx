@@ -104,6 +104,7 @@ export function AccountCreate() {
           <TextInput
             {...register('name', { required: true, minLength: 2, maxLength: 255, value: '' })}
             label={formatMessage({ id: 'ac-name' })}
+            description={formatMessage({ id: 'acc-c-name' })}
             size="md"
             icon={<IconSignature />}
             error={errors.name ? 'Field is invalid' : null}
@@ -118,14 +119,13 @@ export function AccountCreate() {
               <Select
                 {...field}
                 label={formatMessage({ id: 'co-cur' })}
+                description={formatMessage({ id: 'acc-c-cur' })}
                 nothingFound={formatMessage({ id: 'co-no-opts' })}
                 required
                 searchable
                 clearable
                 allowDeselect
-                description="After passing lifetime thought will be no more available"
                 size="md"
-                variant="filled"
                 icon={<IconCurrency />}
                 data={CURRENCY_LIST}
                 error={errors.currency ? 'Field is invalid' : null}
@@ -143,7 +143,7 @@ export function AccountCreate() {
                 required
                 type="number"
                 label={formatMessage({ id: 'co-bal' })}
-                description={formatMessage({ id: 'co-step' })}
+                description={formatMessage({ id: 'acc-c-bal' })}
                 size="md"
                 min={0}
                 stepHoldDelay={500}
@@ -163,6 +163,7 @@ export function AccountCreate() {
             size="md"
             swatches={SWATCHES}
             label={formatMessage({ id: 'co-color' })}
+            description={formatMessage({ id: 'acc-c-color' })}
             error={errors.color ? 'Field is invalid' : null}
             required
           />
