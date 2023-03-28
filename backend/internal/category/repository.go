@@ -46,7 +46,7 @@ func (r *repository) createCategory(userId uint, category createCategoryDTO) (*c
 		ID:        newCategory.ID,
 		Name:      newCategory.Name,
 		Color:     newCategory.Color,
-		Icon:      newCategory.Color,
+		Icon:      newCategory.Icon,
 		CreatedAt: newCategory.CreatedAt,
 		UpdatedAt: newCategory.UpdatedAt,
 	}
