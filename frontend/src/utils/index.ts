@@ -1,4 +1,5 @@
 export * from './date';
+export * from './constants/icons';
 export * from './copy-to-clipboard';
 export * from './is-empty';
 export * from './select-element';
