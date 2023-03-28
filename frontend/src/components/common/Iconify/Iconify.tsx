@@ -1,36 +1,21 @@
 import React from 'react';
 
-import {
-  IconApple,
-  IconBeer,
-  IconCoins,
-  IconQuestionMark,
-  IconRocket,
-  TablerIconsProps
-} from '@tabler/icons-react';
+import { IconQuestionMark, TablerIconsProps } from '@tabler/icons-react';
 
-// TODO; common comp
-export type SupportedIcons = 'rocket' | 'coins' | 'apple' | 'beer';
+import { ICONS } from 'utils';
+
 interface IconifyProps extends TablerIconsProps {
-  icon: SupportedIcons;
+  icon: string;
 }
 
-// TODO: Extend
-
-// TODO: Ask if ok
-const icons = {
-  rocket: () => <IconRocket />,
-  coins: () => <IconCoins />,
-  apple: () => <IconApple />,
-  beer: () => <IconBeer />
-};
-
 export function Iconify({ icon, ...props }: IconifyProps) {
-  const Icon = icons[icon] as any;
+  const iconObject = ICONS.find((i) => i.value === icon);
 
-  if (!Icon) {
+  if (!iconObject) {
     return <IconQuestionMark {...props} />;
   }
+
+  const Icon = iconObject.component;
 
   return <Icon {...props} />;
 }

@@ -1,4 +1,4 @@
-import { Iconify, SupportedIcons } from './common/Iconify/Iconify';
+import { Iconify } from './common/Iconify/Iconify';
 import LanguagePicker from './common/LangPicker/LangPicker';
 import { ToggleColor } from './common/ToggleColor/ToggleColor';
 import { AppShell } from './layout/AppShell/AppShell';
@@ -25,4 +25,3 @@ export {
   LanguagePicker,
   Iconify
 };
-export type { SupportedIcons };
