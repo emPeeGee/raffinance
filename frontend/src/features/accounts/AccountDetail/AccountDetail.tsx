@@ -21,7 +21,7 @@ import {
   IconTrash
 } from '@tabler/icons-react';
 import { FormattedDate, useIntl } from 'react-intl';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import { AccountDetailsModel } from 'features/accounts';
 import { TransactionsList } from 'features/transactions';
@@ -53,7 +53,6 @@ export function AccountDetail() {
   const [account, setAccount] = useState<AccountDetailsModel>();
 
   const { viewMode, getAccount } = useAccountStore();
-  const navigate = useNavigate();
   const { id } = useParams();
 
   const fetchAccount = async () => {
@@ -159,7 +158,7 @@ export function AccountDetail() {
           </Button>
 
           <Button variant="outline" color="orange" radius="md" leftIcon={<IconEdit />}>
-            {formatMessage({ id: 'co-update' })}
+            {formatMessage({ id: 'co-edi' })}
           </Button>
 
           <Button color="red" variant="outline" radius="md" leftIcon={<IconTrash />}>
