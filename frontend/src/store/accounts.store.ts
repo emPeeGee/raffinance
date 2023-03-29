@@ -8,7 +8,9 @@ import {
   ViewMode
 } from 'features/accounts/accounts.model';
 import { api } from 'services/http';
+import { useAuthStore } from 'store';
 
+// TODO: is loading in store?
 type AccountsStore = {
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;
@@ -22,8 +24,6 @@ type AccountsStore = {
 };
 
 const accountStore = 'Accounts store';
-const tok =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODAwNDUxNzAsImlhdCI6MTY4MDAwMTk3MCwidXNlcklkIjoxfQ.X8zXtU-Jn80rrisUSAQEiXxHzhokKq3WIM5yN2IXXIs';
 
 export const useAccountStore = create<AccountsStore>()(
   devtools(
@@ -39,13 +39,21 @@ export const useAccountStore = create<AccountsStore>()(
           get().fetchAccounts();
         }
       },
+
       getAccount: async (id: string): Promise<AccountDetailsModel> => {
-        const account = await api.get<AccountDetailsModel>({ url: `accounts/${id}`, token: tok });
+        const account = await api.get<AccountDetailsModel>({
+          url: `accounts/${id}`,
+          token: useAuthStore.getState().token
+        });
         console.log(account);
         return account;
       },
+
       fetchAccounts: async () => {
-        const accounts = await api.get<AccountModel[]>({ url: 'accounts', token: tok });
+        const accounts = await api.get<AccountModel[]>({
+          url: 'accounts',
+          token: useAuthStore.getState().token
+        });
         console.log(accounts);
         set({ accounts });
       },
@@ -57,7 +65,7 @@ export const useAccountStore = create<AccountsStore>()(
           const response = await api.post<CreateAccountDTO, AccountModel>({
             url: 'accounts',
             body: account,
-            token: tok
+            token: useAuthStore.getState().token
           });
           console.log(response);
           set({ ...get(), accounts: [...accounts, response] });

@@ -23,7 +23,7 @@ import {
 } from '@tabler/icons-react';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { UserContext } from 'features/authentication';
+import { useAuthStore } from 'store';
 
 import Logo from '../Logo/Logo';
 
@@ -115,7 +115,7 @@ function Navbar() {
   const [active, setActive] = useState(2);
   const { classes, theme } = useStyles();
   const navigate = useNavigate();
-  const { logout } = useContext(UserContext);
+  const { logout } = useAuthStore();
 
   const links = navbarLinks.map((link, index) => (
     <NavbarLink
@@ -150,6 +150,7 @@ function Navbar() {
       <MantineNavbar.Section>
         <Stack justify="center" spacing={0}>
           <NavbarLink icon={IconSettings} label="Settings" route="/settings" />
+          {/* TODO: dialog confirmation */}
           <NavbarLink icon={IconLogout} label="Logout" onClick={logoutUser} />
         </Stack>
       </MantineNavbar.Section>

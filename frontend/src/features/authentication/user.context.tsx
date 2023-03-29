@@ -31,6 +31,7 @@ type UserProviderProps = {
   children: ReactNode;
 };
 
+// TODO: Is not used. To be deleted
 export function UserProvider({ children }: UserProviderProps): React.ReactElement {
   // It means that user authentications logic is done, loading is done
   const [isAppReady, setIsAppReady] = useState(false);

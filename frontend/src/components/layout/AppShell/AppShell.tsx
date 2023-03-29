@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Flex, LoadingOverlay, createStyles } from '@mantine/core';
 import { Route, Routes } from 'react-router-dom';
@@ -6,10 +6,11 @@ import { Route, Routes } from 'react-router-dom';
 import { Footer, Header, Navbar, NotFound, ProtectedRoute } from 'components';
 import { AccountDetail, Accounts } from 'features/accounts';
 import { AccountCreate } from 'features/accounts/CreateAccount/CreateAccount';
-import { Profile, SignIn, UserContext } from 'features/authentication';
+import { Profile, SignIn } from 'features/authentication';
 import { Categories, CategoryCreate } from 'features/categories';
 import { Dashboard } from 'features/dashboard';
 import { Landing } from 'features/home';
+import { FetchUserStatus, useAuthStore } from 'store';
 
 const useStyles = createStyles(() => ({
   shell: {
@@ -28,7 +29,24 @@ const useStyles = createStyles(() => ({
 
 export function AppShell() {
   const { classes } = useStyles();
-  const { isLogged, isAppReady } = useContext(UserContext);
+  const { isLogged, fetchUser } = useAuthStore();
+  const [isAppReady, setIsAppReady] = useState(false);
+
+  // TODO: revise the authentication logic
+  const getUser = async () => {
+    const result = await fetchUser();
+    if (FetchUserStatus.EXPIRED_TOKEN === result) {
+      // TODO: Notification
+    }
+
+    setIsAppReady(true);
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  console.info('App shell render');
 
   if (!isAppReady) {
     return <LoadingOverlay visible />;

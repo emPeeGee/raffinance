@@ -16,7 +16,7 @@ import {
 import { IconAt, IconCalendarBolt, IconEdit, IconPhoneCall } from '@tabler/icons-react';
 
 import avatar from 'assets/logo.png';
-import { UserContext } from 'features/authentication/user.context';
+import { useAuthStore } from 'store';
 
 import { UserModel } from '../authentication.model';
 
@@ -38,9 +38,8 @@ const useStyles = createStyles((theme) => ({
 // TODO: Profile edit
 
 export function Profile() {
-  const userContext = useContext(UserContext);
-  const { username, name, email, phone, createdAt, latestLogins, updatedAt } =
-    userContext?.user as UserModel;
+  const { user } = useAuthStore();
+  const { username, name, email, phone, createdAt, latestLogins, updatedAt } = user as UserModel;
   const { classes } = useStyles();
 
   const createdDate = new Date(createdAt).toTimeString();

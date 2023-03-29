@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
 import {
   createStyles,
@@ -17,7 +17,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { Link } from 'react-router-dom';
 
 import { ToggleColor, LanguagePicker } from 'components';
-import { UserContext } from 'features/authentication/';
+import { useAuthStore } from 'store';
 
 import Logo from '../Logo/Logo';
 
@@ -69,9 +69,7 @@ const useStyles = createStyles((theme) => ({
 function Header() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
   const { classes, theme } = useStyles();
-  const { isLogged, user } = useContext(UserContext);
-
-  console.log(user);
+  const { isLogged, user } = useAuthStore();
 
   return (
     <Box>

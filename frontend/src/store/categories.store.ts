@@ -4,6 +4,8 @@ import { devtools } from 'zustand/middleware';
 import { CreateCategoryDTO, CategoryModel } from 'features/categories';
 import { api } from 'services/http';
 
+import { useAuthStore } from './auth.store';
+
 type CategoriesStore = {
   categories: CategoryModel[];
   fetchCategories: () => void;
@@ -15,15 +17,10 @@ type CategoriesStore = {
 };
 
 const categoriesStore = 'Categories store';
-const tok =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODAwNDUxNzAsImlhdCI6MTY4MDAwMTk3MCwidXNlcklkIjoxfQ.X8zXtU-Jn80rrisUSAQEiXxHzhokKq3WIM5yN2IXXIs';
 
 export const useCategoriesStore = create<CategoriesStore>()(
   devtools(
     (set, get) => ({
-      // TODO: I need it??
-      // viewMode: 'card',
-      // setViewMode: (viewMode) => set({ viewMode }),
       categories: [],
       getCategories: () => {
         console.log(get().categories);
@@ -39,7 +36,10 @@ export const useCategoriesStore = create<CategoriesStore>()(
       //   return account;
       // },
       fetchCategories: async () => {
-        const categories = await api.get<CategoryModel[]>({ url: 'categories', token: tok });
+        const categories = await api.get<CategoryModel[]>({
+          url: 'categories',
+          token: useAuthStore.getState().token
+        });
         console.log(categories);
         set({ categories });
       },
@@ -50,9 +50,8 @@ export const useCategoriesStore = create<CategoriesStore>()(
           const response = await api.post<CreateCategoryDTO, CategoryModel>({
             url: 'categories',
             body: category,
-            token: tok
+            token: useAuthStore.getState().token
           });
-          console.log(response);
           set({ ...get(), categories: [...categories, response] });
           return true;
         } catch (reason) {
@@ -66,3 +65,5 @@ export const useCategoriesStore = create<CategoriesStore>()(
     }
   )
 );
+
+// TODO  useAuthStore.getState().token. I don't like to call it every time.

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import {
   Text,
@@ -18,8 +18,9 @@ import { IconArrowBackUp, IconBolt, IconLock, IconUserCircle } from '@tabler/ico
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { AuthenticationResponse, CredentialsModel, UserContext } from 'features/authentication';
+import { AuthenticationResponse, CredentialsModel } from 'features/authentication';
 import { api } from 'services/http';
+import { useAuthStore } from 'store';
 import { DateUnit } from 'utils';
 
 export function SignIn() {
@@ -33,14 +34,9 @@ export function SignIn() {
 
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const { setToken, user } = useContext(UserContext);
+  const { setToken } = useAuthStore();
 
-  useEffect(() => {
-    if (user) {
-      navigate(`/profile/`);
-    }
-  }, [user]);
-
+  // TODO: Not ok
   const signIn = (data: CredentialsModel) => {
     setIsLoading(true);
     api
@@ -51,6 +47,7 @@ export function SignIn() {
       })
       .then((response) => {
         setToken(response.token);
+        navigate(`/profile/`);
       })
       .catch((err) => {
         console.log(err);

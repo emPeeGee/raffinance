@@ -11,7 +11,6 @@ import { IntlProvider } from 'react-intl';
 import { BrowserRouter } from 'react-router-dom';
 
 import { AppShell, Offline } from 'components';
-import { UserProvider } from 'features/authentication';
 import { useLocalStorage, useNetworkStatus } from 'hooks';
 import messages from 'i18n';
 import { useI18nStore } from 'store';
@@ -81,13 +80,7 @@ function App() {
         <BrowserRouter>
           {/* // TODO: Per feature locale string? */}
           <IntlProvider messages={messages[locale.value]} locale={locale.value}>
-            {!isOnline ? (
-              <Offline />
-            ) : (
-              <UserProvider>
-                <AppShell />
-              </UserProvider>
-            )}
+            {!isOnline ? <Offline /> : <AppShell />}
           </IntlProvider>
         </BrowserRouter>
       </MantineProvider>
