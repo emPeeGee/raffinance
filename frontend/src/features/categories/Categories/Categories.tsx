@@ -10,10 +10,13 @@ import {
   rem,
   Alert,
   Paper,
+  ActionIcon,
   SimpleGrid,
-  UnstyledButton
+  UnstyledButton,
+  Modal
 } from '@mantine/core';
-import { IconHeartPlus, IconInfoCircle } from '@tabler/icons-react';
+import { useDisclosure } from '@mantine/hooks';
+import { IconEdit, IconHeartPlus, IconInfoCircle } from '@tabler/icons-react';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
@@ -65,6 +68,8 @@ export function Categories() {
 
   const { categories, getCategories } = useCategoriesStore();
 
+  const [opened, { open, close }] = useDisclosure(false);
+
   const gotoCategory = (id: number) => () => {
     // Navigate('')
   };
@@ -72,6 +77,10 @@ export function Categories() {
   useEffect(() => {
     getCategories();
   }, []);
+
+  const handleEditCategory = (id: number) => {
+    open();
+  };
 
   return (
     <Container className={classes.root}>
@@ -101,14 +110,33 @@ export function Categories() {
             const textColor = getContrastColor(color);
 
             return (
-              <Paper withBorder p="md" radius="md" key={name} className={classes.root} bg={color}>
-                <UnstyledButton w="100%" onClick={gotoCategory(id)}>
+              <Paper
+                pos="relative"
+                withBorder
+                p={0}
+                radius="md"
+                key={name}
+                className={classes.root}
+                bg={color}>
+                <UnstyledButton p="md" w="100%" onClick={gotoCategory(id)}>
+                  {/* // TODO:  clicking on the category could take the user
+                   to a filtered view of transactions that match that category. */}
+
                   <Group position="left">
                     <Iconify icon={icon} color={textColor} />
                     <Text fz="1.5rem" fw={700} color={textColor}>
                       {name}
                     </Text>
                   </Group>
+                  <ActionIcon
+                    pos="absolute"
+                    top={4}
+                    right={4}
+                    size="lg"
+                    variant="transparent"
+                    onClick={() => handleEditCategory(id)}>
+                    <IconEdit color={textColor} />
+                  </ActionIcon>
                 </UnstyledButton>
               </Paper>
             );
@@ -117,6 +145,10 @@ export function Categories() {
       ) : (
         <NoCategories />
       )}
+
+      <Modal opened={opened} onClose={close} title={formatMessage({ id: 'co-edit' })} centered>
+        {/* Modal content */}
+      </Modal>
     </Container>
   );
 }

@@ -42,6 +42,7 @@ export function AppShell() {
     setIsAppReady(true);
   };
 
+  // TODO: too many renders on init
   useEffect(() => {
     getUser();
   }, []);
