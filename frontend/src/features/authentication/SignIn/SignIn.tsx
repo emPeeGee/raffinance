@@ -20,7 +20,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import { AuthenticationResponse, CredentialsModel } from 'features/authentication';
 import { api } from 'services/http';
-import { useAuthStore } from 'store';
+import { FetchUserStatus, useAuthStore } from 'store';
 import { DateUnit } from 'utils';
 
 export function SignIn() {
@@ -34,7 +34,27 @@ export function SignIn() {
 
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const { setToken } = useAuthStore();
+  const { setToken, fetchUser } = useAuthStore();
+
+  const getUser = async () => {
+    const result = await fetchUser();
+    switch (result) {
+      case FetchUserStatus.OK:
+        navigate(`/profile/`);
+        break;
+      case FetchUserStatus.ERROR:
+      case FetchUserStatus.EXPIRED_TOKEN:
+      case FetchUserStatus.NO_TOKEN:
+        break;
+      // TODO: notifications
+      default:
+        break;
+    }
+
+    if (FetchUserStatus.EXPIRED_TOKEN === result) {
+      // TODO: Notification
+    }
+  };
 
   // TODO: Not ok
   const signIn = (data: CredentialsModel) => {
@@ -47,7 +67,7 @@ export function SignIn() {
       })
       .then((response) => {
         setToken(response.token);
-        navigate(`/profile/`);
+        getUser();
       })
       .catch((err) => {
         console.log(err);
