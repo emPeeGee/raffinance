@@ -10,13 +10,14 @@ import {
   rem,
   Alert,
   Paper,
+  ActionIcon,
   SimpleGrid,
   UnstyledButton,
   Loader
 } from '@mantine/core';
-import { IconHeartPlus, IconInfoCircle } from '@tabler/icons-react';
+import { IconEdit, IconHeartPlus, IconInfoCircle } from '@tabler/icons-react';
 import { useIntl } from 'react-intl';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { Iconify } from 'components';
 import { useCategoriesStore } from 'store';
@@ -63,7 +64,7 @@ const useStyles = createStyles((theme) => ({
 export function Categories() {
   const { formatMessage } = useIntl();
   const { classes } = useStyles();
-
+  const navigate = useNavigate();
   const { categories, getCategories, pending } = useCategoriesStore();
 
   const gotoCategory = (id: number) => () => {
@@ -73,6 +74,10 @@ export function Categories() {
   useEffect(() => {
     getCategories();
   }, []);
+
+  const handleEditCategory = (id: number) => {
+    navigate(`/categories/${id}/edit`);
+  };
 
   const categoriesContent =
     categories.length > 0 ? (
@@ -86,14 +91,33 @@ export function Categories() {
           const textColor = getContrastColor(color);
 
           return (
-            <Paper withBorder p="md" radius="md" key={name} className={classes.root} bg={color}>
-              <UnstyledButton w="100%" onClick={gotoCategory(id)}>
-                <Group position="left">
-                  <Iconify icon={icon} color={textColor} />
-                  <Text fz="1.5rem" fw={700} color={textColor}>
+            <Paper
+              pos="relative"
+              withBorder
+              p={0}
+              radius="md"
+              key={name}
+              className={classes.root}
+              bg={color}>
+              <UnstyledButton p="md" pt="2rem" h="100%" w="100%" onClick={gotoCategory(id)}>
+                {/* // TODO:  clicking on the category could take the user
+                   to a filtered view of transactions that match that category. */}
+
+                <Group position="left" noWrap>
+                  <Iconify size="1.6rem" icon={icon} color={textColor} />
+                  <Text fz="1.5rem" fw={700} color={textColor} lineClamp={1}>
                     {name}
                   </Text>
                 </Group>
+                <ActionIcon
+                  pos="absolute"
+                  top={4}
+                  right={4}
+                  size="lg"
+                  variant="transparent"
+                  onClick={() => handleEditCategory(id)}>
+                  <IconEdit color={textColor} />
+                </ActionIcon>
               </UnstyledButton>
             </Paper>
           );
