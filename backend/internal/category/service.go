@@ -58,6 +58,7 @@ func (s *service) getCategories(userId uint) ([]categoryResponse, error) {
 }
 
 func (s *service) updateCategory(userId, categoryId uint, category updateCategoryDTO) (*categoryResponse, error) {
+	// TODO: bug, when user updates only icon or color. the category won't be updated
 	exists, err := s.repo.categoryExistsAndBelongsToUser(userId, categoryId)
 	if err != nil {
 		return nil, err
