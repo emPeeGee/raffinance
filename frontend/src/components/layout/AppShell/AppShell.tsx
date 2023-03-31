@@ -10,6 +10,7 @@ import { Profile, SignIn } from 'features/authentication';
 import { Categories, CategoryCreate } from 'features/categories';
 import { Dashboard } from 'features/dashboard';
 import { Landing } from 'features/home';
+import { Tags } from 'features/tags';
 import { FetchUserStatus, useAuthStore } from 'store';
 
 const useStyles = createStyles(() => ({
@@ -72,6 +73,9 @@ export function AppShell() {
                     <Route path="/categories" element={<Categories />} />
                     <Route path="/categories/create" element={<CategoryCreate />} />
                     <Route path="/categories/:id/edit" element={<CategoryCreate />} />
+
+                    <Route path="/tags/*" element={<Tags />} />
+
                     <Route path="/profile" element={<Profile />} />
                   </Route>
                   <Route path="*" element={<NotFound />} />

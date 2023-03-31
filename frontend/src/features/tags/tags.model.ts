@@ -4,3 +4,9 @@ export interface TagModel {
   color: string;
   icon: string;
 }
+
+export interface CreateTagDTO {
+  name: string;
+  icon: string;
+  color: string;
+}

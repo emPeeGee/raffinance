@@ -71,5 +71,15 @@
   "tag-info": "Tags are another way for users to organize their transactions, but they offer more flexibility than categories. Users can create tags based on any criteria they choose, such as the merchant name, the location, or the type of payment used. Tags can also have a name and color for easy identification. Users can assign multiple tags to a single transaction, allowing them to track their spending in more detail and analyze their financial behavior in different ways.",
   "tag-c-name": "The name of the tag, e.g. 'KFC', 'Gas', 'Movies', etc.",
   "tag-c-icon": "The color associated with the tag. This can be used for easy identification and organization of transactions",
-  "tag-c-color": "An icon that represents the tag. This can also be used for easy identification and organization of transactions."
+  "tag-c-color": "An icon that represents the tag. This can also be used for easy identification and organization of transactions.",
+  "tag-tag": "Tags",
+  "tag-no-found": "No tags yet!",
+  "tag-no-desc": "You can add a new tag by clicking the button below.",
+  "tag-create": "Create tag",
+  "tag-name": "Tag name",
+  "tag-f-title": "Tag creation failed",
+  "tag-f-desc": "There was an error creating the tag. Please try again later. If the problem persists, please contact customer support.",
+  "tag-fu-title": "Tag saving failed",
+  "tag-fu-desc": "There was an error saving the tag. Please try again later. If the problem persists, please contact customer support.",
+  "tag-update": "Edit tag"
 }
