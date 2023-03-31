@@ -7,6 +7,7 @@ import { api } from 'services/http';
 import { useAuthStore } from './auth.store';
 
 type CategoriesStore = {
+  pending: boolean;
   categories: CategoryModel[];
   fetchCategories: () => void;
   getCategories: () => void;
@@ -21,13 +22,16 @@ const categoriesStore = 'Categories store';
 export const useCategoriesStore = create<CategoriesStore>()(
   devtools(
     (set, get) => ({
+      pending: false,
       categories: [],
       getCategories: () => {
-        console.log(get().categories);
+        set({ ...get(), pending: true });
         const { categories } = get();
 
         if (categories.length === 0) {
           get().fetchCategories();
+        } else {
+          set({ ...get(), pending: false });
         }
       },
       // getAccount: async (id: string): Promise<AccountDetailsModel> => {
@@ -40,8 +44,7 @@ export const useCategoriesStore = create<CategoriesStore>()(
           url: 'categories',
           token: useAuthStore.getState().token
         });
-        console.log(categories);
-        set({ categories });
+        set({ categories, pending: false });
       },
       addCategory: async (category: CreateCategoryDTO): Promise<boolean> => {
         const { categories } = get();

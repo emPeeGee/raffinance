@@ -11,7 +11,8 @@ import {
   Alert,
   Paper,
   SimpleGrid,
-  UnstyledButton
+  UnstyledButton,
+  Loader
 } from '@mantine/core';
 import { IconHeartPlus, IconInfoCircle } from '@tabler/icons-react';
 import { useIntl } from 'react-intl';
@@ -63,7 +64,7 @@ export function Categories() {
   const { formatMessage } = useIntl();
   const { classes } = useStyles();
 
-  const { categories, getCategories } = useCategoriesStore();
+  const { categories, getCategories, pending } = useCategoriesStore();
 
   const gotoCategory = (id: number) => () => {
     // Navigate('')
@@ -72,6 +73,35 @@ export function Categories() {
   useEffect(() => {
     getCategories();
   }, []);
+
+  const categoriesContent =
+    categories.length > 0 ? (
+      <SimpleGrid
+        cols={4}
+        breakpoints={[
+          { maxWidth: 'md', cols: 2 },
+          { maxWidth: 'xs', cols: 1 }
+        ]}>
+        {categories.map(({ id, name, color, icon }) => {
+          const textColor = getContrastColor(color);
+
+          return (
+            <Paper withBorder p="md" radius="md" key={name} className={classes.root} bg={color}>
+              <UnstyledButton w="100%" onClick={gotoCategory(id)}>
+                <Group position="left">
+                  <Iconify icon={icon} color={textColor} />
+                  <Text fz="1.5rem" fw={700} color={textColor}>
+                    {name}
+                  </Text>
+                </Group>
+              </UnstyledButton>
+            </Paper>
+          );
+        })}
+      </SimpleGrid>
+    ) : (
+      <NoCategories />
+    );
 
   return (
     <Container className={classes.root}>
@@ -90,32 +120,12 @@ export function Categories() {
         {formatMessage({ id: 'cat-info' })}
       </Alert>
 
-      {categories.length > 0 ? (
-        <SimpleGrid
-          cols={4}
-          breakpoints={[
-            { maxWidth: 'md', cols: 2 },
-            { maxWidth: 'xs', cols: 1 }
-          ]}>
-          {categories.map(({ id, name, color, icon }) => {
-            const textColor = getContrastColor(color);
-
-            return (
-              <Paper withBorder p="md" radius="md" key={name} className={classes.root} bg={color}>
-                <UnstyledButton w="100%" onClick={gotoCategory(id)}>
-                  <Group position="left">
-                    <Iconify icon={icon} color={textColor} />
-                    <Text fz="1.5rem" fw={700} color={textColor}>
-                      {name}
-                    </Text>
-                  </Group>
-                </UnstyledButton>
-              </Paper>
-            );
-          })}
-        </SimpleGrid>
+      {pending ? (
+        <Group position="center" p="lg">
+          <Loader />
+        </Group>
       ) : (
-        <NoCategories />
+        categoriesContent
       )}
     </Container>
   );
