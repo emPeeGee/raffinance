@@ -18,11 +18,11 @@ import { showNotification } from '@mantine/notifications';
 import { IconArrowBackUp, IconBolt, IconSignature } from '@tabler/icons-react';
 import { Controller, useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import { Iconify } from 'components';
 import { useCategoriesStore } from 'store';
-import { DateUnit, ICONS, SWATCHES, noop } from 'utils';
+import { DateUnit, ICONS, SWATCHES } from 'utils';
 
 import { CreateCategoryDTO } from '../categories.model';
 
@@ -64,7 +64,12 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
 );
 SelectItem.displayName = 'SelectItem';
 
+// TODO: Rename to both create and edit
 export function CategoryCreate() {
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const { addCategory, updateCategory, getCategory } = useCategoriesStore();
+  const category = id ? getCategory(Number(id)) : null;
   const { formatMessage } = useIntl();
   const { classes } = useStyles();
   const {
@@ -73,11 +78,12 @@ export function CategoryCreate() {
     control,
     formState: { errors }
   } = useForm<CreateCategoryDTO>({
-    mode: 'onChange'
+    mode: 'onChange',
+    defaultValues: { ...category }
   });
+
+  console.log(category);
   const [isLoading, setIsLoading] = useState(false);
-  const { addCategory } = useCategoriesStore();
-  const navigate = useNavigate();
 
   const create = async (cat: CreateCategoryDTO) => {
     setIsLoading(true);
@@ -97,7 +103,34 @@ export function CategoryCreate() {
     }
   };
 
-  // /* TODO: Description for every field */
+  const update = async (cat: CreateCategoryDTO) => {
+    setIsLoading(true);
+    if (!id) {
+      return;
+    }
+
+    const success = await updateCategory(Number(id), { ...cat });
+    if (success) {
+      navigate(`../categories`);
+    } else {
+      showNotification({
+        title: formatMessage({ id: 'cat-fu-title' }),
+        message: formatMessage({ id: 'cat-fu-desc' }),
+        color: 'red',
+        autoClose: DateUnit.second * 5
+      });
+
+      setIsLoading(false);
+    }
+  };
+
+  const isCreate = category === undefined || category === null;
+
+  // If category is null, means is it update and id has something(eg. is user refreshes the page), go back to categories
+  if ((category === undefined || category === null) && id !== undefined) {
+    navigate('/categories');
+  }
+
   return (
     <Container className={classes.root}>
       <Group my="lg">
@@ -105,9 +138,11 @@ export function CategoryCreate() {
           {formatMessage({ id: 'co-back' })}
         </Button>
 
-        <Title className={classes.title}>{formatMessage({ id: 'cat-create' })}</Title>
+        <Title className={classes.title}>
+          {formatMessage({ id: isCreate ? 'cat-create' : 'cat-update' })}
+        </Title>
       </Group>
-      <form onSubmit={handleSubmit(create)}>
+      <form onSubmit={handleSubmit(isCreate ? create : update)}>
         <Flex gap="md" direction="column">
           <TextInput
             {...register('name', { required: true, minLength: 2, maxLength: 255, value: '' })}
@@ -145,24 +180,31 @@ export function CategoryCreate() {
             )}
           />
 
-          <ColorInput
-            {...register('color', { required: true, minLength: 7, maxLength: 7, value: '' })}
-            withEyeDropper
-            format="hex"
-            autoComplete="off"
-            onChange={noop}
-            size="md"
-            swatches={SWATCHES}
-            label={formatMessage({ id: 'co-color' })}
-            description={formatMessage({ id: 'cat-c-color' })}
-            error={errors.color ? 'Field is invalid' : null}
-            required
+          <Controller
+            name="color"
+            control={control}
+            rules={{ required: true, maxLength: 7, minLength: 7, value: '' }}
+            render={({ field }) => (
+              <ColorInput
+                {...field}
+                withEyeDropper
+                format="hex"
+                autoComplete="off"
+                size="md"
+                swatches={SWATCHES}
+                label={formatMessage({ id: 'co-color' })}
+                description={formatMessage({ id: 'cat-c-color' })}
+                error={errors.color ? 'Field is invalid' : null}
+                required
+              />
+            )}
           />
+
           <Button
             my="md"
             type="submit"
             leftIcon={isLoading ? <Loader size={24} color="white" /> : <IconBolt size={24} />}>
-            {formatMessage({ id: 'co-create' })}
+            {formatMessage({ id: isCreate ? 'co-create' : 'co-save' })}
           </Button>
         </Flex>
       </form>

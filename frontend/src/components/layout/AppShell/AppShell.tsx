@@ -71,6 +71,7 @@ export function AppShell() {
 
                     <Route path="/categories" element={<Categories />} />
                     <Route path="/categories/create" element={<CategoryCreate />} />
+                    <Route path="/categories/:id/edit" element={<CategoryCreate />} />
                     <Route path="/profile" element={<Profile />} />
                   </Route>
                   <Route path="*" element={<NotFound />} />

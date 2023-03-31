@@ -18,6 +18,7 @@
   "co-upd-at": "Updated at",
   "co-upd": "Update",
   "co-edi": "Edit",
+  "co-save": "Save",
   "co-quick-act": "Quick actions",
   "co-icon": "Icon",
 
@@ -60,9 +61,12 @@
   "cat-name": "Category name",
   "cat-f-title": "Category creation failed",
   "cat-f-desc": "There was an error creating the category. Please try again later. If the problem persists, please contact customer support.",
+  "cat-fu-title": "Category saving failed",
+  "cat-fu-desc": "There was an error saving the category. Please try again later. If the problem persists, please contact customer support.",
   "cat-c-name": "The name of the category, e.g. 'Food & Dining', 'Transportation', 'Entertainment', etc.",
   "cat-c-icon": "An icon that represents the category. This can also be used for easy identification and organization of transactions.",
   "cat-c-color": "The color associated with the category. This can be used for easy identification and organization of transactions.",
+  "cat-update": "Edit category",
 
   "tag-info": "Tags are another way for users to organize their transactions, but they offer more flexibility than categories. Users can create tags based on any criteria they choose, such as the merchant name, the location, or the type of payment used. Tags can also have a name and color for easy identification. Users can assign multiple tags to a single transaction, allowing them to track their spending in more detail and analyze their financial behavior in different ways.",
   "tag-c-name": "The name of the tag, e.g. 'KFC', 'Gas', 'Movies', etc.",

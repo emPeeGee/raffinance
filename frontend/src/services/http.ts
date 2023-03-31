@@ -41,5 +41,15 @@ export const api = {
         Authorization: `${token ? `Bearer ${token}` : ''}`
       },
       body: JSON.stringify(body)
+    }).then((response) => handleErrors<K>(response)),
+
+  put: <T, K>({ url, body, token, auth = false }: PostRequest<T>) =>
+    fetch(`${auth ? authUrl : testUrl}${url}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `${token ? `Bearer ${token}` : ''}`
+      },
+      body: JSON.stringify(body)
     }).then((response) => handleErrors<K>(response))
 };

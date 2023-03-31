@@ -12,8 +12,9 @@ type CategoriesStore = {
   fetchCategories: () => void;
   getCategories: () => void;
   // TODO: should it be in store??? because it doesn't store anything
-  // getAccount: (id: string) => Promise<AccountDetailsModel>;
+  getCategory: (id: number) => CategoryModel | undefined;
   addCategory: (category: CreateCategoryDTO) => Promise<boolean>;
+  updateCategory: (id: number, category: CreateCategoryDTO) => Promise<boolean>;
   // removeAccount: (id: string) => void;
 };
 
@@ -34,11 +35,10 @@ export const useCategoriesStore = create<CategoriesStore>()(
           set({ ...get(), pending: false });
         }
       },
-      // getAccount: async (id: string): Promise<AccountDetailsModel> => {
-      //   const account = await api.get<AccountDetailsModel>({ url: `accounts/${id}`, token: tok });
-      //   console.log(account);
-      //   return account;
-      // },
+      getCategory: (id: number): CategoryModel | undefined => {
+        const category = get().categories.find((c) => c.id === id);
+        return category;
+      },
       fetchCategories: async () => {
         const categories = await api.get<CategoryModel[]>({
           url: 'categories',
@@ -56,6 +56,29 @@ export const useCategoriesStore = create<CategoriesStore>()(
             token: useAuthStore.getState().token
           });
           set({ ...get(), categories: [...categories, response] });
+          return true;
+        } catch (reason) {
+          console.log(reason);
+          return false;
+        }
+      },
+
+      updateCategory: async (id: number, category: CreateCategoryDTO): Promise<boolean> => {
+        const { categories } = get();
+
+        try {
+          const response = await api.put<CreateCategoryDTO, CategoryModel>({
+            url: `categories/${id}`,
+            body: category,
+            token: useAuthStore.getState().token
+          });
+
+          const idx = categories.findIndex((c) => c.id === id);
+          if (idx !== -1) {
+            categories[idx] = response;
+          }
+
+          set({ ...get(), categories: [...categories] });
           return true;
         } catch (reason) {
           console.log(reason);
