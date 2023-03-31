@@ -27,11 +27,6 @@ import { DateUnit, ICONS, SWATCHES } from 'utils';
 import { CreateCategoryDTO } from '../categories.model';
 
 const useStyles = createStyles((theme) => ({
-  root: {
-    paddingTop: rem(64),
-    paddingBottom: rem(120)
-  },
-
   title: {
     fontWeight: 900,
     fontSize: rem(34),
@@ -128,7 +123,7 @@ export function CategoryCreate() {
   }
 
   return (
-    <Container className={classes.root}>
+    <>
       <Group my="lg">
         <Button component={Link} to="/categories" variant="light" leftIcon={<IconArrowBackUp />}>
           {formatMessage({ id: 'co-back' })}
@@ -204,7 +199,7 @@ export function CategoryCreate() {
           </Button>
         </Flex>
       </form>
-    </Container>
+    </>
   );
 }
 // what is deduplication ???

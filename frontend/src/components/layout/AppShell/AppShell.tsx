@@ -7,7 +7,7 @@ import { Footer, Header, Navbar, NotFound, ProtectedRoute } from 'components';
 import { AccountDetail, Accounts } from 'features/accounts';
 import { AccountCreate } from 'features/accounts/CreateAccount/CreateAccount';
 import { Profile, SignIn } from 'features/authentication';
-import { Categories, CategoryCreate } from 'features/categories';
+import { Categories } from 'features/categories';
 import { Dashboard } from 'features/dashboard';
 import { Landing } from 'features/home';
 import { Tags } from 'features/tags';
@@ -70,9 +70,7 @@ export function AppShell() {
                     <Route path="/accounts/:id" element={<AccountDetail />} />
                     <Route path="/accounts/create" element={<AccountCreate />} />
 
-                    <Route path="/categories" element={<Categories />} />
-                    <Route path="/categories/create" element={<CategoryCreate />} />
-                    <Route path="/categories/:id/edit" element={<CategoryCreate />} />
+                    <Route path="/categories/*" element={<Categories />} />
 
                     <Route path="/tags/*" element={<Tags />} />
 
