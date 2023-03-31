@@ -13,7 +13,9 @@ import {
   ActionIcon,
   SimpleGrid,
   UnstyledButton,
-  Loader
+  Loader,
+  Flex,
+  Box
 } from '@mantine/core';
 import { IconEdit, IconHeartPlus, IconInfoCircle } from '@tabler/icons-react';
 import { useIntl } from 'react-intl';
@@ -46,6 +48,13 @@ const useStyles = createStyles((theme) => ({
     [theme.fn.smallerThan('sm')]: {
       fontSize: rem(32)
     }
+  },
+
+  categoryTitle: {
+    fontSize: '1rem',
+    fontWeight: 700,
+    whiteSpace: 'pre-wrap',
+    wordBreak: 'break-word'
   },
 
   value: {
@@ -99,25 +108,33 @@ export function Categories() {
               key={name}
               className={classes.root}
               bg={color}>
-              <UnstyledButton p="md" pt="2rem" h="100%" w="100%" onClick={gotoCategory(id)}>
+              <UnstyledButton p="xs" h="100%" w="100%" onClick={gotoCategory(id)} title={name}>
                 {/* // TODO:  clicking on the category could take the user
                    to a filtered view of transactions that match that category. */}
 
-                <Group position="left" noWrap>
-                  <Iconify size="1.6rem" icon={icon} color={textColor} />
-                  <Text fz="1.5rem" fw={700} color={textColor} lineClamp={1}>
-                    {name}
-                  </Text>
+                <Group position="apart" spacing="0.25rem" noWrap>
+                  <Flex justify="left" align="center" gap="xs" wrap="nowrap">
+                    <Box>
+                      <Iconify size="1.6rem" icon={icon} color={textColor} />
+                    </Box>
+                    <Text color={textColor} lineClamp={3} className={classes.categoryTitle}>
+                      {name}
+                    </Text>
+                  </Flex>
+                  <ActionIcon
+                    size="lg"
+                    variant="light"
+                    sx={() => ({
+                      backgroundColor: textColor === '#000' ? '#00000028' : '#ffffff70',
+
+                      ':hover': {
+                        backgroundColor: textColor === '#000' ? '#00000045' : '#ffffff85'
+                      }
+                    })}
+                    onClick={() => handleEditCategory(id)}>
+                    <IconEdit color={textColor} />
+                  </ActionIcon>
                 </Group>
-                <ActionIcon
-                  pos="absolute"
-                  top={4}
-                  right={4}
-                  size="lg"
-                  variant="transparent"
-                  onClick={() => handleEditCategory(id)}>
-                  <IconEdit color={textColor} />
-                </ActionIcon>
               </UnstyledButton>
             </Paper>
           );
