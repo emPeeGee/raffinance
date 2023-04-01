@@ -1,8 +1,9 @@
 import React from 'react';
 
-import { Badge, Flex, Group, Table } from '@mantine/core';
+import { Anchor, Badge, Flex, Group, Table } from '@mantine/core';
 import { IconArrowsExchange, IconCashBanknote, IconCashBanknoteOff } from '@tabler/icons-react';
 import { FormattedDate } from 'react-intl';
+import { Link } from 'react-router-dom';
 
 import { getContrastColor } from 'utils';
 
@@ -14,7 +15,7 @@ interface Props {
 
 export function TransactionTable({ transactions }: Props) {
   return (
-    <Table>
+    <Table highlightOnHover striped>
       <thead>
         <tr>
           <th>Date</th>
@@ -31,7 +32,9 @@ export function TransactionTable({ transactions }: Props) {
           ({ id: txnId, transactionTypeId, amount, description, category, tags, date }) => (
             <tr key={txnId}>
               <td>
-                <FormattedDate value={date} dateStyle="short" timeStyle="short" />
+                <Anchor component={Link} to={`/transactions/${txnId}`}>
+                  <FormattedDate value={date} dateStyle="short" timeStyle="short" />
+                </Anchor>
               </td>
               <td>
                 <Flex align="center">
@@ -51,20 +54,11 @@ export function TransactionTable({ transactions }: Props) {
               <td>{amount}</td>
               <td>{description}</td>
               <td>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <div
-                    style={{
-                      width: '16px',
-                      height: '16px',
-                      backgroundColor: category.color,
-                      marginRight: '8px'
-                    }}
-                  />
-
-                  <Group mb="xs">
-                    <Badge c={category.color}>{category.name}</Badge>
-                  </Group>
-                </div>
+                <Group mb="xs">
+                  <Badge c={getContrastColor(category.color)} bg={category.color}>
+                    {category.name}
+                  </Badge>
+                </Group>
               </td>
               <td>
                 {tags?.map((tag) => (

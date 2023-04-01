@@ -10,8 +10,8 @@ import {
 import { FormattedDate } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
-import { TransactionType } from 'features/accounts';
-import { TransactionModel } from 'features/transactions';
+import { TransactionModel, TransactionType } from 'features/transactions';
+import { useAccountStore } from 'store';
 import { getContrastColor } from 'utils';
 
 const useStyles = createStyles((theme) => ({
@@ -44,18 +44,22 @@ export function TransactionCard({ transaction, currency }: Props) {
   const { id, category, tags, amount, date, description, transactionTypeId } = transaction;
   const { classes } = useStyles();
   const navigate = useNavigate();
+  const { accounts } = useAccountStore();
 
   const gotoTransaction = () => {
     navigate(`/transactions/${id}`);
   };
 
+  // TODO: How performant is it ???
+  const txnAcc = accounts.find((a) => a.id === transaction.toAccountId);
+
   return (
     <div>
-      <Paper withBorder p="md" radius="md" key={`${description}${date}`}>
-        <Group mb="xs" spacing={0}>
-          <Badge c={category.color}>{category.name}</Badge>
-        </Group>
-        <UnstyledButton onClick={gotoTransaction}>
+      <Paper withBorder radius="md" key={`${description}${date}`}>
+        <UnstyledButton p="md" w="100%" h="100%" onClick={gotoTransaction}>
+          <Group mb="xs" spacing={0}>
+            <Badge c={category.color}>{category.name}</Badge>
+          </Group>
           <Group position="apart">
             <Title order={5} mb="sm" className={classes.transactionTitle}>
               {description}
@@ -92,7 +96,7 @@ export function TransactionCard({ transaction, currency }: Props) {
             )}
 
             <Text className={classes.currency} size="sm" fw={500}>
-              {currency}
+              {txnAcc?.currency}
             </Text>
           </Group>
 

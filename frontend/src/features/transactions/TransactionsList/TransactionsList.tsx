@@ -16,8 +16,8 @@ import { IconArrowLeft, IconArrowRight, IconSearch } from '@tabler/icons-react';
 import { FormattedDate, FormattedNumber, useIntl } from 'react-intl';
 
 import { ViewSwitcher } from 'components';
-import { TransactionType } from 'features/accounts';
 import {
+  TransactionType,
   NoTransactions,
   TransactionCard,
   TransactionModel,
