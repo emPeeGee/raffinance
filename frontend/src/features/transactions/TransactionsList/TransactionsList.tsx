@@ -1,32 +1,61 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import {
   Accordion,
   ActionIcon,
-  Badge,
   Button,
-  Card,
   Group,
-  Paper,
-  SegmentedControl,
   SimpleGrid,
-  Table,
   TextInput,
+  Title,
   useMantineTheme
 } from '@mantine/core';
-import { MonthPicker } from '@mantine/dates';
-import { IconArrowLeft, IconArrowRight, IconFilter, IconSearch } from '@tabler/icons-react';
+import { IconArrowLeft, IconArrowRight, IconSearch } from '@tabler/icons-react';
 import { FormattedDate, useIntl } from 'react-intl';
 
-import { MultiPicker, ViewSwitcher } from 'components';
+import { ViewSwitcher } from 'components';
+import { TransactionType } from 'features/accounts';
 import {
   NoTransactions,
   TransactionCard,
   TransactionModel,
+  TransactionTable,
   TransactionsFilter
 } from 'features/transactions';
-import { useCategoriesStore, useTagsStore, useTransactionStore } from 'store';
-import { getContrastColor } from 'utils';
+import { useTransactionStore } from 'store';
+
+interface GroupedTransaction {
+  amount: number;
+  transactions: TransactionModel[];
+}
+
+function groupTransactionsByDay(transactions: TransactionModel[]): {
+  [key: string]: GroupedTransaction;
+} {
+  return transactions.reduce(
+    (acc: { [key: string]: GroupedTransaction }, transaction: TransactionModel) => {
+      const date: string = new Date(transaction.date).toISOString().slice(0, 10);
+      const existingGroup: GroupedTransaction = acc[date] || { amount: 0, transactions: [] };
+
+      switch (transaction.transactionTypeId) {
+        case TransactionType.INCOME:
+          existingGroup.amount += transaction.amount;
+          break;
+
+        case TransactionType.EXPENSE:
+          existingGroup.amount -= transaction.amount;
+          break;
+        default:
+          break;
+      }
+      existingGroup.transactions.push({ ...transaction });
+      acc[date] = existingGroup;
+
+      return acc;
+    },
+    {}
+  );
+}
 
 interface Props {
   transactions: TransactionModel[];
@@ -50,6 +79,13 @@ export function TransactionsList({ transactions, currency }: Props) {
   if (isEmpty) {
     return <NoTransactions />;
   }
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const agregatedTxns = useMemo(() => {
+    return groupTransactionsByDay(transactions);
+  }, [transactions]);
+
+  console.log(agregatedTxns);
 
   return (
     <div>
@@ -82,94 +118,46 @@ export function TransactionsList({ transactions, currency }: Props) {
           {/* TODO: Make a generic view switcher */}
           <ViewSwitcher defaultValue={viewMode} onChange={setViewMode} />
 
-          {viewMode === 'card' && (
-            <SimpleGrid
-              cols={4}
-              my="lg"
-              breakpoints={[
-                { maxWidth: 'md', cols: 2 },
-                { maxWidth: 'xs', cols: 1 }
-              ]}>
-              {transactions.map((transaction) => (
-                <TransactionCard
-                  key={transaction.id}
-                  transaction={transaction}
-                  currency={currency}
-                />
-              ))}
-            </SimpleGrid>
-          )}
+          <Accordion multiple variant="separated" defaultValue={Object.keys(agregatedTxns)}>
+            {Object.keys(agregatedTxns).map((groupDate) => (
+              <Accordion.Item value={groupDate} key={groupDate}>
+                <Accordion.Control>
+                  <Group position="apart" align="center">
+                    <Title order={3}>
+                      <FormattedDate dateStyle="full" value={groupDate} />
+                    </Title>
 
-          {/* TODO: Table is not looking good */}
-          {viewMode === 'table' && (
-            <div>
-              <Paper withBorder radius="md">
-                <Table>
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      {/* TODO: type as transaction text */}
-                      <th>Type</th>
-                      <th>Amount</th>
-                      <th>Description</th>
-                      <th>Category</th>
-                      <th>Tags</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {(transactions ?? []).map(
-                      ({
-                        id: txnId,
-                        transactionTypeId,
-                        amount,
-                        description,
-                        category,
-                        tags,
-                        date
-                      }) => (
-                        <tr key={txnId}>
-                          <td>
-                            <FormattedDate value={date} dateStyle="short" timeStyle="short" />
-                          </td>
-                          <td>{transactionTypeId}</td>
-                          <td>{description}</td>
-                          <td>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                              <div
-                                style={{
-                                  width: '16px',
-                                  height: '16px',
-                                  backgroundColor: category.color,
-                                  marginRight: '8px'
-                                }}
-                              />
+                    <Title order={3} color="dimmed">
+                      {agregatedTxns[groupDate].amount} CUR
+                    </Title>
+                  </Group>
+                </Accordion.Control>
+                <Accordion.Panel>
+                  {viewMode === 'card' && (
+                    <SimpleGrid
+                      cols={4}
+                      my="lg"
+                      breakpoints={[
+                        { maxWidth: 'md', cols: 2 },
+                        { maxWidth: 'xs', cols: 1 }
+                      ]}>
+                      {agregatedTxns[groupDate].transactions.map((transaction) => (
+                        <TransactionCard
+                          key={transaction.id}
+                          transaction={transaction}
+                          currency={currency}
+                        />
+                      ))}
+                    </SimpleGrid>
+                  )}
 
-                              <Group mb="xs">
-                                <Badge c={category.color}>{category.name}</Badge>
-                              </Group>
-                            </div>
-                          </td>
-                          <td>{amount}</td>
-                          <td>
-                            {tags?.map((tag) => (
-                              <Badge
-                                key={tag.id}
-                                mr="xs"
-                                bg={tag.color}
-                                c={getContrastColor(tag.color)}
-                                variant="filled">
-                                {tag.name}
-                              </Badge>
-                            ))}
-                          </td>
-                        </tr>
-                      )
-                    )}
-                  </tbody>
-                </Table>
-              </Paper>
-            </div>
-          )}
+                  {viewMode === 'table' && (
+                    <TransactionTable transactions={agregatedTxns[groupDate].transactions} />
+                  )}
+                </Accordion.Panel>
+              </Accordion.Item>
+            ))}
+          </Accordion>
         </>
       )}
     </div>

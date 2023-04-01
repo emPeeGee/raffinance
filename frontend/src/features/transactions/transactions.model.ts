@@ -16,7 +16,7 @@ export interface TransactionModel {
   amount: number;
   description: string;
   location: string;
-  toAccountId: number;
+  toAccountId: TransactionType;
   transactionTypeId: number;
   category: CategoryModel;
   tags: TagModel[];

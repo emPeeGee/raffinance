@@ -5,6 +5,7 @@ import { TransactionModel } from './transactions.model';
 import { TransactionsDashboard } from './TransactionsDashboard/TransactionsDashboard';
 import { TransactionsFilter } from './TransactionsFilter/TransactionsFilter';
 import { TransactionsList } from './TransactionsList/TransactionsList';
+import { TransactionTable } from './TransactionTable/TransactionTable';
 
 export {
   NoTransactions,
@@ -12,6 +13,7 @@ export {
   Transactions,
   TransactionsDashboard,
   TransactionsFilter,
-  TransactionsList
+  TransactionsList,
+  TransactionTable
 };
 export type { TransactionModel };
