@@ -14,8 +14,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
-    "baseUrl": "src",
+    "jsx": "react",
+    "baseUrl": "src", // With this, react is not more marked as unused
 
     "paths": {
       "assets/*": ["./src/assets/*"],
