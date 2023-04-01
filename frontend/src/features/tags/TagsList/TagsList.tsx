@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   Button,
@@ -14,13 +14,23 @@ import {
   UnstyledButton,
   Loader,
   Flex,
-  Box
+  Box,
+  Modal,
+  Menu
 } from '@mantine/core';
-import { IconEdit, IconHeartPlus, IconInfoCircle } from '@tabler/icons-react';
+import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
+import {
+  IconDotsVertical,
+  IconEdit,
+  IconHeartPlus,
+  IconInfoCircle,
+  IconTrash
+} from '@tabler/icons-react';
 import { useIntl } from 'react-intl';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { Iconify } from 'components';
+import { ConfirmDelete, Iconify } from 'components';
 import { useTagsStore } from 'store';
 import { getContrastColor } from 'utils';
 
@@ -53,14 +63,43 @@ export function TagsList() {
   const { formatMessage } = useIntl();
   const { classes } = useStyles();
   const navigate = useNavigate();
-  const { tags, pending } = useTagsStore();
+  const { deleteTag, tags, pending } = useTagsStore();
+  const [tagToDelete, setTagToDelete] = useState<{ id: number; name: string } | null>(null);
 
-  const gotoCategory = (id: number) => () => {
+  const [opened, { open, close }] = useDisclosure(false);
+
+  const gotoTag = (id: number) => () => {
     // Navigate('')
   };
 
-  const handleEditCategory = (id: number) => {
+  const handleEditTag = (id: number) => {
     navigate(`/tags/${id}/edit`);
+  };
+
+  const handleDeleteTag = (id: number, name: string) => {
+    setTagToDelete({ id, name });
+    open();
+  };
+
+  const onDeleteClick = async () => {
+    if (!tagToDelete) {
+      return;
+    }
+
+    const ok = await deleteTag(tagToDelete.id);
+    if (ok) {
+      notifications.show({
+        message: formatMessage({ id: 'co-del-suc' }),
+        color: 'green'
+      });
+    } else {
+      notifications.show({
+        message: formatMessage({ id: 'co-del-err' }),
+        color: 'red'
+      });
+    }
+
+    close();
   };
 
   const tagsContent =
@@ -76,7 +115,7 @@ export function TagsList() {
 
           return (
             <Paper pos="relative" withBorder p={0} radius="md" key={name} bg={color}>
-              <UnstyledButton p="xs" h="100%" w="100%" onClick={gotoCategory(id)} title={name}>
+              <UnstyledButton p="xs" h="100%" w="100%" onClick={gotoTag(id)} title={name}>
                 {/* // TODO:  clicking on the tag could take the user
                    to a filtered view of transactions that match that tag. */}
 
@@ -89,19 +128,35 @@ export function TagsList() {
                       {name}
                     </Text>
                   </Flex>
-                  <ActionIcon
-                    size="lg"
-                    variant="light"
-                    sx={() => ({
-                      backgroundColor: textColor === '#000' ? '#00000028' : '#ffffff70',
 
-                      ':hover': {
-                        backgroundColor: textColor === '#000' ? '#00000045' : '#ffffff85'
-                      }
-                    })}
-                    onClick={() => handleEditCategory(id)}>
-                    <IconEdit color={textColor} />
-                  </ActionIcon>
+                  <Menu shadow="md" width={200}>
+                    <Menu.Target>
+                      <ActionIcon
+                        size="md"
+                        variant="light"
+                        sx={() => ({
+                          backgroundColor: textColor === '#000' ? '#00000028' : '#ffffff70',
+                          ':hover': {
+                            backgroundColor: textColor === '#000' ? '#00000045' : '#ffffff85'
+                          }
+                        })}>
+                        <IconDotsVertical color={textColor} />
+                      </ActionIcon>
+                    </Menu.Target>
+
+                    <Menu.Dropdown>
+                      <Menu.Label>Actions</Menu.Label>
+                      <Menu.Item icon={<IconEdit size={14} />} onClick={() => handleEditTag(id)}>
+                        {formatMessage({ id: 'co-edi' })}
+                      </Menu.Item>
+                      <Menu.Item
+                        color="red"
+                        icon={<IconTrash size={14} />}
+                        onClick={() => handleDeleteTag(id, name)}>
+                        {formatMessage({ id: 'tag-del' })}
+                      </Menu.Item>
+                    </Menu.Dropdown>
+                  </Menu>
                 </Group>
               </UnstyledButton>
             </Paper>
@@ -114,6 +169,16 @@ export function TagsList() {
 
   return (
     <>
+      {tagToDelete && (
+        <Modal opened={opened} onClose={close} title={formatMessage({ id: 'tag-del' })}>
+          <ConfirmDelete
+            label={formatMessage({ id: 'tag-name' })}
+            onClose={close}
+            onDelete={onDeleteClick}
+            confirmName={tagToDelete.name}
+          />
+        </Modal>
+      )}
       <Group position="apart" py="sm">
         <Title className={classes.title}>{formatMessage({ id: 'tag-tag' })}</Title>
         <Button component={Link} to="/tags/create" variant="light" leftIcon={<IconHeartPlus />}>

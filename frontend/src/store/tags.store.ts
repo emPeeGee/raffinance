@@ -15,7 +15,7 @@ type TagsStore = {
   getTag: (id: number) => TagModel | undefined;
   addTag: (tag: CreateTagDTO) => Promise<boolean>;
   updateTag: (id: number, tag: CreateTagDTO) => Promise<boolean>;
-  // removeAccount: (id: string) => void;
+  deleteTag: (id: number) => Promise<boolean>;
 };
 
 const tagsStore = 'Tags store';
@@ -80,6 +80,29 @@ export const useTagsStore = create<TagsStore>()(
 
           set({ ...get(), tags: [...tags] });
           return true;
+        } catch (reason) {
+          console.log(reason);
+          return false;
+        }
+      },
+
+      deleteTag: async (id: number): Promise<boolean> => {
+        const { tags } = get();
+
+        try {
+          const response = await api.delete<any>({
+            url: `tags/${id}`,
+            token: useAuthStore.getState().token
+          });
+
+          if (response.ok) {
+            const updatedTags = tags.filter((c) => c.id !== id);
+
+            set({ ...get(), tags: [...updatedTags] });
+            return true;
+          }
+
+          return false;
         } catch (reason) {
           console.log(reason);
           return false;
