@@ -4,11 +4,11 @@ import { devtools } from 'zustand/middleware';
 import {
   AccountDetailsModel,
   AccountModel,
-  CreateAccountDTO,
-  ViewMode
+  CreateAccountDTO
 } from 'features/accounts/accounts.model';
 import { api } from 'services/http';
 import { useAuthStore } from 'store';
+import { ViewMode } from 'utils';
 
 // TODO: is loading in store?
 type AccountsStore = {

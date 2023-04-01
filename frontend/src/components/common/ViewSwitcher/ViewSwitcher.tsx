@@ -1,23 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Group, Button, SegmentedControl } from '@mantine/core';
 import { IconFileExport } from '@tabler/icons-react';
 import { useIntl } from 'react-intl';
 
-import { useAccountStore } from 'store';
+import { ViewMode } from 'utils';
 
-import { ViewMode } from '../accounts.model';
+interface Props {
+  defaultValue: ViewMode;
+  onChange: (viewMode: ViewMode) => void;
+}
 
-export function AccountViewSwitcher() {
-  const { viewMode, setViewMode } = useAccountStore();
+export function ViewSwitcher({ defaultValue, onChange }: Props) {
   const { formatMessage } = useIntl();
+  const [viewMode, setViewMode] = useState<ViewMode>(defaultValue);
+
+  const handleViewModeChange = (mode: ViewMode) => {
+    setViewMode(mode);
+    onChange(mode);
+  };
 
   return (
     <Group w="100%" position="apart" align="center" py="1rem">
       <SegmentedControl
         fullWidth
         value={viewMode}
-        onChange={(value: ViewMode) => setViewMode(value)}
+        onChange={(value: ViewMode) => handleViewModeChange(value)}
         data={[
           { label: formatMessage({ id: 'co-table' }), value: 'table' },
           { label: formatMessage({ id: 'co-card' }), value: 'card' }

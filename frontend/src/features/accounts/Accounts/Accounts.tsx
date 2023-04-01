@@ -5,9 +5,10 @@ import { IconHeartPlus, IconInfoCircle } from '@tabler/icons-react';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
-import { AccountsList, AccountViewSwitcher, NoAccounts } from 'features/accounts';
-
-import { useAccountStore } from '../../../store/accounts.store';
+import { ViewSwitcher } from 'components';
+import { AccountsList, NoAccounts } from 'features/accounts';
+import { useAccountStore } from 'store';
+import { ViewMode } from 'utils';
 
 // TODO: Breadcrumbs ???
 
@@ -55,11 +56,15 @@ export function Accounts() {
   const { formatMessage } = useIntl();
   const { classes } = useStyles();
 
-  const { accounts, getAccounts } = useAccountStore();
+  const { viewMode, accounts, getAccounts, setViewMode } = useAccountStore();
 
   useEffect(() => {
     getAccounts();
   }, []);
+
+  const handleViewChange = (mode: ViewMode) => {
+    setViewMode(mode);
+  };
 
   return (
     <Container className={classes.root}>
@@ -77,7 +82,7 @@ export function Accounts() {
         {formatMessage({ id: 'accounts-info' })}
       </Blockquote>
       <Group>
-        <AccountViewSwitcher />
+        <ViewSwitcher defaultValue={viewMode} onChange={handleViewChange} />
       </Group>
 
       {accounts.length > 0 ? <AccountsList /> : <NoAccounts />}

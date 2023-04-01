@@ -52,7 +52,7 @@ export function AccountDetail() {
   const [isLoading, setIsLoading] = useState(false);
   const [account, setAccount] = useState<AccountDetailsModel>();
 
-  const { viewMode, getAccount } = useAccountStore();
+  const { getAccount } = useAccountStore();
   const { id } = useParams();
 
   const fetchAccount = async () => {
@@ -167,11 +167,7 @@ export function AccountDetail() {
         </Group>
       </Card>
 
-      <TransactionsList
-        transactions={account.transactions}
-        viewMode={viewMode}
-        currency={account.currency}
-      />
+      <TransactionsList transactions={account.transactions} currency={account.currency} />
     </Container>
   );
 }

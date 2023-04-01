@@ -2,6 +2,7 @@ import { ConfirmDelete } from './common/ConfirmDelete/ConfirmDelete';
 import { Iconify } from './common/Iconify/Iconify';
 import LanguagePicker from './common/LangPicker/LangPicker';
 import { ToggleColor } from './common/ToggleColor/ToggleColor';
+import { ViewSwitcher } from './common/ViewSwitcher/ViewSwitcher';
 import { AppShell } from './layout/AppShell/AppShell';
 import { Footer } from './layout/Footer/Footer';
 import Header from './layout/Header/Header';
@@ -25,5 +26,6 @@ export {
   Navbar,
   ToggleColor,
   LanguagePicker,
-  Iconify
+  Iconify,
+  ViewSwitcher
 };
