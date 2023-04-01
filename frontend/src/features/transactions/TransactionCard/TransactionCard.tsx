@@ -11,7 +11,7 @@ import { FormattedDate } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
 import { TransactionType } from 'features/accounts';
-import { Transaction } from 'features/transactions';
+import { TransactionModel } from 'features/transactions';
 import { getContrastColor } from 'utils';
 
 const useStyles = createStyles((theme) => ({
@@ -36,7 +36,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 interface Props {
-  transaction: Transaction;
+  transaction: TransactionModel;
   currency: string;
 }
 
@@ -103,7 +103,7 @@ export function TransactionCard({ transaction, currency }: Props) {
           </Group>
 
           <Group mb="xs">
-            {tags.map((tag) => (
+            {tags?.map((tag) => (
               <Badge key={tag.id} bg={tag.color} c={getContrastColor(tag.color)} variant="filled">
                 {tag.name}
               </Badge>

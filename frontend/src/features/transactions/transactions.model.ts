@@ -1,9 +1,6 @@
 import { CategoryModel } from 'features/categories';
 import { TagModel } from 'features/tags';
 
-// TODO: Global type
-export type ViewMode = 'table' | 'card';
-
 export enum TransactionType {
   'INCOME' = 1,
   'EXPENSE' = 2,
@@ -11,7 +8,7 @@ export enum TransactionType {
 }
 
 // TODO:MOVE from account model
-export interface Transaction {
+export interface TransactionModel {
   id: number;
   date: string;
   createdAt: string;
@@ -23,4 +20,29 @@ export interface Transaction {
   transactionTypeId: number;
   category: CategoryModel;
   tags: TagModel[];
+}
+
+export interface TransactionDetailsModel {
+  id: number;
+  date: string;
+  createdAt: string;
+  updatedAt: string;
+  amount: number;
+  description: string;
+  location: string;
+  toAccountId: number;
+  transactionTypeId: number;
+  category: CategoryModel;
+  tags: TagModel[];
+}
+
+export interface CreateTransactionDTO {
+  date: string;
+  amount: number;
+  description: string;
+  location: string;
+  toAccountId: number;
+  transactionTypeId: number;
+  category: number;
+  tags: number[];
 }

@@ -1,76 +1,46 @@
 import React, { useState } from 'react';
 
 import {
+  Accordion,
+  ActionIcon,
+  Badge,
   Button,
   Card,
-  createStyles,
-  rem,
-  Title,
   Group,
-  Text,
   Paper,
+  SegmentedControl,
   SimpleGrid,
   Table,
-  SegmentedControl,
-  UnstyledButton,
-  Badge
+  TextInput,
+  useMantineTheme
 } from '@mantine/core';
 import { MonthPicker } from '@mantine/dates';
-import {
-  IconArrowBigRight,
-  IconArrowNarrowRight,
-  IconArrowsExchange,
-  IconCashBanknote,
-  IconCashBanknoteOff,
-  IconMinus,
-  IconPlus,
-  IconReplace
-} from '@tabler/icons-react';
+import { IconArrowLeft, IconArrowRight, IconFilter, IconSearch } from '@tabler/icons-react';
 import { FormattedDate, useIntl } from 'react-intl';
 
-import { TransactionType, AccountViewSwitcher, ViewMode } from 'features/accounts';
-import { NoTransactions, Transaction, TransactionCard } from 'features/transactions';
+import { MultiPicker, ViewSwitcher } from 'components';
+import {
+  NoTransactions,
+  TransactionCard,
+  TransactionModel,
+  TransactionsFilter
+} from 'features/transactions';
+import { useCategoriesStore, useTagsStore, useTransactionStore } from 'store';
 import { getContrastColor } from 'utils';
 
-const useStyles = createStyles((theme) => ({
-  icon: {
-    color: theme.colorScheme === 'dark' ? theme.colors.dark[3] : theme.colors.gray[5]
-  },
-
-  transactionTitle: {
-    fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-
-    [theme.fn.smallerThan('sm')]: {
-      fontSize: rem(32)
-    }
-  },
-
-  value: {
-    fontSize: rem(28),
-    fontWeight: 700,
-    lineHeight: 1
-  },
-  currency: {
-    fontSize: rem(24),
-    fontWeight: 700,
-    lineHeight: 1
-  }
-}));
-
 interface Props {
-  transactions: Transaction[];
-  viewMode: ViewMode;
+  transactions: TransactionModel[];
   currency: string;
 }
 
-export function TransactionsList({ transactions, viewMode, currency }: Props) {
+export function TransactionsList({ transactions, currency }: Props) {
   const { formatMessage } = useIntl();
-  const { classes } = useStyles();
-  const [month, setMonth] = useState<Date | null>(null);
+  const theme = useMantineTheme();
 
   const [showTransactions, setShowTransactions] = useState(true);
 
   const gotoTransaction = (txnId: number) => () => {};
+  const { viewMode, setViewMode } = useTransactionStore();
 
   const toggleTransactions = () => setShowTransactions((show) => !show);
 
@@ -83,40 +53,35 @@ export function TransactionsList({ transactions, viewMode, currency }: Props) {
 
   return (
     <div>
-      <Card my="lg" withBorder radius="md">
-        <Group position="apart" mb="md">
-          <SegmentedControl
-            value="all"
-            // onChange={(value: ViewMode) => setViewMode(value)}
-            data={[
-              { label: formatMessage({ id: 'co-all' }), value: 'all' },
-              { label: formatMessage({ id: 'co-income' }), value: 'table' },
-              { label: formatMessage({ id: 'co-expense' }), value: 'ex' },
-              { label: formatMessage({ id: 'co-transfers' }), value: 'card' }
-            ]}
-          />
+      <TransactionsFilter />
 
-          <Button variant="light" onClick={toggleTransactions}>
-            {showTransactions ? 'Hide transactions' : 'Show transactions'}
-          </Button>
-        </Group>
+      <Button variant="light" onClick={toggleTransactions} mb="md">
+        {formatMessage({ id: showTransactions ? 'txn-hide' : 'txn-show' })}
+      </Button>
 
-        <Group position="center">
-          {/* TODO: Move from this component, because it require backend call */}
-          <MonthPicker
-            value={month}
-            onChange={setMonth}
-            defaultDate={new Date()}
-            minDate={new Date(1910, 1, 1)}
-            maxDate={new Date()}
-          />
-        </Group>
-      </Card>
+      <TextInput
+        icon={<IconSearch size="1.1rem" stroke={1.5} />}
+        radius="xl"
+        size="md"
+        mb="md"
+        rightSection={
+          <ActionIcon size={32} radius="xl" color={theme.primaryColor} variant="filled">
+            {theme.dir === 'ltr' ? (
+              <IconArrowRight size="1.1rem" stroke={1.5} />
+            ) : (
+              <IconArrowLeft size="1.1rem" stroke={1.5} />
+            )}
+          </ActionIcon>
+        }
+        placeholder={formatMessage({ id: 'txn-search' })}
+        rightSectionWidth={42}
+      />
 
       {showTransactions && (
         <>
           {/* TODO: Make a generic view switcher */}
-          <AccountViewSwitcher />
+          <ViewSwitcher defaultValue={viewMode} onChange={setViewMode} />
+
           {viewMode === 'card' && (
             <SimpleGrid
               cols={4}
@@ -186,7 +151,7 @@ export function TransactionsList({ transactions, viewMode, currency }: Props) {
                           </td>
                           <td>{amount}</td>
                           <td>
-                            {tags.map((tag) => (
+                            {tags?.map((tag) => (
                               <Badge
                                 key={tag.id}
                                 mr="xs"

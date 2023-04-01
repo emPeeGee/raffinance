@@ -11,7 +11,8 @@ import { Categories } from 'features/categories';
 import { Dashboard } from 'features/dashboard';
 import { Landing } from 'features/home';
 import { Tags } from 'features/tags';
-import { FetchUserStatus, useAuthStore } from 'store';
+import { Transactions } from 'features/transactions';
+import { FetchUserStatus, useAuthStore, useTagsStore, useCategoriesStore } from 'store';
 
 const useStyles = createStyles(() => ({
   shell: {
@@ -31,6 +32,8 @@ const useStyles = createStyles(() => ({
 export function AppShell() {
   const { classes } = useStyles();
   const { isLogged, fetchUser } = useAuthStore();
+  const { getCategories } = useCategoriesStore();
+  const { getTags } = useTagsStore();
   const [isAppReady, setIsAppReady] = useState(false);
 
   // TODO: revise the authentication logic
@@ -38,6 +41,12 @@ export function AppShell() {
     const result = await fetchUser();
     if (FetchUserStatus.EXPIRED_TOKEN === result) {
       // TODO: Notification
+    }
+    // TODO: i would make a separate component as main entry point auth users
+
+    if (FetchUserStatus.OK === result) {
+      await getTags();
+      await getCategories();
     }
 
     setIsAppReady(true);
@@ -70,6 +79,7 @@ export function AppShell() {
                     <Route path="/accounts/:id" element={<AccountDetail />} />
                     <Route path="/accounts/create" element={<AccountCreate />} />
 
+                    <Route path="/transactions/*" element={<Transactions />} />
                     <Route path="/categories/*" element={<Categories />} />
 
                     <Route path="/tags/*" element={<Tags />} />
