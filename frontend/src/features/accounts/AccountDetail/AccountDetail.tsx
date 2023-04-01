@@ -39,10 +39,6 @@ const useStyles = createStyles((theme) => ({
     width: 'fit-content',
     backgroundColor:
       theme.colorScheme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.7)'
-  },
-
-  accountText: {
-    // color: theme.colorScheme === 'dark' ? theme.colors.gray[9] : theme.colors.gray[1]
   }
 }));
 
@@ -61,8 +57,6 @@ export function AccountDetail() {
     setAccount(fetchedAccount);
     setIsLoading(false);
   };
-
-  const gotoTransaction = (txnId: number) => () => {};
 
   useEffect(() => {
     fetchAccount();
@@ -86,14 +80,7 @@ export function AccountDetail() {
         <Title order={1}>Account details</Title>
       </Group>
 
-      <Card
-        padding="lg"
-        my="lg"
-        // shadow="sm"
-        // withBorder
-        radius="md"
-        bg={account.color}
-        classNames={classes.accountCard}>
+      <Card padding="lg" my="lg" radius="md" bg={account.color} classNames={classes.accountCard}>
         <Group align="flex-start">
           <Avatar
             src="https://yt3.googleusercontent.com/-CFTJHU7fEWb7BYEb6Jh9gm1EpetvVGQqtof0Rbh-VQRIznYYKJxCaqv_9HeBcmJmIsp2vOO9JU=s900-c-k-c0x00ffffff-no-rj"
@@ -104,7 +91,7 @@ export function AccountDetail() {
             style={{ backgroundColor: account.color }}
           />
           <div style={{ marginLeft: 20 }}>
-            <Title order={3} c={textColor} className={classes.accountText}>
+            <Title order={3} c={textColor}>
               {account.name}
             </Title>
             {/* <Text color="gray">{account.iban}</Text> */}
@@ -121,19 +108,19 @@ export function AccountDetail() {
         </Group>
 
         <Group position="left">
-          <Text fw={700} c={textColor} className={classes.accountText}>
+          <Text fw={700} c={textColor}>
             {formatMessage({ id: 'co-cre-at' })}:
           </Text>
-          <Text c={textColor} my="xs" className={classes.accountText}>
+          <Text c={textColor} my="xs">
             <FormattedDate value={account.createdAt} dateStyle="full" timeStyle="medium" />
           </Text>
         </Group>
 
         <Group position="left">
-          <Text fw={700} c={textColor} className={classes.accountText}>
+          <Text fw={700} c={textColor}>
             {formatMessage({ id: 'co-cre-at' })}:
           </Text>
-          <Text c={textColor} className={classes.accountText}>
+          <Text c={textColor}>
             <FormattedDate value={account.updatedAt} dateStyle="full" timeStyle="medium" />
           </Text>
         </Group>
@@ -144,7 +131,7 @@ export function AccountDetail() {
       </Alert>
 
       <Card my="lg" withBorder radius="md">
-        <Title order={4} mb="md" color="gray">
+        <Title order={4} mb="md">
           <Group>
             <IconRocket color="gray" />
 
