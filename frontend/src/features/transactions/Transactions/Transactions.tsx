@@ -3,10 +3,9 @@ import React, { useEffect } from 'react';
 import { Container, createStyles, rem } from '@mantine/core';
 import { Route, Routes } from 'react-router-dom';
 
-// import { useTransactionsStore } from 'store';
-
 import { useTransactionStore } from 'store';
 
+import { TransactionDetails } from '../TransactionDetails/TransactionsDetails';
 import { TransactionsDashboard } from '../TransactionsDashboard/TransactionsDashboard';
 
 // TODO: Breadcrumbs ???
@@ -30,6 +29,7 @@ export function Transactions() {
     <Container className={classes.root}>
       <Routes>
         <Route path="/" element={<TransactionsDashboard />} />
+        <Route path="/:id" element={<TransactionDetails />} />
         {/* <Route path="/create" element={<CategoryCreate />} />
         <Route path="/:id/edit" element={<CategoryCreate />} /> */}
       </Routes>

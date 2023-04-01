@@ -16,22 +16,9 @@ export interface TransactionModel {
   amount: number;
   description: string;
   location: string;
-  toAccountId: TransactionType;
-  transactionTypeId: number;
-  category: CategoryModel;
-  tags: TagModel[];
-}
-
-export interface TransactionDetailsModel {
-  id: number;
-  date: string;
-  createdAt: string;
-  updatedAt: string;
-  amount: number;
-  description: string;
-  location: string;
   toAccountId: number;
-  transactionTypeId: number;
+  fromAccountId: number;
+  transactionTypeId: TransactionType;
   category: CategoryModel;
   tags: TagModel[];
 }

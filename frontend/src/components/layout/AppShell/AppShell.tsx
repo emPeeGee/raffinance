@@ -12,7 +12,13 @@ import { Dashboard } from 'features/dashboard';
 import { Landing } from 'features/home';
 import { Tags } from 'features/tags';
 import { Transactions } from 'features/transactions';
-import { FetchUserStatus, useAuthStore, useTagsStore, useCategoriesStore } from 'store';
+import {
+  FetchUserStatus,
+  useAuthStore,
+  useTagsStore,
+  useCategoriesStore,
+  useAccountStore
+} from 'store';
 
 const useStyles = createStyles(() => ({
   shell: {
@@ -34,6 +40,7 @@ export function AppShell() {
   const { isLogged, fetchUser } = useAuthStore();
   const { getCategories } = useCategoriesStore();
   const { getTags } = useTagsStore();
+  const { getAccounts } = useAccountStore();
   const [isAppReady, setIsAppReady] = useState(false);
 
   // TODO: revise the authentication logic
@@ -45,6 +52,7 @@ export function AppShell() {
     // TODO: i would make a separate component as main entry point auth users
 
     if (FetchUserStatus.OK === result) {
+      await getAccounts();
       await getTags();
       await getCategories();
     }

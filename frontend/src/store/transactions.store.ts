@@ -1,11 +1,7 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
-import {
-  TransactionDetailsModel,
-  TransactionModel,
-  CreateTransactionDTO
-} from 'features/transactions/transactions.model';
+import { TransactionModel, CreateTransactionDTO } from 'features/transactions';
 import { api } from 'services/http';
 import { useAuthStore } from 'store';
 import { ViewMode } from 'utils';
@@ -17,7 +13,7 @@ type TransactionsStore = {
   transactions: TransactionModel[];
   fetchTransactions: () => void;
   getTransactions: () => void;
-  getTransaction: (id: string) => Promise<TransactionDetailsModel>;
+  getTransaction: (id: string) => Promise<TransactionModel>;
   addTransaction: (transaction: CreateTransactionDTO) => Promise<boolean>;
   // removeTransaction: (id: string) => void;
 };
@@ -39,25 +35,21 @@ export const useTransactionStore = create<TransactionsStore>()(
         }
       },
 
-      getTransaction: async (id: string): Promise<TransactionDetailsModel> => {
-        const transaction = await api.get<TransactionDetailsModel>({
+      getTransaction: async (id: string): Promise<TransactionModel> => {
+        const transaction = await api.get<TransactionModel>({
           url: `transactions/${id}`,
           token: useAuthStore.getState().token
         });
-        console.log(transaction);
         return transaction;
       },
 
       fetchTransactions: async () => {
         set({ ...get(), pending: true });
-        setTimeout(async () => {
-          const transactions = await api.get<TransactionModel[]>({
-            url: 'transactions',
-            token: useAuthStore.getState().token
-          });
-          console.log(transactions);
-          set({ transactions, pending: false });
-        }, 5000);
+        const transactions = await api.get<TransactionModel[]>({
+          url: 'transactions',
+          token: useAuthStore.getState().token
+        });
+        set({ transactions, pending: false });
       },
 
       addTransaction: async (transaction: CreateTransactionDTO): Promise<boolean> => {
