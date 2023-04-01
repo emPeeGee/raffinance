@@ -81,7 +81,7 @@ export function CategoryCreate() {
     const success = await addCategory(cat);
 
     if (success) {
-      navigate(`../categories`);
+      navigate(`/categories`);
     } else {
       showNotification({
         title: formatMessage({ id: 'cat-f-title' }),
@@ -102,7 +102,7 @@ export function CategoryCreate() {
 
     const success = await updateCategory(Number(id), { ...cat });
     if (success) {
-      navigate(`../categories`);
+      navigate(`/categories`);
     } else {
       showNotification({
         title: formatMessage({ id: 'cat-fu-title' }),

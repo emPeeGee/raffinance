@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   Button,
@@ -14,13 +14,23 @@ import {
   UnstyledButton,
   Loader,
   Flex,
-  Box
+  Box,
+  Menu,
+  Modal
 } from '@mantine/core';
-import { IconEdit, IconHeartPlus, IconInfoCircle } from '@tabler/icons-react';
+import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
+import {
+  IconDotsVertical,
+  IconEdit,
+  IconHeartPlus,
+  IconInfoCircle,
+  IconTrash
+} from '@tabler/icons-react';
 import { useIntl } from 'react-intl';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { Iconify } from 'components';
+import { ConfirmDelete, Iconify } from 'components';
 import { useCategoriesStore } from 'store';
 import { getContrastColor } from 'utils';
 
@@ -52,7 +62,12 @@ export function CategoriesList() {
   const { formatMessage } = useIntl();
   const { classes } = useStyles();
   const navigate = useNavigate();
-  const { categories, getCategories, pending } = useCategoriesStore();
+  const { categories, getCategories, deleteCategory, pending } = useCategoriesStore();
+  const [categoryToDelete, setCategoryToDelete] = useState<{ id: number; name: string } | null>(
+    null
+  );
+
+  const [opened, { open, close }] = useDisclosure(false);
 
   const gotoCategory = (id: number) => () => {
     // Navigate('')
@@ -64,6 +79,32 @@ export function CategoriesList() {
 
   const handleEditCategory = (id: number) => {
     navigate(`/categories/${id}/edit`);
+  };
+
+  const handleDeleteCategory = (id: number, name: string) => {
+    setCategoryToDelete({ id, name });
+    open();
+  };
+
+  const deleteCat = async () => {
+    if (!categoryToDelete) {
+      return;
+    }
+
+    const ok = await deleteCategory(categoryToDelete.id);
+    if (ok) {
+      notifications.show({
+        message: formatMessage({ id: 'co-del-suc' }),
+        color: 'green'
+      });
+    } else {
+      notifications.show({
+        message: formatMessage({ id: 'co-del-err' }),
+        color: 'red'
+      });
+    }
+
+    close();
   };
 
   const categoriesContent =
@@ -92,19 +133,36 @@ export function CategoriesList() {
                       {name}
                     </Text>
                   </Flex>
-                  <ActionIcon
-                    size="lg"
-                    variant="light"
-                    sx={() => ({
-                      backgroundColor: textColor === '#000' ? '#00000028' : '#ffffff70',
+                  <Menu shadow="md" width={200}>
+                    <Menu.Target>
+                      <ActionIcon
+                        size="md"
+                        variant="light"
+                        sx={() => ({
+                          backgroundColor: textColor === '#000' ? '#00000028' : '#ffffff70',
+                          ':hover': {
+                            backgroundColor: textColor === '#000' ? '#00000045' : '#ffffff85'
+                          }
+                        })}>
+                        <IconDotsVertical color={textColor} />
+                      </ActionIcon>
+                    </Menu.Target>
 
-                      ':hover': {
-                        backgroundColor: textColor === '#000' ? '#00000045' : '#ffffff85'
-                      }
-                    })}
-                    onClick={() => handleEditCategory(id)}>
-                    <IconEdit color={textColor} />
-                  </ActionIcon>
+                    <Menu.Dropdown>
+                      <Menu.Label>Actions</Menu.Label>
+                      <Menu.Item
+                        icon={<IconEdit size={14} />}
+                        onClick={() => handleEditCategory(id)}>
+                        {formatMessage({ id: 'co-edi' })}
+                      </Menu.Item>
+                      <Menu.Item
+                        color="red"
+                        icon={<IconTrash size={14} />}
+                        onClick={() => handleDeleteCategory(id, name)}>
+                        {formatMessage({ id: 'cat-del' })}
+                      </Menu.Item>
+                    </Menu.Dropdown>
+                  </Menu>
                 </Group>
               </UnstyledButton>
             </Paper>
@@ -117,6 +175,17 @@ export function CategoriesList() {
 
   return (
     <>
+      {categoryToDelete && (
+        <Modal opened={opened} onClose={close} title={formatMessage({ id: 'cat-del' })}>
+          <ConfirmDelete
+            label={formatMessage({ id: 'cat-name' })}
+            onClose={close}
+            onDelete={deleteCat}
+            confirmName={categoryToDelete.name}
+          />
+        </Modal>
+      )}
+
       <Group position="apart" py="sm">
         <Title className={classes.title}>{formatMessage({ id: 'cat-categ' })}</Title>
         <Button

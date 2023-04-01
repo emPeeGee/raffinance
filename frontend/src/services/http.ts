@@ -14,6 +14,12 @@ interface PostRequest<T> {
   token?: string | null;
 }
 
+interface DeleteRequest {
+  url: string;
+  auth?: boolean;
+  token?: string | null;
+}
+
 async function handleErrors<T>(response: Response): Promise<T> {
   if (!response.ok) {
     // eslint-disable-next-line prefer-promise-reject-errors
@@ -51,5 +57,14 @@ export const api = {
         Authorization: `${token ? `Bearer ${token}` : ''}`
       },
       body: JSON.stringify(body)
+    }).then((response) => handleErrors<K>(response)),
+
+  delete: <K>({ url, token, auth = false }: DeleteRequest) =>
+    fetch(`${auth ? authUrl : testUrl}${url}`, {
+      method: 'delete',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `${token ? `Bearer ${token}` : ''}`
+      }
     }).then((response) => handleErrors<K>(response))
 };

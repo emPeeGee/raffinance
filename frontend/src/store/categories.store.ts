@@ -15,7 +15,7 @@ type CategoriesStore = {
   getCategory: (id: number) => CategoryModel | undefined;
   addCategory: (category: CreateCategoryDTO) => Promise<boolean>;
   updateCategory: (id: number, category: CreateCategoryDTO) => Promise<boolean>;
-  // removeAccount: (id: string) => void;
+  deleteCategory: (id: number) => Promise<boolean>;
 };
 
 const categoriesStore = 'Categories store';
@@ -84,6 +84,29 @@ export const useCategoriesStore = create<CategoriesStore>()(
           console.log(reason);
           return false;
         }
+      },
+
+      deleteCategory: async (id: number): Promise<boolean> => {
+        const { categories } = get();
+
+        try {
+          const response = await api.delete<any>({
+            url: `categories/${id}`,
+            token: useAuthStore.getState().token
+          });
+
+          if (response.ok) {
+            const updatedCategories = categories.filter((c) => c.id !== id);
+
+            set({ ...get(), categories: [...updatedCategories] });
+            return true;
+          }
+
+          return false;
+        } catch (reason) {
+          console.log(reason);
+          return false;
+        }
       }
     }),
     {
@@ -91,5 +114,6 @@ export const useCategoriesStore = create<CategoriesStore>()(
     }
   )
 );
+// TODO: kinda, response enum with different statuses
 
 // TODO  useAuthStore.getState().token. I don't like to call it every time.

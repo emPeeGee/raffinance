@@ -1,3 +1,4 @@
+import { ConfirmDelete } from './common/ConfirmDelete/ConfirmDelete';
 import { Iconify } from './common/Iconify/Iconify';
 import LanguagePicker from './common/LangPicker/LangPicker';
 import { ToggleColor } from './common/ToggleColor/ToggleColor';
@@ -15,6 +16,7 @@ export {
   AppShell,
   Footer,
   Header,
+  ConfirmDelete,
   NotFound,
   // Logo,
   Anchor,
