@@ -5,13 +5,15 @@ import {
   ActionIcon,
   Button,
   Group,
+  Loader,
   SimpleGrid,
+  Text,
   TextInput,
   Title,
   useMantineTheme
 } from '@mantine/core';
 import { IconArrowLeft, IconArrowRight, IconSearch } from '@tabler/icons-react';
-import { FormattedDate, useIntl } from 'react-intl';
+import { FormattedDate, FormattedNumber, useIntl } from 'react-intl';
 
 import { ViewSwitcher } from 'components';
 import { TransactionType } from 'features/accounts';
@@ -65,27 +67,77 @@ interface Props {
 export function TransactionsList({ transactions, currency }: Props) {
   const { formatMessage } = useIntl();
   const theme = useMantineTheme();
-
   const [showTransactions, setShowTransactions] = useState(true);
-
-  const gotoTransaction = (txnId: number) => () => {};
-  const { viewMode, setViewMode } = useTransactionStore();
+  const { viewMode, setViewMode, pending } = useTransactionStore();
 
   const toggleTransactions = () => setShowTransactions((show) => !show);
 
-  // TODO: util func
-  const isEmpty = transactions.length === 0;
-
-  if (isEmpty) {
-    return <NoTransactions />;
-  }
-
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const agregatedTxns = useMemo(() => {
+  const aggregatedTxns = useMemo(() => {
     return groupTransactionsByDay(transactions);
   }, [transactions]);
 
-  console.log(agregatedTxns);
+  // TODO: util func
+  const isEmpty = Object.keys(aggregatedTxns).length === 0;
+
+  const content = isEmpty ? (
+    <NoTransactions />
+  ) : (
+    <>
+      <ViewSwitcher defaultValue={viewMode} onChange={setViewMode} />
+
+      <Accordion multiple variant="separated" defaultValue={Object.keys(aggregatedTxns)}>
+        {Object.keys(aggregatedTxns).map((groupDate) => (
+          <Accordion.Item value={groupDate} key={groupDate}>
+            <Accordion.Control>
+              <Group position="apart" align="center">
+                <Title order={3}>
+                  <FormattedDate dateStyle="full" value={groupDate} />
+                </Title>
+
+                <Group>
+                  <Text color="dimmed">
+                    {aggregatedTxns[groupDate].transactions.length}{' '}
+                    {formatMessage({ id: 'txn' }).toLocaleLowerCase()}
+                  </Text>
+                  <Title order={3} color="dimmed" w={150} align="right">
+                    <FormattedNumber
+                      currencyDisplay="code"
+                      value={aggregatedTxns[groupDate].amount}
+                    />{' '}
+                    CUR
+                  </Title>
+                </Group>
+              </Group>
+            </Accordion.Control>
+            <Accordion.Panel>
+              {viewMode === 'card' && (
+                <SimpleGrid
+                  cols={4}
+                  my="lg"
+                  breakpoints={[
+                    { maxWidth: 'md', cols: 2 },
+                    { maxWidth: 'xs', cols: 1 }
+                  ]}>
+                  {aggregatedTxns[groupDate].transactions.map((transaction) => (
+                    <TransactionCard
+                      key={transaction.id}
+                      transaction={transaction}
+                      currency={currency}
+                    />
+                  ))}
+                </SimpleGrid>
+              )}
+
+              {viewMode === 'table' && (
+                <TransactionTable transactions={aggregatedTxns[groupDate].transactions} />
+              )}
+            </Accordion.Panel>
+          </Accordion.Item>
+        ))}
+      </Accordion>
+    </>
+  );
 
   return (
     <div>
@@ -113,52 +165,12 @@ export function TransactionsList({ transactions, currency }: Props) {
         rightSectionWidth={42}
       />
 
-      {showTransactions && (
-        <>
-          {/* TODO: Make a generic view switcher */}
-          <ViewSwitcher defaultValue={viewMode} onChange={setViewMode} />
-
-          <Accordion multiple variant="separated" defaultValue={Object.keys(agregatedTxns)}>
-            {Object.keys(agregatedTxns).map((groupDate) => (
-              <Accordion.Item value={groupDate} key={groupDate}>
-                <Accordion.Control>
-                  <Group position="apart" align="center">
-                    <Title order={3}>
-                      <FormattedDate dateStyle="full" value={groupDate} />
-                    </Title>
-
-                    <Title order={3} color="dimmed">
-                      {agregatedTxns[groupDate].amount} CUR
-                    </Title>
-                  </Group>
-                </Accordion.Control>
-                <Accordion.Panel>
-                  {viewMode === 'card' && (
-                    <SimpleGrid
-                      cols={4}
-                      my="lg"
-                      breakpoints={[
-                        { maxWidth: 'md', cols: 2 },
-                        { maxWidth: 'xs', cols: 1 }
-                      ]}>
-                      {agregatedTxns[groupDate].transactions.map((transaction) => (
-                        <TransactionCard
-                          key={transaction.id}
-                          transaction={transaction}
-                          currency={currency}
-                        />
-                      ))}
-                    </SimpleGrid>
-                  )}
-
-                  {viewMode === 'table' && (
-                    <TransactionTable transactions={agregatedTxns[groupDate].transactions} />
-                  )}
-                </Accordion.Panel>
-              </Accordion.Item>
-            ))}
-          </Accordion>
-        </>
+      {pending ? (
+        <Group position="center" p="lg">
+          <Loader />
+        </Group>
+      ) : (
+        showTransactions && content
       )}
     </div>
   );

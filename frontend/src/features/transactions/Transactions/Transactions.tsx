@@ -8,7 +8,6 @@ import { Route, Routes } from 'react-router-dom';
 import { useTransactionStore } from 'store';
 
 import { TransactionsDashboard } from '../TransactionsDashboard/TransactionsDashboard';
-import { TransactionsList } from '../TransactionsList/TransactionsList';
 
 // TODO: Breadcrumbs ???
 

@@ -10,14 +10,13 @@ import { api } from 'services/http';
 import { useAuthStore } from 'store';
 import { ViewMode } from 'utils';
 
-// TODO: is loading in store?
 type TransactionsStore = {
+  pending: boolean;
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;
   transactions: TransactionModel[];
   fetchTransactions: () => void;
   getTransactions: () => void;
-  // TODO: should it be in store??? because it doesn't store anything
   getTransaction: (id: string) => Promise<TransactionDetailsModel>;
   addTransaction: (transaction: CreateTransactionDTO) => Promise<boolean>;
   // removeTransaction: (id: string) => void;
@@ -28,11 +27,11 @@ const transactionStore = 'Transactions store';
 export const useTransactionStore = create<TransactionsStore>()(
   devtools(
     (set, get) => ({
+      pending: false,
       viewMode: 'card',
       setViewMode: (viewMode) => set({ viewMode }),
       transactions: [],
       getTransactions: () => {
-        console.log(get().transactions);
         const { transactions } = get();
 
         if (transactions.length === 0) {
@@ -50,12 +49,15 @@ export const useTransactionStore = create<TransactionsStore>()(
       },
 
       fetchTransactions: async () => {
-        const transactions = await api.get<TransactionModel[]>({
-          url: 'transactions',
-          token: useAuthStore.getState().token
-        });
-        console.log(transactions);
-        set({ transactions });
+        set({ ...get(), pending: true });
+        setTimeout(async () => {
+          const transactions = await api.get<TransactionModel[]>({
+            url: 'transactions',
+            token: useAuthStore.getState().token
+          });
+          console.log(transactions);
+          set({ transactions, pending: false });
+        }, 5000);
       },
 
       addTransaction: async (transaction: CreateTransactionDTO): Promise<boolean> => {

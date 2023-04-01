@@ -62,12 +62,7 @@ export function TransactionsDashboard() {
       </Alert>
       <Group>{/* <TransactionViewSwitcher /> */}</Group>
 
-      {transactions.length > 0 ? (
-        // TODO: Currency
-        <TransactionsList transactions={transactions} currency="aa" />
-      ) : (
-        <NoTransactions />
-      )}
+      <TransactionsList transactions={transactions} currency="aa" />
     </>
   );
 }
