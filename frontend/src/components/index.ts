@@ -1,6 +1,7 @@
 import { ConfirmDelete } from './common/ConfirmDelete/ConfirmDelete';
 import { Iconify } from './common/Iconify/Iconify';
 import LanguagePicker from './common/LangPicker/LangPicker';
+import { MultiPicker } from './common/MultiPicker/MultiPicker';
 import { ToggleColor } from './common/ToggleColor/ToggleColor';
 import { ViewSwitcher } from './common/ViewSwitcher/ViewSwitcher';
 import { AppShell } from './layout/AppShell/AppShell';
@@ -27,5 +28,6 @@ export {
   ToggleColor,
   LanguagePicker,
   Iconify,
-  ViewSwitcher
+  ViewSwitcher,
+  MultiPicker
 };
