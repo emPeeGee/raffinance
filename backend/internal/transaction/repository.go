@@ -14,6 +14,7 @@ import (
 
 type Repository interface {
 	getTransactions(userId uint) ([]TransactionResponse, error)
+	getTransaction(txnId uint) (*TransactionResponse, error)
 	getAccountTransactionsByMonth(accountId uint, year int, month time.Month) ([]TransactionResponse, error)
 	createTransaction(userId uint, transaction CreateTransactionDTO) (*TransactionResponse, error)
 	updateTransaction(transactionId uint, transaction UpdateTransactionDTO) (*TransactionResponse, error)
@@ -183,6 +184,22 @@ func (r *repository) getTransactions(userId uint) ([]TransactionResponse, error)
 	}
 
 	return trans, nil
+}
+
+func (r *repository) getTransaction(txnId uint) (*TransactionResponse, error) {
+	var transaction entity.Transaction
+
+	if err := r.db.
+		Model(&entity.Transaction{}).
+		Where("id = ?", txnId).
+		Preload("Category").
+		Preload("Tags").
+		Find(&transaction).Error; err != nil {
+		return nil, err
+	}
+
+	txn := entityToResponse(&transaction)
+	return &txn, nil
 }
 
 func (r *repository) getAccountTransactionsByMonth(accountId uint, year int, month time.Month) ([]TransactionResponse, error) {

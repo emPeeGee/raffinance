@@ -16,6 +16,7 @@ type Service interface {
 	deleteTransaction(userId, id uint) error
 	updateTransaction(usedId, transactionId uint, transaction UpdateTransactionDTO) (*TransactionResponse, error)
 	getTransactions(userId uint) ([]TransactionResponse, error)
+	getTransaction(txnId uint) (*TransactionResponse, error)
 }
 
 type service struct {
@@ -98,6 +99,10 @@ func (s *service) deleteTransaction(userId, id uint) error {
 
 func (s *service) getTransactions(userId uint) ([]TransactionResponse, error) {
 	return s.repo.getTransactions(userId)
+}
+
+func (s *service) getTransaction(txnId uint) (*TransactionResponse, error) {
+	return s.repo.getTransaction(txnId)
 }
 
 func (s *service) GetAccountTransactionsByMonth(accountId uint, year int, month time.Month) ([]TransactionResponse, error) {

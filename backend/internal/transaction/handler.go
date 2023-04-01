@@ -21,6 +21,7 @@ func RegisterHandlers(apiRg *gin.RouterGroup, service Service, validate *validat
 		api.DELETE("/:id", h.deleteTransaction)
 
 		api.GET("", h.getTransactions)
+		api.GET("/:id", h.getTransaction)
 		// TODO: make it when transactions are available
 		// api.GET("/:id", h.getTransaction)
 	}
@@ -132,4 +133,26 @@ func (h *handler) getTransactions(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, transactions)
+}
+
+func (h *handler) getTransaction(c *gin.Context) {
+	userId, err := auth.GetUserId(c)
+	if err != nil || userId == nil {
+		errorutil.Unauthorized(c, err.Error(), "you are not authorized")
+		return
+	}
+
+	transactionId, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		errorutil.BadRequest(c, err.Error(), "the id must be an integer")
+		return
+	}
+
+	transaction, err := h.service.getTransaction(uint(transactionId))
+	if err != nil {
+		errorutil.InternalServer(c, err.Error(), err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, transaction)
 }
