@@ -24,12 +24,13 @@ export interface TransactionModel {
 }
 
 export interface CreateTransactionDTO {
-  date: string;
+  date: Date;
   amount: number;
   description: string;
   location: string;
   toAccountId: number;
+  fromAccountId?: number;
   transactionTypeId: number;
-  category: number;
-  tags: number[];
+  categoryId: number;
+  tagIds: number[];
 }

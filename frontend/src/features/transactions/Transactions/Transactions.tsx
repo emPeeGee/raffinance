@@ -5,6 +5,7 @@ import { Route, Routes } from 'react-router-dom';
 
 import { useTransactionStore } from 'store';
 
+import { TransactionCreate } from '../TransactionCreate/TransactionCreate';
 import { TransactionDetails } from '../TransactionDetails/TransactionsDetails';
 import { TransactionsDashboard } from '../TransactionsDashboard/TransactionsDashboard';
 
@@ -30,8 +31,8 @@ export function Transactions() {
       <Routes>
         <Route path="/" element={<TransactionsDashboard />} />
         <Route path="/:id" element={<TransactionDetails />} />
-        {/* <Route path="/create" element={<CategoryCreate />} />
-        <Route path="/:id/edit" element={<CategoryCreate />} /> */}
+        <Route path="/create" element={<TransactionCreate />} />
+        {/* <Route path="/:id/edit" element={<CategoryCreate />} /> */}
       </Routes>
     </Container>
   );

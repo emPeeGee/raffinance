@@ -88,10 +88,6 @@ export const useAuthStore = create<AuthStore>()(
           logout();
           return FetchUserStatus.EXPIRED_TOKEN;
         }
-
-        // finally(() => {
-        //   set({ ...get(), isLogged: false });
-        // });
       },
       setUser: (user: UserModel) => {
         set({ ...get(), user }, false, 'Set user');

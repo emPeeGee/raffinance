@@ -35,6 +35,7 @@ export function TransactionDestination({ transaction, withLabel = false, size = 
         </Text>
       )}
       <Group mb={0} spacing={0}>
+        {/* // TODO: incorrect color */}
         <Badge size={size} c={getContrastColor(color)} bg={color}>
           {fromAccountName}
         </Badge>
