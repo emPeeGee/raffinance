@@ -8,12 +8,17 @@ import {
   MultiSelectValueProps,
   rem,
   Flex,
-  Group
+  Group,
+  MantineSize,
+  MultiSelectProps,
+  ColorSwatch
 } from '@mantine/core';
 
-import { getContrastColor } from 'utils';
+import { getContrastColor, noop } from 'utils';
 
 import { Iconify } from '../Iconify/Iconify';
+
+// TODO: mess in code, extract types
 
 function Value({
   value,
@@ -23,12 +28,11 @@ function Value({
   onRemove,
   classNames,
   ...others
-}: MultiSelectValueProps & { icon: string; value: string; color: string }) {
+}: MultiSelectValueProps & { icon?: string; value: string; color: string }) {
   return (
     <div {...others}>
       <Group
         my={4}
-        py={4}
         align="center"
         spacing="xs"
         position="left"
@@ -38,40 +42,62 @@ function Value({
           color: getContrastColor(color),
           borderRadius: theme.radius.sm
         })}>
-        <Iconify size="1.25rem" icon={icon} />
-        <Box sx={{ lineHeight: 1, fontSize: rem(12) }}>{label}</Box>
-        <CloseButton onMouseDown={onRemove} variant="transparent" size={22} iconSize={14} />
+        {icon && <Iconify size="1.25rem" icon={icon} />}
+        <Box sx={{ lineHeight: 1, fontSize: rem(12), fontWeight: 700 }}>{label}</Box>
+        <CloseButton
+          onMouseDown={onRemove}
+          variant="transparent"
+          c={getContrastColor(color)}
+          size={22}
+          iconSize={14}
+        />
       </Group>
     </div>
   );
 }
 
 // eslint-disable-next-line react/display-name
-const Item = forwardRef<HTMLDivElement, SelectItemProps & { icon: string; value: string }>(
-  ({ label, value, icon, ...others }, ref) => {
-    return (
-      <div ref={ref} {...others}>
-        <Flex align="center">
+const Item = forwardRef<
+  HTMLDivElement,
+  SelectItemProps & { icon?: string; color: string; value: string }
+>(({ label, value, color, icon, ...others }, ref) => {
+  return (
+    <div ref={ref} {...others}>
+      <Flex align="center" gap="sm">
+        {icon && (
           <Box mr={10}>
             <Iconify icon={icon} />
           </Box>
-          <div>{label}</div>
-        </Flex>
-      </div>
-    );
-  }
-);
+        )}
+        <div>{label}</div>
+        <ColorSwatch color={color} />
+      </Flex>
+    </div>
+  );
+});
 
-interface Props {
+interface Props extends MultiSelectProps {
   label: string;
+  size?: MantineSize;
   data: { label: string; value: string; icon?: string }[];
 }
 
-export function MultiPicker({ data, label }: Props) {
+// No need for all of these
+function MultipleSelect(
+  { data, label, description, maxSelectedValues, onChange, size = 'md', ...props }: Props,
+  ref: React.Ref<any>
+) {
   return (
     <MultiSelect
+      {...props}
+      ref={ref}
+      onChange={onChange}
+      description={description}
       data={data}
       limit={20}
+      size={size}
+      multiple={false}
+      maxSelectedValues={maxSelectedValues}
       valueComponent={Value}
       itemComponent={Item}
       searchable
@@ -80,3 +106,5 @@ export function MultiPicker({ data, label }: Props) {
     />
   );
 }
+
+export const MultiPicker = forwardRef(MultipleSelect);
