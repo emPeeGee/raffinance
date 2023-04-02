@@ -1,16 +1,14 @@
 import React from 'react';
 
-import { createStyles, rem, Title, Group, Text, Paper, UnstyledButton, Badge } from '@mantine/core';
-import {
-  IconArrowNarrowRight,
-  IconArrowsExchange,
-  IconCashBanknote,
-  IconCashBanknoteOff
-} from '@tabler/icons-react';
+import { Badge, Group, Paper, Text, Title, UnstyledButton, createStyles, rem } from '@mantine/core';
 import { FormattedDate } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
-import { TransactionModel, TransactionType } from 'features/transactions';
+import {
+  TransactionDestination,
+  TransactionModel,
+  TransactionTypeView
+} from 'features/transactions';
 import { useAccountStore } from 'store';
 import { getContrastColor } from 'utils';
 
@@ -41,7 +39,7 @@ interface Props {
 }
 
 export function TransactionCard({ transaction, currency }: Props) {
-  const { id, category, tags, amount, date, description, transactionTypeId } = transaction;
+  const { id, category, tags, date, description } = transaction;
   const { classes } = useStyles();
   const navigate = useNavigate();
   const { accounts } = useAccountStore();
@@ -55,10 +53,12 @@ export function TransactionCard({ transaction, currency }: Props) {
 
   return (
     <div>
-      <Paper withBorder radius="md" key={`${description}${date}`}>
+      <Paper withBorder h="100%" radius="md" key={`${description}${date}`}>
         <UnstyledButton p="md" w="100%" h="100%" onClick={gotoTransaction}>
           <Group mb="xs" spacing={0}>
-            <Badge c={category.color}>{category.name}</Badge>
+            <Badge bg={category.color} c={getContrastColor(category.color)}>
+              {category.name}
+            </Badge>
           </Group>
           <Group position="apart">
             <Title order={5} mb="sm" className={classes.transactionTitle}>
@@ -67,38 +67,13 @@ export function TransactionCard({ transaction, currency }: Props) {
           </Group>
 
           <Group align="center" mb="xs" spacing="0.25rem">
-            {transactionTypeId === TransactionType.INCOME && (
-              <>
-                <IconCashBanknote color="green" size="2rem" />
-                <Text className={classes.value} color="green">
-                  {amount}
-                </Text>
-              </>
-            )}
-
-            {transactionTypeId === TransactionType.EXPENSE && (
-              <>
-                <IconCashBanknoteOff color="red" size="2rem" />
-                <Text className={classes.value} color="red">
-                  {amount}
-                </Text>
-              </>
-            )}
-
-            {transactionTypeId === TransactionType.TRANSFER && (
-              <>
-                <IconArrowsExchange color="violet" size="2rem" />
-
-                <Text className={classes.value} color="violet">
-                  {amount}
-                </Text>
-              </>
-            )}
-
+            <TransactionTypeView transaction={transaction} withAmount />
             <Text className={classes.currency} size="sm" fw={500}>
               {txnAcc?.currency}
             </Text>
           </Group>
+
+          <TransactionDestination transaction={transaction} />
 
           <Group mb="sm">
             <Text color="dimmed">
@@ -106,22 +81,13 @@ export function TransactionCard({ transaction, currency }: Props) {
             </Text>
           </Group>
 
-          <Group mb="xs">
+          <Group>
             {tags?.map((tag) => (
               <Badge key={tag.id} bg={tag.color} c={getContrastColor(tag.color)} variant="filled">
                 {tag.name}
               </Badge>
             ))}
           </Group>
-
-          {transactionTypeId === TransactionType.TRANSFER && (
-            <Group spacing="0rem">
-              {/* TODO: real names */}
-              <Badge c={category.color}>from</Badge>
-              <IconArrowNarrowRight />
-              <Badge c={category.color}>to</Badge>
-            </Group>
-          )}
         </UnstyledButton>
       </Paper>
     </div>

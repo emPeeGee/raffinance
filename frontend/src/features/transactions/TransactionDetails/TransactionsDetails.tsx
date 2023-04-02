@@ -14,16 +14,11 @@ import {
   MantineTheme,
   Text,
   Title,
-  createStyles,
-  rem
+  useMantineTheme
 } from '@mantine/core';
 import {
   IconAlertCircle,
   IconArrowBackUp,
-  IconArrowNarrowRight,
-  IconArrowsExchange,
-  IconCashBanknote,
-  IconCashBanknoteOff,
   IconEdit,
   IconRocket,
   IconTrash
@@ -31,17 +26,14 @@ import {
 import { FormattedDate, useIntl } from 'react-intl';
 import { Link, useParams } from 'react-router-dom';
 
-import { TransactionModel, TransactionType } from 'features/transactions';
+import {
+  TransactionDestination,
+  TransactionModel,
+  TransactionType,
+  TransactionTypeView
+} from 'features/transactions';
 import { useAccountStore, useTransactionStore } from 'store';
 import { getContrastColor } from 'utils';
-
-const useStyles = createStyles(() => ({
-  value: {
-    fontSize: rem(18),
-    fontWeight: 700,
-    lineHeight: 1
-  }
-}));
 
 const getTxnColor = (theme: MantineTheme, type: TransactionType) => {
   switch (type) {
@@ -58,7 +50,7 @@ const getTxnColor = (theme: MantineTheme, type: TransactionType) => {
 
 export function TransactionDetails() {
   const { formatMessage } = useIntl();
-  const { classes, theme } = useStyles();
+  const theme = useMantineTheme();
   const [isLoading, setIsLoading] = useState(false);
   const [transaction, setTransaction] = useState<TransactionModel>();
 
@@ -101,70 +93,6 @@ export function TransactionDetails() {
     ? transaction.description
     : formatMessage({ id: 'co-no-desc' });
 
-  const getTransferDest = (type: TransactionType) => {
-    if (type === TransactionType.TRANSFER) {
-      const fromAccountName = accounts.find((a) => a.id === transaction?.fromAccountId)?.name;
-      const { color } = transaction.category;
-
-      return (
-        <Group mb="xs" spacing={0} my="xs">
-          <Text fw={700} mr="md">
-            {formatMessage({ id: 'co-dest' })}:{' '}
-          </Text>
-          <Group mb={0} spacing={0}>
-            {/* TODO: real names */}
-            <Badge size="xl" c={getContrastColor(color)} bg={color}>
-              {fromAccountName}
-            </Badge>
-            <IconArrowNarrowRight />
-            <Badge size="xl" c={getContrastColor(color)} bg={color}>
-              {txnAcc?.name}
-            </Badge>
-          </Group>
-        </Group>
-      );
-    }
-
-    return null;
-  };
-
-  const getTransactionType = (type: TransactionType) => {
-    switch (type) {
-      case TransactionType.INCOME:
-        return (
-          <>
-            <Text className={classes.value} color="green">
-              {formatMessage({ id: 'co-inc' })}
-            </Text>
-            <IconCashBanknote color="green" size="2rem" />
-          </>
-        );
-
-      case TransactionType.EXPENSE:
-        return (
-          <>
-            <Text className={classes.value} color="red">
-              {formatMessage({ id: 'co-exp' })}
-            </Text>
-            <IconCashBanknoteOff color="red" size="2rem" />
-          </>
-        );
-
-      case TransactionType.TRANSFER:
-        return (
-          <Group mb={0} spacing="0.5rem">
-            <Text className={classes.value} color="violet">
-              {formatMessage({ id: 'co-tra' })}
-            </Text>
-            <IconArrowsExchange color="violet" size="2rem" />
-          </Group>
-        );
-
-      default:
-        return null;
-    }
-  };
-
   return (
     <Container>
       <Group my="lg">
@@ -181,11 +109,8 @@ export function TransactionDetails() {
 
       <Card padding="lg" my="lg" withBorder radius="md">
         <Flex direction="column" gap="0.25rem">
-          <Group fw={700}>
-            {formatMessage({ id: 'txn-type' })}: {getTransactionType(transaction.transactionTypeId)}
-          </Group>
-
-          {getTransferDest(transaction.transactionTypeId)}
+          <TransactionTypeView transaction={transaction} spacing="md" withLabel withTextType />
+          <TransactionDestination transaction={transaction} withLabel size="xl" />
 
           <Divider my="xs" />
           <Group>

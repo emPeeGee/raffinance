@@ -5,3 +5,4 @@
 4. All external assets => download
 5. Transactions filter: In month picker can select multiple months, backend and fe
 6. Transactions count in a account from backend
+7. Customizable primary color as user wants https://mantine.dev/theming/colors/
