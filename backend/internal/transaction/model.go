@@ -32,7 +32,7 @@ type TransactionResponse struct {
 type CreateTransactionDTO struct {
 	Date        time.Time `json:"date" validate:"required"`
 	Amount      float64   `json:"amount" validate:"required,gt=0"`
-	Description string    `json:"description" validate:"omitempty"`
+	Description string    `json:"description" validate:"omitempty,max=256"`
 	Location    string    `json:"location" validate:"omitempty,max=128"`
 
 	CategoryID uint `json:"categoryId" validate:"required,numeric"`
