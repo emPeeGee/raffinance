@@ -3,6 +3,7 @@ import { Iconify } from './common/Iconify/Iconify';
 import LanguagePicker from './common/LangPicker/LangPicker';
 import { MultiPicker } from './common/MultiPicker/MultiPicker';
 import { ToggleColor } from './common/ToggleColor/ToggleColor';
+import { TransactionTypePicker } from './common/TransactionTypePicker/TransactionTypePicker';
 import { ViewSwitcher } from './common/ViewSwitcher/ViewSwitcher';
 import { AppShell } from './layout/AppShell/AppShell';
 import { Footer } from './layout/Footer/Footer';
@@ -29,5 +30,6 @@ export {
   LanguagePicker,
   Iconify,
   ViewSwitcher,
-  MultiPicker
+  MultiPicker,
+  TransactionTypePicker
 };
