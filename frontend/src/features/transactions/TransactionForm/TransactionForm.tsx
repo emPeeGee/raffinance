@@ -111,8 +111,14 @@ export function TransactionForm() {
     const fetchTxn = async () => {
       setIsLoading(true);
       const txn = await getTransaction(id as string);
-      setTransaction(txn);
 
+      if (!txn) {
+        // TODO: handle
+        navigate('/transactions');
+        return;
+      }
+
+      setTransaction(txn);
       reset({
         transactionTypeId: txn.transactionTypeId,
         toAccountId: txn.toAccountId,

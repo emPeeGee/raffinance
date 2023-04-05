@@ -13,10 +13,13 @@ import {
   Group,
   LoadingOverlay,
   MantineTheme,
+  Modal,
   Text,
   Title,
   useMantineTheme
 } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import {
   IconAlertCircle,
   IconArrowBackUp,
@@ -25,8 +28,9 @@ import {
   IconTrash
 } from '@tabler/icons-react';
 import { FormattedDate, useIntl } from 'react-intl';
-import { Link, useParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 
+import { ConfirmDelete } from 'components';
 import {
   TransactionDestination,
   TransactionModel,
@@ -64,6 +68,11 @@ export function TransactionDetails() {
   const fetchTransaction = async () => {
     setIsLoading(true);
     const fetchedTransaction = await getTransaction(String(id));
+    if (!fetchedTransaction) {
+      navigate('/transactions');
+      return;
+    }
+
     setTransaction(fetchedTransaction);
     setIsLoading(false);
   };
