@@ -70,6 +70,7 @@
   "no-txn-found": "No transactions yet!",
   "no-txn-desc": "You can add a new transaction by clicking the button below.",
   "txn-create": "Create transaction",
+  "txn-update": "Edit transaction",
   "txn-add-t": "Add a new transaction",
   "txn-del": "Delete transaction",
   "txn-c-from": "Select the account from which the money is being taken for this transaction.",

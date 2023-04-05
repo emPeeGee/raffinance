@@ -15,6 +15,7 @@ type TransactionsStore = {
   getTransactions: () => void;
   getTransaction: (id: string) => Promise<TransactionModel>;
   addTransaction: (transaction: CreateTransactionDTO) => Promise<boolean>;
+  updateTransaction: (id: string, transaction: CreateTransactionDTO) => Promise<boolean>;
   // removeTransaction: (id: string) => void;
 };
 
@@ -63,6 +64,31 @@ export const useTransactionStore = create<TransactionsStore>()(
           });
           console.log(response);
           set({ ...get(), transactions: [...transactions, response] });
+          return true;
+        } catch (reason) {
+          console.log(reason);
+          return false;
+        }
+      },
+      updateTransaction: async (
+        id: string,
+        transaction: CreateTransactionDTO
+      ): Promise<boolean> => {
+        const { transactions } = get();
+
+        try {
+          const response = await api.put<CreateTransactionDTO, TransactionModel>({
+            url: `transactions/${id}`,
+            body: transaction,
+            token: useAuthStore.getState().token
+          });
+
+          const idx = transactions.findIndex((t) => String(t.id) === id);
+          if (idx !== -1) {
+            transactions[idx] = response;
+          }
+
+          set({ ...get(), transactions: [...transactions] });
           return true;
         } catch (reason) {
           console.log(reason);

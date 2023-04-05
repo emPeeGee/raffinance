@@ -32,7 +32,7 @@ export function Transactions() {
         <Route path="/" element={<TransactionsDashboard />} />
         <Route path="/:id" element={<TransactionDetails />} />
         <Route path="/create" element={<TransactionCreate />} />
-        {/* <Route path="/:id/edit" element={<CategoryCreate />} /> */}
+        <Route path="/:id/edit" element={<TransactionCreate />} />
       </Routes>
     </Container>
   );

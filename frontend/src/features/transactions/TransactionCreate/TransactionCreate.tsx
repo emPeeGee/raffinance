@@ -1,16 +1,13 @@
 import React, { forwardRef, useEffect, useState } from 'react';
 
 import {
-  Box,
   Button,
-  Center,
   Flex,
   Grid,
   Group,
   Loader,
+  LoadingOverlay,
   NumberInput,
-  SegmentedControl,
-  SegmentedControlProps,
   SimpleGrid,
   Text,
   TextInput,
@@ -29,7 +26,6 @@ import {
   IconMoneybag,
   IconSignature
 } from '@tabler/icons-react';
-import { log } from 'console';
 import { Controller, useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -73,8 +69,7 @@ SelectItem.displayName = 'SelectItem';
 export function TransactionCreate() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { addTransaction, getTransaction } = useTransactionStore();
-  // const transaction = id ? await getTransaction(id) : null;
+  const { addTransaction, getTransaction, updateTransaction } = useTransactionStore();
   const [transaction, setTransaction] = useState<TransactionModel | null>(null);
   const { formatMessage } = useIntl();
 
@@ -85,11 +80,14 @@ export function TransactionCreate() {
     control,
     formState: { errors },
     watch,
+    reset,
     setValue
   } = useForm<CreateTransactionDTO>({
     mode: 'onChange',
-    defaultValues: { transactionTypeId: TransactionType.INCOME, date: new Date() }
-    // defaultValues: { ...transaction }
+
+    defaultValues: transaction
+      ? { ...transaction, date: new Date(transaction.date) }
+      : { transactionTypeId: TransactionType.INCOME, date: new Date() }
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -111,8 +109,23 @@ export function TransactionCreate() {
 
   useEffect(() => {
     const fetchTxn = async () => {
-      const txn = id ? await getTransaction(id) : null;
+      setIsLoading(true);
+      const txn = await getTransaction(id as string);
       setTransaction(txn);
+
+      reset({
+        transactionTypeId: txn.transactionTypeId,
+        toAccountId: txn.toAccountId,
+        fromAccountId: txn.fromAccountId,
+        description: txn.description,
+        location: txn.location,
+        amount: txn.amount,
+        date: new Date(txn.date),
+        tagIds: txn.tags?.map((t) => t.id),
+        categoryId: txn.category.id
+      });
+
+      setIsLoading(false);
     };
 
     if (id) {
@@ -120,23 +133,30 @@ export function TransactionCreate() {
     }
   }, [id]);
 
-  console.log(errors);
+  if (isLoading) {
+    return <LoadingOverlay visible />;
+  }
+
+  const isCreate = transaction === undefined || transaction === null;
+
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  const showFailNotification = (isCreate: boolean) => {
+    showNotification({
+      title: formatMessage({ id: isCreate ? 'txn-f-title' : 'txn-fu-title' }),
+      message: formatMessage({ id: isCreate ? 'txn-f-desc' : 'txn-fu-desc' }),
+      color: 'red',
+      autoClose: DateUnit.second * 5
+    });
+  };
 
   const create = async (txn: CreateTransactionDTO) => {
-    console.log(txn);
-    // TODO: convert time here
-
     setIsLoading(true);
     const success = await addTransaction(txn);
     if (success) {
+      // TODO: success notif ?
       navigate(`/transactions`);
     } else {
-      showNotification({
-        title: formatMessage({ id: 'txn-f-title' }),
-        message: formatMessage({ id: 'txn-f-desc' }),
-        color: 'red',
-        autoClose: DateUnit.second * 5
-      });
+      showFailNotification(isCreate);
       setIsLoading(false);
     }
   };
@@ -147,27 +167,14 @@ export function TransactionCreate() {
       return;
     }
 
-    // const success = await updateTransaction(Number(id), { ...txn });
-    // if (success) {
-    //   navigate(`/transactions`);
-    // } else {
-    //   showNotification({
-    //     title: formatMessage({ id: 'txn-fu-title' }),
-    //     message: formatMessage({ id: 'txn-fu-desc' }),
-    //     color: 'red',
-    //     autoClose: DateUnit.second * 5
-    //   });
-
-    setIsLoading(false);
-    // }
+    const success = await updateTransaction(id, { ...txn });
+    if (success) {
+      navigate(`/transactions`);
+    } else {
+      showFailNotification(isCreate);
+      setIsLoading(false);
+    }
   };
-
-  const isCreate = transaction === undefined || transaction === null;
-
-  // If transaction is null, means is it update and id has something(eg. is user refreshes the page), go back to transactions
-  if ((transaction === undefined || transaction === null) && id !== undefined) {
-    navigate('/transactions');
-  }
 
   return (
     <>
@@ -211,8 +218,13 @@ export function TransactionCreate() {
                   <MultiPicker
                     {...field}
                     required
-                    value={field.value ? undefined : undefined}
-                    onChange={(e) => field.onChange(parseInt(e[0], 10) || undefined)}
+                    clearable
+                    value={field.value ? [String(field.value)] : undefined}
+                    onChange={(e) =>
+                      e.length === 0
+                        ? field.onChange([])
+                        : field.onChange(parseInt(e[0], 10) || undefined)
+                    }
                     description={formatMessage({ id: 'txn-c-to' })}
                     label={formatMessage({ id: 'acc-to' })}
                     maxSelectedValues={1}
@@ -245,8 +257,12 @@ export function TransactionCreate() {
                     render={({ field }) => (
                       <MultiPicker
                         {...field}
-                        value={field.value ? undefined : undefined}
-                        onChange={(e) => field.onChange(parseInt(e[0], 10) || undefined)}
+                        value={field.value ? [String(field.value)] : undefined}
+                        onChange={(e) =>
+                          e.length === 0
+                            ? field.onChange([])
+                            : field.onChange(parseInt(e[0], 10) || undefined)
+                        }
                         description={formatMessage({ id: 'txn-c-from' })}
                         label={formatMessage({ id: 'acc-from' })}
                         maxSelectedValues={1}
@@ -335,8 +351,12 @@ export function TransactionCreate() {
               <MultiPicker
                 {...field}
                 required
-                value={field.value ? undefined : undefined}
-                onChange={(e) => field.onChange(parseInt(e[0], 10) || undefined)}
+                value={field.value ? [String(field.value)] : undefined}
+                onChange={(e) =>
+                  e.length === 0
+                    ? field.onChange([])
+                    : field.onChange(parseInt(e[0], 10) || undefined)
+                }
                 description={formatMessage({ id: 'txn-c-cat' })}
                 label={formatMessage({ id: 'cat-categ' })}
                 maxSelectedValues={1}
@@ -395,4 +415,5 @@ export function TransactionCreate() {
     </>
   );
 }
-// what is deduplication ???
+
+// TODO: After adding, transactions are not sorted

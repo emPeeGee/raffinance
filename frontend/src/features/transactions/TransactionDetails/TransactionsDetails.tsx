@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import {
   Alert,
+  Anchor,
   Badge,
   Box,
   Button,
@@ -69,14 +70,12 @@ export function TransactionDetails() {
     fetchTransaction();
   }, []);
 
-  // /* TODO: Description for every field */
   if (transaction === undefined || isLoading) {
     // TODO: Skeleton instead of lading
     return <LoadingOverlay visible />;
   }
 
   const txnAcc = accounts.find((a) => a.id === transaction.toAccountId);
-
   const tagsBadges = transaction.tags ? (
     transaction.tags.map((tag) => (
       <Badge key={tag.id} bg={tag.color} size="lg" c={getContrastColor(tag.color)} variant="filled">
@@ -192,7 +191,13 @@ export function TransactionDetails() {
           </Group>
         </Title>
         <Group>
-          <Button variant="outline" color="orange" radius="md" leftIcon={<IconEdit />}>
+          <Button
+            component={Link}
+            to={`/transactions/${id}/edit`}
+            variant="outline"
+            color="orange"
+            radius="md"
+            leftIcon={<IconEdit />}>
             {formatMessage({ id: 'co-edi' })}
           </Button>
 
