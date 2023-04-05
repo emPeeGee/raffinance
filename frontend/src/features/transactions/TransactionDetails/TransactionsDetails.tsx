@@ -54,8 +54,10 @@ export function TransactionDetails() {
   const theme = useMantineTheme();
   const [isLoading, setIsLoading] = useState(false);
   const [transaction, setTransaction] = useState<TransactionModel>();
+  const [opened, { open, close }] = useDisclosure(false);
+  const navigate = useNavigate();
 
-  const { getTransaction } = useTransactionStore();
+  const { getTransaction, deleteTransaction } = useTransactionStore();
   const { accounts } = useAccountStore();
   const { id } = useParams();
 
@@ -92,8 +94,37 @@ export function TransactionDetails() {
     ? transaction.description
     : formatMessage({ id: 'co-no-desc' });
 
+  const onDeleteClick = async () => {
+    const ok = await deleteTransaction(transaction.id);
+    if (ok) {
+      navigate('/transactions');
+      notifications.show({
+        message: formatMessage({ id: 'co-del-suc' }),
+        color: 'green'
+      });
+    } else {
+      notifications.show({
+        message: formatMessage({ id: 'co-del-err' }),
+        color: 'red'
+      });
+    }
+
+    close();
+  };
+
   return (
     <Container>
+      <Modal
+        opened={opened}
+        onClose={close}
+        title={<Title order={3}>{formatMessage({ id: 'txn-del' })}</Title>}>
+        <ConfirmDelete
+          onClose={close}
+          onDelete={onDeleteClick}
+          confirmName={formatMessage({ id: 'txn-conf-del' }, { id: transaction.id })}
+        />
+      </Modal>
+
       <Group my="lg">
         <Button component={Link} to="/transactions" variant="light" leftIcon={<IconArrowBackUp />}>
           {formatMessage({ id: 'co-back' })}
@@ -105,6 +136,31 @@ export function TransactionDetails() {
       <Alert icon={<IconAlertCircle size="1rem" />} color="gray">
         {formatMessage({ id: 'txn-det-info' })}
       </Alert>
+
+      <Card my="lg" withBorder radius="md">
+        <Title order={4} mb="md">
+          <Group>
+            <IconRocket color="gray" />
+
+            {formatMessage({ id: 'co-quick-act' })}
+          </Group>
+        </Title>
+        <Group>
+          <Button
+            component={Link}
+            to={`/transactions/${id}/edit`}
+            variant="outline"
+            color="orange"
+            radius="md"
+            leftIcon={<IconEdit />}>
+            {formatMessage({ id: 'co-edi' })}
+          </Button>
+
+          <Button color="red" variant="outline" radius="md" leftIcon={<IconTrash />} onClick={open}>
+            {formatMessage({ id: 'txn-del' })}
+          </Button>
+        </Group>
+      </Card>
 
       <Card padding="lg" my="lg" withBorder radius="md">
         <Flex direction="column" gap="0.25rem">
@@ -180,31 +236,6 @@ export function TransactionDetails() {
             {tagsBadges}
           </Group>
         </Flex>
-      </Card>
-
-      <Card my="lg" withBorder radius="md">
-        <Title order={4} mb="md">
-          <Group>
-            <IconRocket color="gray" />
-
-            {formatMessage({ id: 'co-quick-act' })}
-          </Group>
-        </Title>
-        <Group>
-          <Button
-            component={Link}
-            to={`/transactions/${id}/edit`}
-            variant="outline"
-            color="orange"
-            radius="md"
-            leftIcon={<IconEdit />}>
-            {formatMessage({ id: 'co-edi' })}
-          </Button>
-
-          <Button color="red" variant="outline" radius="md" leftIcon={<IconTrash />}>
-            {formatMessage({ id: 'txn-del' })}
-          </Button>
-        </Group>
       </Card>
     </Container>
   );

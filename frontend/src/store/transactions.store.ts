@@ -13,9 +13,10 @@ type TransactionsStore = {
   transactions: TransactionModel[];
   fetchTransactions: () => void;
   getTransactions: () => void;
-  getTransaction: (id: string) => Promise<TransactionModel>;
+  getTransaction: (id: string) => Promise<TransactionModel | null>;
   addTransaction: (transaction: CreateTransactionDTO) => Promise<boolean>;
   updateTransaction: (id: string, transaction: CreateTransactionDTO) => Promise<boolean>;
+  deleteTransaction: (id: number) => Promise<boolean>;
   // removeTransaction: (id: string) => void;
 };
 
@@ -36,12 +37,17 @@ export const useTransactionStore = create<TransactionsStore>()(
         }
       },
 
-      getTransaction: async (id: string): Promise<TransactionModel> => {
-        const transaction = await api.get<TransactionModel>({
-          url: `transactions/${id}`,
-          token: useAuthStore.getState().token
-        });
-        return transaction;
+      getTransaction: async (id: string): Promise<TransactionModel | null> => {
+        try {
+          const transaction = await api.get<TransactionModel>({
+            url: `transactions/${id}`,
+            token: useAuthStore.getState().token
+          });
+          return transaction;
+        } catch (error) {
+          console.log(error);
+          return null;
+        }
       },
 
       fetchTransactions: async () => {
@@ -94,8 +100,32 @@ export const useTransactionStore = create<TransactionsStore>()(
           console.log(reason);
           return false;
         }
+      },
+
+      deleteTransaction: async (id: number): Promise<boolean> => {
+        const { transactions } = get();
+
+        try {
+          const response = await api.delete<any>({
+            url: `transactions/${id}`,
+            token: useAuthStore.getState().token
+          });
+
+          if (response.ok) {
+            const updatedTransactions = transactions.filter((t) => t.id !== id);
+
+            set({ ...get(), transactions: [...updatedTransactions] });
+            return true;
+          }
+
+          return false;
+        } catch (reason) {
+          console.log(reason);
+          return false;
+        }
       }
     }),
+
     {
       store: transactionStore
     }

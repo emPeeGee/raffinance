@@ -8,7 +8,7 @@ interface Props {
   onClose: () => void;
   onDelete: () => void;
   confirmName: string;
-  label: string;
+  label?: string;
 }
 
 export function ConfirmDelete({ confirmName, label, onClose, onDelete }: Props) {
@@ -42,10 +42,15 @@ export function ConfirmDelete({ confirmName, label, onClose, onDelete }: Props) 
         {formatMessage({ id: 'co-undone2' })}
       </Alert>
       <TextInput
-        label={label}
+        label={label ?? formatMessage({ id: 'co-conf-text' })}
         onChange={(ev) => handleConfirmName(ev.target.value)}
         data-autofocus
         color="red"
+        sx={(theme) => ({
+          '&:focus-within input': {
+            borderColor: theme.colors.red[3]
+          }
+        })}
       />
       <Group mt="md" position="right">
         <Button variant="outline" color="dark" onClick={onClose}>
