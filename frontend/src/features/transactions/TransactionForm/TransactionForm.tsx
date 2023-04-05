@@ -66,7 +66,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
 SelectItem.displayName = 'SelectItem';
 
 // TODO: Rename to both create and edit
-export function TransactionCreate() {
+export function TransactionForm() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { addTransaction, getTransaction, updateTransaction } = useTransactionStore();

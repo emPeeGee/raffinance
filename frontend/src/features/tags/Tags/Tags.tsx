@@ -5,7 +5,7 @@ import { Route, Routes } from 'react-router-dom';
 
 import { useTagsStore } from 'store';
 
-import { TagCreate } from '../CreateTag/CreateTag';
+import { TagForm } from '../TagForm/TagForm';
 import { TagsList } from '../TagsList/TagsList';
 
 // TODO: Breadcrumbs ???
@@ -29,8 +29,8 @@ export function Tags() {
     <Container className={classes.root}>
       <Routes>
         <Route path="/" element={<TagsList />} />
-        <Route path="/create" element={<TagCreate />} />
-        <Route path="/:id/edit" element={<TagCreate />} />
+        <Route path="/create" element={<TagForm />} />
+        <Route path="/:id/edit" element={<TagForm />} />
       </Routes>
     </Container>
   );

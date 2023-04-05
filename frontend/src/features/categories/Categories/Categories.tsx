@@ -6,7 +6,7 @@ import { Route, Routes } from 'react-router-dom';
 import { useCategoriesStore } from 'store';
 
 import { CategoriesList } from '../CategoriesList/CategoriesList';
-import { CategoryCreate } from '../CreateCategory/CreateCategory';
+import { CategoryForm } from '../CategoryForm/CategoryForm';
 
 // TODO: Breadcrumbs ???
 
@@ -29,8 +29,8 @@ export function Categories() {
     <Container className={classes.root}>
       <Routes>
         <Route path="/" element={<CategoriesList />} />
-        <Route path="/create" element={<CategoryCreate />} />
-        <Route path="/:id/edit" element={<CategoryCreate />} />
+        <Route path="/create" element={<CategoryForm />} />
+        <Route path="/:id/edit" element={<CategoryForm />} />
       </Routes>
     </Container>
   );

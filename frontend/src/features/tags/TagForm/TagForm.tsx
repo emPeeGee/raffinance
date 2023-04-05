@@ -3,7 +3,6 @@ import React, { forwardRef, useState } from 'react';
 import {
   TextInput,
   Button,
-  Container,
   createStyles,
   rem,
   Text,
@@ -21,10 +20,10 @@ import { useIntl } from 'react-intl';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import { Iconify } from 'components';
-import { useCategoriesStore } from 'store';
+import { useTagsStore } from 'store';
 import { DateUnit, ICONS, SWATCHES } from 'utils';
 
-import { CreateCategoryDTO } from '../categories.model';
+import { CreateTagDTO } from '../tags.model';
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -43,6 +42,7 @@ interface SelectItemProps extends React.ComponentPropsWithoutRef<'div'> {
   value: string;
 }
 
+// TODO: reusable, category too
 const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
   ({ label, value, ...others }: SelectItemProps, ref) => (
     <div ref={ref} {...others}>
@@ -56,11 +56,11 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
 SelectItem.displayName = 'SelectItem';
 
 // TODO: Rename to both create and edit
-export function CategoryCreate() {
+export function TagForm() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { addCategory, updateCategory, getCategory } = useCategoriesStore();
-  const category = id ? getCategory(Number(id)) : null;
+  const { addTag, getTag, updateTag } = useTagsStore();
+  const tag = id ? getTag(Number(id)) : null;
   const { formatMessage } = useIntl();
   const { classes } = useStyles();
   const {
@@ -68,24 +68,24 @@ export function CategoryCreate() {
     handleSubmit,
     control,
     formState: { errors }
-  } = useForm<CreateCategoryDTO>({
+  } = useForm<CreateTagDTO>({
     mode: 'onChange',
-    defaultValues: { ...category }
+    defaultValues: { ...tag }
   });
 
-  console.log(category);
+  console.log(tag);
   const [isLoading, setIsLoading] = useState(false);
 
-  const create = async (cat: CreateCategoryDTO) => {
+  const create = async (t: CreateTagDTO) => {
     setIsLoading(true);
-    const success = await addCategory(cat);
+    const success = await addTag(t);
 
     if (success) {
-      navigate(`/categories`);
+      navigate(`/tags`);
     } else {
       showNotification({
-        title: formatMessage({ id: 'cat-f-title' }),
-        message: formatMessage({ id: 'cat-f-desc' }),
+        title: formatMessage({ id: 'tag-f-title' }),
+        message: formatMessage({ id: 'tag-f-desc' }),
         color: 'red',
         autoClose: DateUnit.second * 5
       });
@@ -94,19 +94,19 @@ export function CategoryCreate() {
     }
   };
 
-  const update = async (cat: CreateCategoryDTO) => {
+  const update = async (t: CreateTagDTO) => {
     setIsLoading(true);
     if (!id) {
       return;
     }
 
-    const success = await updateCategory(Number(id), { ...cat });
+    const success = await updateTag(Number(id), { ...t });
     if (success) {
-      navigate(`/categories`);
+      navigate(`/tags`);
     } else {
       showNotification({
-        title: formatMessage({ id: 'cat-fu-title' }),
-        message: formatMessage({ id: 'cat-fu-desc' }),
+        title: formatMessage({ id: 'tag-fu-title' }),
+        message: formatMessage({ id: 'tag-fu-desc' }),
         color: 'red',
         autoClose: DateUnit.second * 5
       });
@@ -115,30 +115,30 @@ export function CategoryCreate() {
     }
   };
 
-  const isCreate = category === undefined || category === null;
+  const isCreate = tag === undefined || tag === null;
 
-  // If category is null, means is it update and id has something(eg. is user refreshes the page), go back to categories
-  if ((category === undefined || category === null) && id !== undefined) {
-    navigate('/categories');
+  // If tag is null, means is it update and id has something(eg. is user refreshes the page), go back to tags
+  if ((tag === undefined || tag === null) && id !== undefined) {
+    navigate('/tags');
   }
 
   return (
     <>
       <Group my="lg">
-        <Button component={Link} to="/categories" variant="light" leftIcon={<IconArrowBackUp />}>
+        <Button component={Link} to="/tags" variant="light" leftIcon={<IconArrowBackUp />}>
           {formatMessage({ id: 'co-back' })}
         </Button>
 
         <Title className={classes.title}>
-          {formatMessage({ id: isCreate ? 'cat-create' : 'cat-update' })}
+          {formatMessage({ id: isCreate ? 'tag-create' : 'tag-update' })}
         </Title>
       </Group>
       <form onSubmit={handleSubmit(isCreate ? create : update)}>
         <Flex gap="md" direction="column">
           <TextInput
             {...register('name', { required: true, minLength: 2, maxLength: 255, value: '' })}
-            label={formatMessage({ id: 'cat-name' })}
-            description={formatMessage({ id: 'cat-c-name' })}
+            label={formatMessage({ id: 'tag-name' })}
+            description={formatMessage({ id: 'tag-c-name' })}
             size="md"
             icon={<IconSignature />}
             error={errors.name ? 'Field is invalid' : null}
@@ -154,7 +154,7 @@ export function CategoryCreate() {
                 {...field}
                 label={formatMessage({ id: 'co-icon' })}
                 nothingFound={formatMessage({ id: 'co-no-opts' })}
-                description={formatMessage({ id: 'cat-c-icon' })}
+                description={formatMessage({ id: 'tag-c-icon' })}
                 searchable
                 clearable
                 required
@@ -184,7 +184,7 @@ export function CategoryCreate() {
                 size="md"
                 swatches={SWATCHES}
                 label={formatMessage({ id: 'co-color' })}
-                description={formatMessage({ id: 'cat-c-color' })}
+                description={formatMessage({ id: 'tag-c-color' })}
                 error={errors.color ? 'Field is invalid' : null}
                 required
               />

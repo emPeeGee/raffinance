@@ -1,7 +1,7 @@
 import { NoTransactions } from './NoTransactions/NoTransactions';
 import { TransactionCard } from './TransactionCard/TransactionCard';
-import { TransactionCreate } from './TransactionCreate/TransactionCreate';
 import { TransactionDestination } from './TransactionDestination/TransactionDestination';
+import { TransactionForm } from './TransactionForm/TransactionForm';
 import { Transactions } from './Transactions/Transactions';
 import { TransactionModel, CreateTransactionDTO, TransactionType } from './transactions.model';
 import { TransactionsDashboard } from './TransactionsDashboard/TransactionsDashboard';
@@ -21,6 +21,6 @@ export {
   TransactionDestination,
   TransactionType,
   TransactionTypeView,
-  TransactionCreate
+  TransactionForm as TransactionCreate
 };
 export type { TransactionModel, CreateTransactionDTO };

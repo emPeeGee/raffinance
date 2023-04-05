@@ -53,7 +53,7 @@ const useStyles = createStyles((theme) => ({
   }
 }));
 
-export function AccountCreate() {
+export function AccountForm() {
   const { formatMessage } = useIntl();
   const { classes } = useStyles();
   const {
