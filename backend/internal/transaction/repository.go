@@ -106,12 +106,13 @@ func (r *repository) updateTransaction(transactionId uint, transaction UpdateTra
 	var tr entity.Transaction
 	if err := tx.First(&tr, transactionId).Error; err != nil {
 		return nil, fmt.Errorf("failed to find transaction: %w", err)
-
 	}
 
 	var tags []entity.Tag
-	if err := tx.Find(&tags, transaction.TagIDs).Error; err != nil {
-		return nil, fmt.Errorf("failed to find tags: %w", err)
+	if len(transaction.TagIDs) > 0 {
+		if err := tx.Find(&tags, transaction.TagIDs).Error; err != nil {
+			return nil, fmt.Errorf("failed to find tags: %w", err)
+		}
 	}
 
 	// Replace the tags associated with the transaction
