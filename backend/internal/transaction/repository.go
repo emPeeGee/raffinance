@@ -1,6 +1,7 @@
 package transaction
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
@@ -188,18 +189,22 @@ func (r *repository) getTransactions(userId uint) ([]TransactionResponse, error)
 }
 
 func (r *repository) getTransaction(txnId uint) (*TransactionResponse, error) {
-	var transaction entity.Transaction
+	var transaction *entity.Transaction
 
 	if err := r.db.
 		Model(&entity.Transaction{}).
 		Where("id = ?", txnId).
 		Preload("Category").
 		Preload("Tags").
-		Find(&transaction).Error; err != nil {
+		First(&transaction).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			r.logger.Debugf(("Not found"))
+			return nil, fmt.Errorf("transaction with ID %d not found", txnId)
+		}
 		return nil, err
 	}
 
-	txn := entityToResponse(&transaction)
+	txn := entityToResponse(transaction)
 	return &txn, nil
 }
 
