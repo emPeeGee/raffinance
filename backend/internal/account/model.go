@@ -12,6 +12,7 @@ type accountResponse struct {
 	Currency  string    `json:"currency"`
 	Balance   float64   `json:"balance" gorm:"-"`
 	Color     string    `json:"color"`
+	Icon      string    `json:"icon"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
@@ -22,6 +23,7 @@ type accountDetailsResponse struct {
 	Currency     string                            `json:"currency"`
 	Balance      float64                           `json:"balance" gorm:"-"`
 	Color        string                            `json:"color"`
+	Icon         string                            `json:"icon"`
 	CreatedAt    time.Time                         `json:"createdAt"`
 	UpdatedAt    time.Time                         `json:"updatedAt"`
 	Transactions []transaction.TransactionResponse `json:"transactions" gorm:"foreignkey:to_account_id"`
@@ -31,6 +33,7 @@ type createAccountDTO struct {
 	Name     string  `json:"name" validate:"required,min=2,max=256"`
 	Balance  float64 `json:"balance" validate:"numeric,gte=0"`
 	Currency string  `json:"currency" validate:"required,currency,min=2,max=10"`
+	Icon     string  `json:"icon" validate:"required,max=128"`
 	Color    string  `json:"color" validate:"required,hexcolor,min=7,max=7"`
 }
 
@@ -40,5 +43,6 @@ type updateAccountDTO struct {
 	Balance float64 `json:"balance" validate:"numeric,gte=0"`
 	// TODO: Change to all transactions
 	Currency string `json:"currency" validate:"required,currency,min=2,max=10"`
+	Icon     string `json:"icon" validate:"required,max=128"`
 	Color    string `json:"color" validate:"required,hexcolor,min=7,max=7"`
 }

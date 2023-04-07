@@ -41,6 +41,7 @@ func (r *repository) createAccount(userId uint, account createAccountDTO) (*acco
 		Name:     account.Name,
 		Currency: account.Currency,
 		Color:    account.Color,
+		Icon:     account.Icon,
 		UserID:   &userId,
 	}
 
@@ -54,6 +55,7 @@ func (r *repository) createAccount(userId uint, account createAccountDTO) (*acco
 		Name:      newAccount.Name,
 		Currency:  newAccount.Currency,
 		Color:     newAccount.Color,
+		Icon:      newAccount.Icon,
 		Balance:   account.Balance,
 		CreatedAt: newAccount.CreatedAt,
 		UpdatedAt: newAccount.UpdatedAt,
@@ -68,6 +70,7 @@ func (r *repository) updateAccount(userId, accountId uint, account updateAccount
 	if err := r.db.Model(&entity.Account{}).Where("id = ?", accountId).Updates(map[string]interface{}{
 		"name":     account.Name,
 		"currency": account.Currency,
+		"icon":     account.Icon,
 		"color":    account.Color,
 	}).Error; err != nil {
 		return nil, err
@@ -118,6 +121,7 @@ func (r *repository) getAccounts(userId uint) ([]accountResponse, error) {
 			Currency:  account.Currency,
 			Balance:   accountBalance,
 			Color:     account.Color,
+			Icon:      account.Icon,
 			CreatedAt: account.CreatedAt,
 			UpdatedAt: account.UpdatedAt,
 		})

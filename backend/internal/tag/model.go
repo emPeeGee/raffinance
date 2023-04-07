@@ -23,9 +23,7 @@ type TagShortResponse struct {
 type createTagDTO struct {
 	Name  string `json:"name" validate:"required,min=2,max=64"`
 	Color string `json:"color" validate:"required,hexcolor,min=7,max=7"`
-	// TODO: What icon I will use?
-	// TODO: Default values?
-	Icon string `json:"icon" validate:"required,max=128"`
+	Icon  string `json:"icon" validate:"required,max=128"`
 }
 
 type updateTagDTO struct {

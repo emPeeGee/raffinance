@@ -2,7 +2,7 @@
 ## DB
 Users (UserID, Username, Name, Email, Password, Phone, LatestLogins)
 Contacts (ContactID, UserID, Name, Phone, Email)
-Accounts (AccountID, UserID, Name, Currency, Color) (Balance as a computed field)
+Accounts (AccountID, UserID, Name, Currency, Color, Icon) (Balance as a computed field)
 Transactions (TransactionID, FromAccountID, ToAccountID, Date, Amount, Description, CategoryID, TagID, TransactionTypeID, Location, )
 TransactionTypes (TransactionTypeID, Name)
 TransactionTags (transactionID, tagID) (many to many)

@@ -8,6 +8,7 @@ type Account struct {
 	// TODO: Validation
 	Name  string `json:"name" gorm:"notNull;size:256"`
 	Color string `json:"color" gorm:"notNull;size:7"`
+	Icon  string `gorm:"notNull;size:128"`
 	// TODO: how will currency work
 	Currency string `json:"currency" gorm:"notNull;size:10"`
 }
