@@ -124,7 +124,7 @@ export function TagForm() {
 
   return (
     <>
-      <Group my="lg">
+      <Group mb="md">
         <Button component={Link} to="/tags" variant="light" leftIcon={<IconArrowBackUp />}>
           {formatMessage({ id: 'co-back' })}
         </Button>

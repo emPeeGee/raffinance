@@ -3,7 +3,6 @@ import React, { forwardRef, useState } from 'react';
 import {
   TextInput,
   Button,
-  Container,
   createStyles,
   rem,
   Text,
@@ -124,7 +123,7 @@ export function CategoryForm() {
 
   return (
     <>
-      <Group my="lg">
+      <Group mb="md">
         <Button component={Link} to="/categories" variant="light" leftIcon={<IconArrowBackUp />}>
           {formatMessage({ id: 'co-back' })}
         </Button>

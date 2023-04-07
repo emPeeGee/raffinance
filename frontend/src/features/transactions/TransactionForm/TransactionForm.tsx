@@ -172,7 +172,7 @@ export function TransactionForm() {
 
   return (
     <>
-      <Group my="lg">
+      <Group mb="md">
         <Button component={Link} to="/transactions" variant="light" leftIcon={<IconArrowBackUp />}>
           {formatMessage({ id: 'co-back' })}
         </Button>

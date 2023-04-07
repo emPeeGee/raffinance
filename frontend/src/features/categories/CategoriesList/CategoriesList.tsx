@@ -1,29 +1,28 @@
 import React, { useEffect, useState } from 'react';
 
 import {
-  Button,
-  Group,
-  Title,
-  Text,
-  createStyles,
-  rem,
-  Alert,
-  Paper,
   ActionIcon,
-  SimpleGrid,
-  UnstyledButton,
-  Loader,
-  Flex,
+  Alert,
   Box,
+  Button,
+  Flex,
+  Group,
+  Loader,
   Menu,
-  Modal
+  Modal,
+  Paper,
+  SimpleGrid,
+  Text,
+  Title,
+  UnstyledButton,
+  createStyles,
+  rem
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import {
   IconDotsVertical,
   IconEdit,
-  IconHeartPlus,
   IconInfoCircle,
   IconTrash,
   IconTriangle
@@ -43,7 +42,6 @@ const useStyles = createStyles((theme) => ({
   title: {
     fontWeight: 900,
     fontSize: rem(34),
-    marginBottom: theme.spacing.md,
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
 
     [theme.fn.smallerThan('sm')]: {
@@ -187,7 +185,7 @@ export function CategoriesList() {
         </Modal>
       )}
 
-      <Group position="apart" py="sm">
+      <Group position="apart" mb="md">
         <Title className={classes.title}>{formatMessage({ id: 'cat-categ' })}</Title>
         <Button
           component={Link}

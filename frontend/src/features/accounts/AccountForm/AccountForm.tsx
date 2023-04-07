@@ -5,6 +5,7 @@ import {
   ColorInput,
   Container,
   Flex,
+  Group,
   Loader,
   NumberInput,
   Select,
@@ -31,11 +32,6 @@ import { CURRENCY_LIST, DateUnit, SWATCHES } from 'utils';
 import { CreateAccountDTO } from '../accounts.model';
 
 const useStyles = createStyles((theme) => ({
-  root: {
-    paddingTop: rem(64),
-    paddingBottom: rem(120)
-  },
-
   icon: {
     color: theme.colorScheme === 'dark' ? theme.colors.dark[3] : theme.colors.gray[5]
   },
@@ -43,7 +39,6 @@ const useStyles = createStyles((theme) => ({
   title: {
     fontWeight: 900,
     fontSize: rem(34),
-    marginBottom: theme.spacing.md,
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
 
     [theme.fn.smallerThan('sm')]: {
@@ -143,19 +138,17 @@ export function AccountForm() {
 
   // /* TODO: Description for every field */
   return (
-    <Container className={classes.root}>
-      <Button
-        component={Link}
-        to="/accounts"
-        my="2rem"
-        variant="light"
-        leftIcon={<IconArrowBackUp />}>
-        {formatMessage({ id: 'co-back' })}
-      </Button>
+    <Container>
+      <Group mb="md">
+        <Button component={Link} to="/accounts" variant="light" leftIcon={<IconArrowBackUp />}>
+          {formatMessage({ id: 'co-back' })}
+        </Button>
 
-      <Title className={classes.title}>
-        {formatMessage({ id: isCreate ? 'acc-create' : 'acc-update' })}
-      </Title>
+        <Title className={classes.title}>
+          {formatMessage({ id: isCreate ? 'acc-create' : 'acc-update' })}
+        </Title>
+      </Group>
+
       <form onSubmit={handleSubmit(isCreate ? create : update)}>
         <Flex gap="md" direction="column">
           <TextInput

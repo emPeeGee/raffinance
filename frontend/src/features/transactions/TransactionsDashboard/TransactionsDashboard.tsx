@@ -25,7 +25,6 @@ const useStyles = createStyles((theme) => ({
   title: {
     fontWeight: 900,
     fontSize: rem(34),
-    marginBottom: theme.spacing.md,
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
 
     [theme.fn.smallerThan('sm')]: {
@@ -46,7 +45,7 @@ export function TransactionsDashboard() {
 
   return (
     <>
-      <Group position="apart" py="sm">
+      <Group position="apart" mb="md">
         <Title className={classes.title}>{formatMessage({ id: 'txn' })}</Title>
         <Button
           component={Link}

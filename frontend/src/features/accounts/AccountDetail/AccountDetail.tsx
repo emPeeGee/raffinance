@@ -30,11 +30,6 @@ import { useAccountStore } from 'store';
 import { getContrastColor } from 'utils';
 
 const useStyles = createStyles((theme) => ({
-  root: {
-    paddingTop: rem(64),
-    paddingBottom: rem(120)
-  },
-
   accountCard: {
     borderRadius: 10,
     width: 'fit-content',
@@ -73,7 +68,7 @@ export function AccountDetail() {
   const textColor = getContrastColor(account.color);
 
   return (
-    <Container className={classes.root}>
+    <Container>
       <Group my="lg">
         <Button component={Link} to="/accounts" variant="light" leftIcon={<IconArrowBackUp />}>
           {formatMessage({ id: 'co-back' })}
