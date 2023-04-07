@@ -60,7 +60,8 @@ func (r *repository) updateLatestLogins(username string) error {
 		return err
 	}
 
-	user.LatestLogins = append(user.LatestLogins, time.Now().String())
+	// NOTE: Now().String() will include monotonic clock
+	user.LatestLogins = append(user.LatestLogins, time.Now().Format(time.RFC3339))
 	if err := r.db.Save(&user).Error; err != nil {
 		return err
 	}
