@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   Button,
@@ -9,7 +9,6 @@ import {
   LoadingOverlay,
   NumberInput,
   SimpleGrid,
-  Text,
   TextInput,
   Title,
   createStyles,
@@ -28,9 +27,9 @@ import {
 } from '@tabler/icons-react';
 import { Controller, useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { Iconify, MultiPicker, TransactionTypePicker } from 'components';
+import { MultiPicker, TransactionTypePicker } from 'components';
 import { useAccountStore, useCategoriesStore, useTagsStore, useTransactionStore } from 'store';
 import { DateUnit } from 'utils';
 
@@ -48,27 +47,10 @@ const useStyles = createStyles((theme) => ({
   }
 }));
 
-interface SelectItemProps extends React.ComponentPropsWithoutRef<'div'> {
-  label: string;
-  value: string;
-}
-
-const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
-  ({ label, value, ...others }: SelectItemProps, ref) => (
-    <div ref={ref} {...others}>
-      <Group noWrap>
-        <Iconify icon={value} />
-        <Text size="sm">{label}</Text>
-      </Group>
-    </div>
-  )
-);
-SelectItem.displayName = 'SelectItem';
-
-// TODO: Rename to both create and edit
 export function TransactionForm() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const location = useLocation();
   const { addTransaction, getTransaction, updateTransaction } = useTransactionStore();
   const [transaction, setTransaction] = useState<TransactionModel | null>(null);
   const { formatMessage } = useIntl();
@@ -84,10 +66,16 @@ export function TransactionForm() {
     setValue
   } = useForm<CreateTransactionDTO>({
     mode: 'onChange',
-
     defaultValues: transaction
-      ? { ...transaction, date: new Date(transaction.date) }
-      : { transactionTypeId: TransactionType.INCOME, date: new Date() }
+      ? {
+          ...transaction,
+          date: new Date(transaction.date)
+        }
+      : {
+          transactionTypeId: TransactionType.INCOME,
+          date: new Date(),
+          toAccountId: location?.state?.toAccountId as any // Nav from account, should have account id in route state it
+        }
   });
 
   const [isLoading, setIsLoading] = useState(false);

@@ -114,7 +114,7 @@ export function TransactionsList({ transactions, currency }: Props) {
               {viewMode === 'card' && (
                 <SimpleGrid
                   cols={4}
-                  my="lg"
+                  mt="lg"
                   breakpoints={[
                     { maxWidth: 'md', cols: 2 },
                     { maxWidth: 'xs', cols: 1 }

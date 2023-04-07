@@ -143,6 +143,7 @@ export function AccountDetail() {
           <Button
             component={Link}
             to="/transactions/create"
+            state={{ toAccountId: account.id }}
             variant="outline"
             color="cyan"
             radius="md"
