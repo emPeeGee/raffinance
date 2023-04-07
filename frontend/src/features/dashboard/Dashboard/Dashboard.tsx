@@ -1,15 +1,14 @@
 import React from 'react';
 
+import { Button, Container, Group, Title, createStyles, rem, Card, Box } from '@mantine/core';
 import {
-  Text,
-  Button,
-  Container,
-  Group,
-  SimpleGrid,
-  Title,
-  createStyles,
-  rem
-} from '@mantine/core';
+  IconRocket,
+  IconCircle,
+  IconSquare,
+  IconTriangle,
+  IconPentagon
+} from '@tabler/icons-react';
+import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
 const useStyles = createStyles((theme) => ({
@@ -27,51 +26,69 @@ const useStyles = createStyles((theme) => ({
     [theme.fn.smallerThan('sm')]: {
       fontSize: rem(32)
     }
-  },
-
-  control: {
-    [theme.fn.smallerThan('sm')]: {
-      width: '100%'
-    }
-  },
-
-  mobileImage: {
-    [theme.fn.largerThan('sm')]: {
-      display: 'none'
-    }
-  },
-
-  desktopImage: {
-    [theme.fn.smallerThan('sm')]: {
-      display: 'none'
-    }
   }
 }));
 
 export function Dashboard() {
+  const { formatMessage } = useIntl();
   const { classes } = useStyles();
 
   return (
     <Container className={classes.root}>
-      <SimpleGrid spacing={80} cols={2} breakpoints={[{ maxWidth: 'sm', cols: 1, spacing: 40 }]}>
-        <div>
-          <Title className={classes.title}>Dashboard</Title>
-          <Text color="dimmed" size="lg">
-            Page you are trying to open does not exist. You may have mistyped the address, or the
-            page has been moved to another URL. If you think this is an error contact support.
-          </Text>
+      <Box py="sm">
+        <Title className={classes.title}>Dashboard</Title>
 
-          <Button
-            to="/"
-            component={Link}
-            variant="outline"
-            size="md"
-            mt="xl"
-            className={classes.control}>
-            Get back to home page
-          </Button>
-        </div>
-      </SimpleGrid>
+        <Card withBorder radius="md">
+          <Title order={4} mb="md">
+            <Group>
+              <IconRocket color="gray" />
+              {formatMessage({ id: 'co-quick-act' })}
+            </Group>
+          </Title>
+          <Group>
+            {/* // Every entity has a associated shape and color */}
+            <Button
+              component={Link}
+              to="/transactions/create"
+              variant="outline"
+              color="cyan"
+              radius="md"
+              leftIcon={<IconCircle />}>
+              {formatMessage({ id: 'txn-create' })}
+            </Button>
+
+            <Button
+              component={Link}
+              to="/accounts/create"
+              variant="outline"
+              color="lime"
+              radius="md"
+              leftIcon={<IconSquare />}>
+              {formatMessage({ id: 'acc-create' })}
+            </Button>
+
+            <Button
+              component={Link}
+              to="/categories/create"
+              variant="outline"
+              color="pink"
+              radius="md"
+              leftIcon={<IconTriangle />}>
+              {formatMessage({ id: 'cat-create' })}
+            </Button>
+
+            <Button
+              component={Link}
+              to="/tags/create"
+              variant="outline"
+              radius="md"
+              color="grape"
+              leftIcon={<IconPentagon />}>
+              {formatMessage({ id: 'tag-create' })}
+            </Button>
+          </Group>
+        </Card>
+      </Box>
     </Container>
   );
 }
