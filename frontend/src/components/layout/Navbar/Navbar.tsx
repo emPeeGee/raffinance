@@ -99,15 +99,13 @@ function NavbarLink({ icon: Icon, route, label, active, onClick }: NavbarLinkPro
 }
 
 const navbarLinks = [
-  // { icon: IconHome2, label: 'Home' },
   { icon: IconSofa, label: 'Dashboard', route: '/' },
   { icon: IconWallet, label: 'Accounts', route: '/accounts' },
   { icon: IconExchange, label: 'Transactions', route: '/transactions' },
   { icon: IconCategory2, label: 'Categories', route: '/categories' },
   { icon: IconHash, label: 'Tags', route: '/tags' },
   { icon: IconAddressBook, label: 'Contacts', route: '/contacts' },
-  { icon: IconUser, label: 'User profile', route: '/profile' },
-  { icon: IconRocket, label: 'Rocket', route: '/profile' }
+  { icon: IconUser, label: 'User profile', route: '/profile' }
 ];
 
 // TODO: string based highlight, not index, for example read from route and match
