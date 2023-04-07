@@ -1,21 +1,22 @@
 import React from 'react';
 
 import {
-  Table,
-  Text,
   Button,
   ColorSwatch,
   Group,
   Paper,
-  createStyles,
-  rem,
   SimpleGrid,
-  UnstyledButton
+  Table,
+  Text,
+  UnstyledButton,
+  createStyles,
+  rem
 } from '@mantine/core';
-import { IconArrowUpRight, IconRocket } from '@tabler/icons-react';
+import { IconArrowUpRight } from '@tabler/icons-react';
 import { FormattedDate, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
+import { Iconify } from 'components';
 import { getContrastColor } from 'utils';
 
 import { useAccountStore } from '../../../store/accounts.store';
@@ -80,7 +81,7 @@ export function AccountsList(props: Props) {
             </tr>
           </thead>
           <tbody>
-            {accounts.map(({ id, name, balance, currency, color, updatedAt }) => (
+            {accounts.map(({ id, name, balance, currency, icon, color, updatedAt }) => (
               <tr key={id}>
                 <td>{name}</td>
                 <td>{balance}</td>
@@ -99,7 +100,7 @@ export function AccountsList(props: Props) {
                     color="blue"
                     variant="outline"
                     onClick={gotoAccount(id)}
-                    leftIcon={<IconRocket />}>
+                    leftIcon={<Iconify icon={icon} />}>
                     {formatMessage({ id: 'co-view' })}
                   </Button>
                 </td>
@@ -115,16 +116,19 @@ export function AccountsList(props: Props) {
             { maxWidth: 'md', cols: 2 },
             { maxWidth: 'xs', cols: 1 }
           ]}>
-          {accounts.map(({ id, name, color, currency, balance }) => {
+          {accounts.map(({ id, name, color, icon, currency, balance }) => {
             const textColor = getContrastColor(color);
 
             return (
               <Paper withBorder p="md" radius="md" key={name} className={classes.root} bg={color}>
                 <UnstyledButton w="100%" onClick={gotoAccount(id)}>
                   <Group position="apart">
-                    <Text size="xs" color={textColor} className={classes.title}>
-                      {name}
-                    </Text>
+                    <Group align="center" spacing="0.25rem">
+                      <Text size="xs" color={textColor} className={classes.title}>
+                        {name}
+                      </Text>
+                      <Iconify icon={icon} color={textColor} size="1rem" />
+                    </Group>
                     <Text color={textColor}>{currency}</Text>
                   </Group>
 

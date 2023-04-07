@@ -5,6 +5,7 @@ export interface AccountModel {
   name: string;
   currency: string;
   balance: number;
+  icon: string;
   color: string;
   createdAt: string;
   updatedAt: string;
@@ -14,6 +15,7 @@ export interface CreateAccountDTO {
   name: string;
   currency: string;
   balance: number;
+  icon: string;
   color: string;
 }
 
@@ -22,6 +24,7 @@ export interface AccountDetailsModel {
   name: string;
   currency: string;
   balance: number;
+  icon: string;
   color: string;
   createdAt: string;
   updatedAt: string;

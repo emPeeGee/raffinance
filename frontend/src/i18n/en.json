@@ -68,6 +68,7 @@
   "acc-c-name": "The name of the account, e.g. 'Checking', 'Savings', 'Credit Card', etc.",
   "acc-c-cur": "The currency associated with the account, e.g. USD, EUR, GBP, etc",
   "acc-c-color": "The color associated with the account. This can be used for easy identification and organization of accounts",
+  "acc-c-icon": "An icon that represents the account. This can also be used for easy identification and organization of transactions.",
   "acc-c-bal": "The start balance of the account. This field is computed based on the transactions associated with the account, and is not directly editable by the user.",
 
   "txn": "Transactions",

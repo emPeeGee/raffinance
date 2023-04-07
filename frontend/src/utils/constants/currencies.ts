@@ -1,5 +1,5 @@
 export const CURRENCY_LIST = [
-  { label: 'Afghan Afghani', value: 'AFA' },
+  { label: 'Afghan Afghani', value: 'AFA' }, // TODO: Doesn't work
   { label: 'Albanian Lek', value: 'ALL' },
   { label: 'Algerian Dinar', value: 'DZD' },
   { label: 'Angolan Kwanza', value: 'AOA' },

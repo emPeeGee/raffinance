@@ -26,6 +26,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
+import { IconPicker, Iconify } from 'components';
 import { useAccountStore } from 'store';
 import { CURRENCY_LIST, DateUnit, SWATCHES } from 'utils';
 
@@ -82,7 +83,8 @@ export function AccountForm() {
         name: acc.name,
         balance: acc.balance,
         color: acc.color,
-        currency: acc.currency
+        currency: acc.currency,
+        icon: acc.icon
       });
 
       setIsLoading(false);
@@ -202,6 +204,20 @@ export function AccountForm() {
                 icon={<IconMoneybag size="1rem" />}
                 // TODO: Localization
                 error={errors.balance ? 'Field is invalid' : null}
+              />
+            )}
+          />
+
+          <Controller
+            name="icon"
+            control={control}
+            rules={{ required: true, maxLength: 64, minLength: 2 }}
+            render={({ field }) => (
+              <IconPicker
+                {...field}
+                icon={<Iconify icon={field.value} />}
+                description={formatMessage({ id: 'acc-c-icon' })}
+                error={errors.icon ? 'Field is invalid' : null}
               />
             )}
           />

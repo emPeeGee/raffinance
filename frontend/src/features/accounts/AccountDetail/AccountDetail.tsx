@@ -12,7 +12,8 @@ import {
   Container,
   Alert,
   Modal,
-  Flex
+  Flex,
+  ThemeIcon
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
@@ -27,7 +28,7 @@ import {
 import { FormattedDate, useIntl } from 'react-intl';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
-import { ConfirmDelete } from 'components';
+import { ConfirmDelete, Iconify } from 'components';
 import { AccountDetailsModel } from 'features/accounts';
 import { TransactionsList } from 'features/transactions';
 import { useAccountStore } from 'store';
@@ -104,14 +105,10 @@ export function AccountDetail() {
 
       <Card padding="lg" my="lg" radius="md" bg={account.color} classNames={classes.accountCard}>
         <Group align="flex-start" mb="sm">
-          <Avatar
-            src="https://yt3.googleusercontent.com/-CFTJHU7fEWb7BYEb6Jh9gm1EpetvVGQqtof0Rbh-VQRIznYYKJxCaqv_9HeBcmJmIsp2vOO9JU=s900-c-k-c0x00ffffff-no-rj"
-            alt={`${account.name} logo`}
-            radius="lg"
-            size={70}
-            c={textColor}
-            style={{ backgroundColor: account.color }}
-          />
+          <ThemeIcon bg="rgba(0, 0, 0, 0.7)" radius="lg" size={70}>
+            <Iconify color={textColor} icon={account.icon} size="3rem" />
+          </ThemeIcon>
+
           <div style={{ marginLeft: 20 }}>
             <Title order={3} c={textColor}>
               {account.name}
