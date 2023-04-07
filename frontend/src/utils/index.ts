@@ -11,5 +11,6 @@ export * from './is-empty';
 export * from './select-element';
 export * from './noop';
 export * from './colors';
+export * from './random-number';
 
 export * from './types/view-mode';

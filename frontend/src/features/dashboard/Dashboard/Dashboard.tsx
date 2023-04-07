@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Button, Container, Group, Title, createStyles, rem, Card, Box } from '@mantine/core';
+import { Button, Container, Group, Title, createStyles, rem, Card, Box, Text } from '@mantine/core';
 import {
   IconRocket,
   IconCircle,
@@ -10,6 +10,9 @@ import {
 } from '@tabler/icons-react';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
+
+import { useAuthStore } from 'store';
+import { getRandomNumber } from 'utils';
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -32,11 +35,20 @@ const useStyles = createStyles((theme) => ({
 export function Dashboard() {
   const { formatMessage } = useIntl();
   const { classes } = useStyles();
+  const { user } = useAuthStore();
+
+  const randomGreeting = formatMessage(
+    { id: `dsh-greeting-${getRandomNumber(1, 22)}` },
+    { name: user?.name }
+  );
 
   return (
-    <Container className={classes.root}>
+    <Container my="xl">
       <Box py="sm">
         <Title className={classes.title}>Dashboard</Title>
+        <Text mb="sm" c="dimmed" size="lg">
+          {randomGreeting}
+        </Text>
 
         <Card withBorder radius="md">
           <Title order={4} mb="md">
