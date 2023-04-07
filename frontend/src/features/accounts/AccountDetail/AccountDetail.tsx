@@ -11,7 +11,8 @@ import {
   LoadingOverlay,
   Container,
   Alert,
-  Modal
+  Modal,
+  Flex
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
@@ -102,7 +103,7 @@ export function AccountDetail() {
       </Group>
 
       <Card padding="lg" my="lg" radius="md" bg={account.color} classNames={classes.accountCard}>
-        <Group align="flex-start">
+        <Group align="flex-start" mb="sm">
           <Avatar
             src="https://yt3.googleusercontent.com/-CFTJHU7fEWb7BYEb6Jh9gm1EpetvVGQqtof0Rbh-VQRIznYYKJxCaqv_9HeBcmJmIsp2vOO9JU=s900-c-k-c0x00ffffff-no-rj"
             alt={`${account.name} logo`}
@@ -127,23 +128,28 @@ export function AccountDetail() {
           </div>
         </Group>
         {/* TODO: different widths */}
-        <Group position="left">
-          <Text fw={700} c={textColor}>
-            {formatMessage({ id: 'co-cre-at' })}
-          </Text>
-          <Text c={textColor} my="xs">
-            <FormattedDate value={account.createdAt} dateStyle="full" timeStyle="medium" />
-          </Text>
-        </Group>
 
-        <Group position="left">
-          <Text fw={700} c={textColor}>
-            {formatMessage({ id: 'co-las-up' })}
-          </Text>
-          <Text c={textColor}>
-            <FormattedDate value={account.updatedAt} dateStyle="full" timeStyle="medium" />
-          </Text>
-        </Group>
+        <Flex gap="sm">
+          <Flex direction="column" gap="0.3rem">
+            <Text fw={700} c={textColor}>
+              {formatMessage({ id: 'co-cre-at' })}
+            </Text>
+
+            <Text fw={700} c={textColor}>
+              {formatMessage({ id: 'co-las-up' })}
+            </Text>
+          </Flex>
+
+          <Flex direction="column" gap="0.3rem">
+            <Text c={textColor}>
+              <FormattedDate value={account.createdAt} dateStyle="full" timeStyle="medium" />
+            </Text>
+
+            <Text c={textColor}>
+              <FormattedDate value={account.updatedAt} dateStyle="full" timeStyle="medium" />
+            </Text>
+          </Flex>
+        </Flex>
       </Card>
 
       <Alert icon={<IconAlertCircle size="1rem" />} color="gray">
