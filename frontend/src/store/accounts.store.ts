@@ -18,8 +18,9 @@ type AccountsStore = {
   fetchAccounts: () => void;
   getAccounts: () => void;
   // TODO: should it be in store??? because it doesn't store anything
-  getAccount: (id: string) => Promise<AccountDetailsModel>;
+  getAccount: (id: string, includeTransaction: boolean) => Promise<AccountDetailsModel>;
   addAccount: (account: CreateAccountDTO) => Promise<boolean>;
+  updateAccount: (id: string, account: CreateAccountDTO) => Promise<boolean>;
   // removeAccount: (id: string) => void;
 };
 
@@ -40,9 +41,12 @@ export const useAccountStore = create<AccountsStore>()(
         }
       },
 
-      getAccount: async (id: string): Promise<AccountDetailsModel> => {
+      getAccount: async (
+        id: string,
+        includeTransactions: boolean = true
+      ): Promise<AccountDetailsModel> => {
         const account = await api.get<AccountDetailsModel>({
-          url: `accounts/${id}`,
+          url: `accounts/${id}?include_transactions=${includeTransactions}`,
           token: useAuthStore.getState().token
         });
         console.log(account);
@@ -69,6 +73,30 @@ export const useAccountStore = create<AccountsStore>()(
           });
           console.log(response);
           set({ ...get(), accounts: [...accounts, response] });
+          return true;
+        } catch (reason) {
+          console.log(reason);
+          return false;
+        }
+      },
+
+      updateAccount: async (id: string, account: CreateAccountDTO): Promise<boolean> => {
+        const { accounts } = get();
+
+        try {
+          const response = await api.put<CreateAccountDTO, AccountModel>({
+            url: `accounts/${id}`,
+            body: account,
+            token: useAuthStore.getState().token
+          });
+
+          const idx = accounts.findIndex((t) => String(t.id) === id);
+          if (idx !== -1) {
+            accounts[idx] = response;
+            // TODO: are there transactions
+          }
+
+          set({ ...get(), accounts: [...accounts] });
           return true;
         } catch (reason) {
           console.log(reason);

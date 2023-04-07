@@ -16,6 +16,7 @@ import {
 import {
   IconAlertCircle,
   IconArrowBackUp,
+  IconCircle,
   IconEdit,
   IconRocket,
   IconTrash
@@ -37,6 +38,7 @@ const useStyles = createStyles((theme) => ({
   accountCard: {
     borderRadius: 10,
     width: 'fit-content',
+    color: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[0],
     backgroundColor:
       theme.colorScheme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.7)'
   }
@@ -53,7 +55,7 @@ export function AccountDetail() {
 
   const fetchAccount = async () => {
     setIsLoading(true);
-    const fetchedAccount = await getAccount(String(id));
+    const fetchedAccount = await getAccount(String(id), true);
     setAccount(fetchedAccount);
     setIsLoading(false);
   };
@@ -99,17 +101,16 @@ export function AccountDetail() {
             <Text
               variant="subtitle1"
               className={classes.accountCard}
-              c={textColor}
               p="0.3rem 0.7rem"
               style={{ marginTop: '8px' }}>
               {formatMessage({ id: 'co-bal' })}: {account.balance} {account.currency}
             </Text>
           </div>
         </Group>
-
+        {/* TODO: different widths */}
         <Group position="left">
           <Text fw={700} c={textColor}>
-            {formatMessage({ id: 'co-cre-at' })}:
+            {formatMessage({ id: 'co-cre-at' })}
           </Text>
           <Text c={textColor} my="xs">
             <FormattedDate value={account.createdAt} dateStyle="full" timeStyle="medium" />
@@ -118,7 +119,7 @@ export function AccountDetail() {
 
         <Group position="left">
           <Text fw={700} c={textColor}>
-            {formatMessage({ id: 'co-cre-at' })}:
+            {formatMessage({ id: 'co-las-up' })}
           </Text>
           <Text c={textColor}>
             <FormattedDate value={account.updatedAt} dateStyle="full" timeStyle="medium" />
@@ -139,12 +140,23 @@ export function AccountDetail() {
           </Group>
         </Title>
         <Group>
-          <Button variant="outline" radius="md" leftIcon={<IconEdit />}>
-            {/* TODO The selected account should be this one */}
-            {formatMessage({ id: 'txn-add-t' })}
+          <Button
+            component={Link}
+            to="/transactions/create"
+            variant="outline"
+            color="cyan"
+            radius="md"
+            leftIcon={<IconCircle />}>
+            {formatMessage({ id: 'txn-create' })}
           </Button>
 
-          <Button variant="outline" color="orange" radius="md" leftIcon={<IconEdit />}>
+          <Button
+            component={Link}
+            to={`/accounts/${id}/edit`}
+            variant="outline"
+            color="orange"
+            radius="md"
+            leftIcon={<IconEdit />}>
             {formatMessage({ id: 'co-edi' })}
           </Button>
 

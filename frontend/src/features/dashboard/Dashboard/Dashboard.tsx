@@ -46,7 +46,7 @@ export function Dashboard() {
             </Group>
           </Title>
           <Group>
-            {/* // Every entity has a associated shape and color */}
+            {/* NOTE: // Every entity has a associated shape and color */}
             <Button
               component={Link}
               to="/transactions/create"
@@ -92,3 +92,5 @@ export function Dashboard() {
     </Container>
   );
 }
+
+// TODO: Create a comp, EntityCreateButton which will have all entities predefined and will avoid duplication

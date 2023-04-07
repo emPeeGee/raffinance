@@ -85,6 +85,7 @@ export function AppShell() {
                     <Route path="/accounts" element={<Accounts />} />
                     <Route path="/accounts/:id" element={<AccountDetail />} />
                     <Route path="/accounts/create" element={<AccountForm />} />
+                    <Route path="/accounts/:id/edit" element={<AccountForm />} />
 
                     <Route path="/transactions/*" element={<Transactions />} />
                     <Route path="/categories/*" element={<Categories />} />
