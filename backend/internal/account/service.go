@@ -12,13 +12,14 @@ import (
 type Service interface {
 	createAccount(userId uint, account createAccountDTO) (*accountResponse, error)
 	deleteAccount(userId, id uint) error
+	updateAccount(usedId, accountId uint, account updateAccountDTO) (*accountResponse, error)
+
 	getAccounts(userId uint) ([]accountResponse, error)
 	getAccount(userId, accountId uint) (*accountDetailsResponse, error)
-	updateAccount(usedId, accountId uint, account updateAccountDTO) (*accountResponse, error)
+	getAccountWithTransactions(userId, id uint) (*accountDetailsResponse, error)
+	getAccountTransactionsByMonth(accountId uint, year int, month time.Month) ([]transaction.TransactionResponse, error)
 	getAccountBalance(userId, id uint) (float64, error)
 	getUserBalance(userId uint) (float64, error)
-
-	getAccountTransactionsByMonth(accountId uint, year int, month time.Month) ([]transaction.TransactionResponse, error)
 }
 
 type service struct {
@@ -132,9 +133,26 @@ func (s *service) updateAccount(userId, accountId uint, account updateAccountDTO
 	return s.repo.updateAccount(userId, accountId, account)
 }
 
-// Returns account details and transaction from current month
 func (s *service) getAccount(userId, id uint) (*accountDetailsResponse, error) {
+	ok, err := s.repo.accountExistsAndBelongsToUser(userId, id)
+	if err != nil {
+		return nil, fmt.Errorf("error checking account ownership: %v", err)
+	}
 
+	if !ok {
+		return nil, fmt.Errorf("account with ID %d does not exist or belong to user with ID %d", id, userId)
+	}
+
+	account, err := s.repo.getAccount(id)
+	if err != nil {
+		return nil, fmt.Errorf("account with ID %d does not exist or does not belong to user with ID %d", id, userId)
+	}
+
+	return account, nil
+}
+
+// Returns account details and transaction from current month
+func (s *service) getAccountWithTransactions(userId, id uint) (*accountDetailsResponse, error) {
 	ok, err := s.repo.accountExistsAndBelongsToUser(userId, id)
 	if err != nil {
 		return nil, fmt.Errorf("error checking account ownership: %v", err)

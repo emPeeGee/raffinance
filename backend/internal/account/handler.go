@@ -149,13 +149,30 @@ func (h *handler) getAccount(c *gin.Context) {
 		return
 	}
 
-	accounts, err := h.service.getAccount(*userId, uint(accountId))
+	includeTxnsQuery := c.DefaultQuery("include_transactions", "true")
+	includeTxns, err := strconv.ParseBool(includeTxnsQuery)
 	if err != nil {
-		errorutil.InternalServer(c, "something went wrong, we are working", err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid value for include_transactions parameter"})
 		return
 	}
 
-	c.JSON(http.StatusOK, accounts)
+	if includeTxns {
+		accounts, err := h.service.getAccountWithTransactions(*userId, uint(accountId))
+		if err != nil {
+			errorutil.InternalServer(c, "something went wrong, we are working", err.Error())
+			return
+		}
+
+		c.JSON(http.StatusOK, accounts)
+	} else {
+		accounts, err := h.service.getAccount(*userId, uint(accountId))
+		if err != nil {
+			errorutil.InternalServer(c, "something went wrong, we are working", err.Error())
+			return
+		}
+
+		c.JSON(http.StatusOK, accounts)
+	}
 }
 
 func (h *handler) getAccountTransactionsByMonth(c *gin.Context) {
