@@ -1,7 +1,6 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
 import {
-  Code,
   Container,
   Text,
   Group,
@@ -14,6 +13,7 @@ import {
   Paper
 } from '@mantine/core';
 import { IconAt, IconCalendarBolt, IconEdit, IconPhoneCall } from '@tabler/icons-react';
+import { FormattedDate, useIntl } from 'react-intl';
 
 import avatar from 'assets/logo.png';
 import { useAuthStore } from 'store';
@@ -36,22 +36,23 @@ const useStyles = createStyles((theme) => ({
 }));
 
 // TODO: Profile edit
+// TODO: Include and location ???
 
 export function Profile() {
+  const { formatMessage } = useIntl();
   const { user } = useAuthStore();
   const { username, name, email, phone, createdAt, latestLogins, updatedAt } = user as UserModel;
   const { classes } = useStyles();
 
-  const createdDate = new Date(createdAt).toTimeString();
-  const updatedDate = new Date(updatedAt).toTimeString();
-
-  const latestLoginsRows = latestLogins.map((row, idx) => {
-    const date = new Date(row).toTimeString();
+  const latestLoginsRows = latestLogins?.map((date, idx) => {
+    const latestLogin = new Date(date);
 
     return (
-      <tr key={row}>
+      <tr key={date}>
         <td>{idx}</td>
-        <td>{date}</td>
+        <td>
+          <FormattedDate value={latestLogin} dateStyle="full" timeStyle="medium" />
+        </td>
       </tr>
     );
   });
@@ -59,7 +60,7 @@ export function Profile() {
   return (
     <Container my={32}>
       <Title order={1} py={rem('2rem')}>
-        Profile
+        {formatMessage({ id: 'co-profile' })}
       </Title>
       <Flex direction="column">
         <Paper withBorder p={rem('2rem')} mb={rem('2rem')} radius="md">
@@ -90,17 +91,17 @@ export function Profile() {
 
               <Group noWrap spacing={10} mt={5}>
                 <IconCalendarBolt stroke={1.5} size="1.5rem" className={classes.icon} />
-                <Text fz={rem('1.25rem')}>Created at: </Text>
+                <Text fz={rem('1.25rem')}>{formatMessage({ id: 'co-cre-at' })}</Text>
                 <Text fz={rem('1.25rem')} c="dimmed">
-                  {createdDate}
+                  <FormattedDate value={createdAt} dateStyle="full" timeStyle="medium" />
                 </Text>
               </Group>
 
               <Group noWrap spacing={10} mt={5}>
                 <IconEdit stroke={1.5} size="1.5rem" className={classes.icon} />
-                <Text fz={rem('1.25rem')}>Last update: </Text>
+                <Text fz={rem('1.25rem')}>{formatMessage({ id: 'co-las-up' })}</Text>
                 <Text fz={rem('1.25rem')} c="dimmed">
-                  {updatedDate}
+                  <FormattedDate value={updatedAt} dateStyle="full" timeStyle="medium" />
                 </Text>
               </Group>
             </div>
@@ -109,13 +110,13 @@ export function Profile() {
 
         <Flex direction="column" mb={rem('2rem')}>
           <Title order={2} py={rem('2rem')}>
-            Latest logins
+            {formatMessage({ id: 'co-latest-log' })}
           </Title>
           <Table miw={700}>
             <thead className={classes.tableHeader}>
               <tr>
                 <th>#</th>
-                <th>Date</th>
+                <th>{formatMessage({ id: 'co-date' })}</th>
               </tr>
             </thead>
             <tbody>{latestLoginsRows}</tbody>
