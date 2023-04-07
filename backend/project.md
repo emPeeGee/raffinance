@@ -50,6 +50,7 @@ Loans: InterestRate, DurationInMonths, GracePeriodInMonths
 4. Balance will be calculated dynamically. No need for table field.
 5. Widgets in the dashboard which can be added by user
 6. User can customize the font size and the content width as in orelly
+7. Every entity has a associated shape and color
 
 
 ## Backend structure

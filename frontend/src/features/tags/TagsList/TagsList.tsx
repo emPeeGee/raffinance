@@ -23,8 +23,8 @@ import { notifications } from '@mantine/notifications';
 import {
   IconDotsVertical,
   IconEdit,
-  IconHeartPlus,
   IconInfoCircle,
+  IconPentagon,
   IconTrash
 } from '@tabler/icons-react';
 import { useIntl } from 'react-intl';
@@ -181,7 +181,12 @@ export function TagsList() {
       )}
       <Group position="apart" py="sm">
         <Title className={classes.title}>{formatMessage({ id: 'tag-tag' })}</Title>
-        <Button component={Link} to="/tags/create" variant="light" leftIcon={<IconHeartPlus />}>
+        <Button
+          component={Link}
+          to="/tags/create"
+          variant="light"
+          color="grape"
+          leftIcon={<IconPentagon />}>
           {formatMessage({ id: 'tag-create' })}
         </Button>
       </Group>

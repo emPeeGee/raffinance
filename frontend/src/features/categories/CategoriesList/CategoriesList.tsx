@@ -25,7 +25,8 @@ import {
   IconEdit,
   IconHeartPlus,
   IconInfoCircle,
-  IconTrash
+  IconTrash,
+  IconTriangle
 } from '@tabler/icons-react';
 import { useIntl } from 'react-intl';
 import { Link, useNavigate } from 'react-router-dom';
@@ -192,7 +193,8 @@ export function CategoriesList() {
           component={Link}
           to="/categories/create"
           variant="light"
-          leftIcon={<IconHeartPlus />}>
+          color="pink"
+          leftIcon={<IconTriangle />}>
           {formatMessage({ id: 'cat-create' })}
         </Button>
       </Group>

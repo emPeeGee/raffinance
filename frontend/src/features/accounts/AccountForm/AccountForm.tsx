@@ -98,7 +98,7 @@ export function AccountForm() {
         {formatMessage({ id: 'co-back' })}
       </Button>
 
-      <Title className={classes.title}>{formatMessage({ id: 'account-create' })}</Title>
+      <Title className={classes.title}>{formatMessage({ id: 'acc-create' })}</Title>
       <form onSubmit={handleSubmit(create)}>
         <Flex gap="md" direction="column">
           <TextInput

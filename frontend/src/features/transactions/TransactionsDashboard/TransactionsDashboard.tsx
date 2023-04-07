@@ -10,7 +10,7 @@ import {
   Blockquote,
   Alert
 } from '@mantine/core';
-import { IconHeartPlus, IconInfoCircle } from '@tabler/icons-react';
+import { IconCircle, IconHeartPlus, IconInfoCircle } from '@tabler/icons-react';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
@@ -52,7 +52,8 @@ export function TransactionsDashboard() {
           component={Link}
           to="/transactions/create"
           variant="light"
-          leftIcon={<IconHeartPlus />}>
+          color="cyan"
+          leftIcon={<IconCircle />}>
           {formatMessage({ id: 'txn-create' })}
         </Button>
       </Group>

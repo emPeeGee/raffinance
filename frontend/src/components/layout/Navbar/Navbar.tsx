@@ -19,7 +19,8 @@ import {
   IconAddressBook,
   IconExchange,
   IconWallet,
-  IconRocket
+  IconRocket,
+  IconSofa
 } from '@tabler/icons-react';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -99,7 +100,7 @@ function NavbarLink({ icon: Icon, route, label, active, onClick }: NavbarLinkPro
 
 const navbarLinks = [
   // { icon: IconHome2, label: 'Home' },
-  { icon: IconGauge, label: 'Dashboard', route: '/' },
+  { icon: IconSofa, label: 'Dashboard', route: '/' },
   { icon: IconWallet, label: 'Accounts', route: '/accounts' },
   { icon: IconExchange, label: 'Transactions', route: '/transactions' },
   { icon: IconCategory2, label: 'Categories', route: '/categories' },

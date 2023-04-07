@@ -86,7 +86,7 @@ export function NoAccounts(props: NoAccountsProps) {
         color="blue"
         style={{ marginTop: theme.spacing.lg }}
         leftIcon={<IconPlus />}>
-        {formatMessage({ id: 'account-create' })}
+        {formatMessage({ id: 'acc-create' })}
       </Button>
     </Card>
   );
