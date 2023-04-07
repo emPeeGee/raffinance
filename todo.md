@@ -9,3 +9,4 @@
 8. Accounts, view transactions by month, now you can select month, only current one
 9. Accounts, create txn, with defined account
 10. On transaction create, accounts are not updated. It will be hard. websocket?
+11. Delete to confirm feature in settings, 3 level, not confirm, click to confirm and write to confirm.

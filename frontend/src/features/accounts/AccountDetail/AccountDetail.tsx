@@ -5,14 +5,16 @@ import {
   Card,
   Avatar,
   createStyles,
-  rem,
   Title,
   Group,
   Text,
   LoadingOverlay,
   Container,
-  Alert
+  Alert,
+  Modal
 } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import {
   IconAlertCircle,
   IconArrowBackUp,
@@ -22,8 +24,9 @@ import {
   IconTrash
 } from '@tabler/icons-react';
 import { FormattedDate, useIntl } from 'react-intl';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
+import { ConfirmDelete } from 'components';
 import { AccountDetailsModel } from 'features/accounts';
 import { TransactionsList } from 'features/transactions';
 import { useAccountStore } from 'store';
@@ -45,8 +48,11 @@ export function AccountDetail() {
   const [isLoading, setIsLoading] = useState(false);
   const [account, setAccount] = useState<AccountDetailsModel>();
 
-  const { getAccount } = useAccountStore();
+  const [opened, { open, close }] = useDisclosure(false);
+
+  const { getAccount, deleteAccount } = useAccountStore();
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const fetchAccount = async () => {
     setIsLoading(true);
@@ -64,6 +70,24 @@ export function AccountDetail() {
     // TODO: Skeleton instead of lading
     return <LoadingOverlay visible />;
   }
+
+  const onDeleteClick = async () => {
+    const ok = await deleteAccount(account.id);
+    if (ok) {
+      navigate('/accounts');
+      notifications.show({
+        message: formatMessage({ id: 'co-del-suc' }),
+        color: 'green'
+      });
+    } else {
+      notifications.show({
+        message: formatMessage({ id: 'co-del-err' }),
+        color: 'red'
+      });
+    }
+
+    close();
+  };
 
   const textColor = getContrastColor(account.color);
 
@@ -156,13 +180,20 @@ export function AccountDetail() {
             {formatMessage({ id: 'co-edi' })}
           </Button>
 
-          <Button color="red" variant="outline" radius="md" leftIcon={<IconTrash />}>
+          <Button color="red" variant="outline" radius="md" leftIcon={<IconTrash />} onClick={open}>
             {formatMessage({ id: 'acc-del' })}
           </Button>
         </Group>
       </Card>
 
       <TransactionsList transactions={account.transactions} currency={account.currency} />
+
+      <Modal
+        opened={opened}
+        onClose={close}
+        title={<Title order={3}>{formatMessage({ id: 'txn-del' })}</Title>}>
+        <ConfirmDelete onClose={close} onDelete={onDeleteClick} confirmName={account.name} />
+      </Modal>
     </Container>
   );
 }

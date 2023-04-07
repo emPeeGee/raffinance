@@ -58,7 +58,8 @@ export function AccountForm() {
     reset,
     formState: { errors }
   } = useForm<CreateAccountDTO>({
-    mode: 'onChange'
+    mode: 'onChange',
+    defaultValues: { balance: 0 }
   });
   const [isLoading, setIsLoading] = useState(false);
   const { addAccount, getAccount, updateAccount } = useAccountStore();
@@ -108,7 +109,7 @@ export function AccountForm() {
     const success = await addAccount(acc);
 
     if (success) {
-      navigate(`../accounts`);
+      navigate(`/accounts`);
     } else {
       showNotification({
         title: formatMessage({ id: 'acc-f-title' }),

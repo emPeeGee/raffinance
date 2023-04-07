@@ -17,7 +17,6 @@ type TransactionsStore = {
   addTransaction: (transaction: CreateTransactionDTO) => Promise<boolean>;
   updateTransaction: (id: string, transaction: CreateTransactionDTO) => Promise<boolean>;
   deleteTransaction: (id: number) => Promise<boolean>;
-  // removeTransaction: (id: string) => void;
 };
 
 const transactionStore = 'Transactions store';

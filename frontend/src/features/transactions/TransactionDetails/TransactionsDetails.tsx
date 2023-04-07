@@ -28,7 +28,7 @@ import {
   IconTrash
 } from '@tabler/icons-react';
 import { FormattedDate, useIntl } from 'react-intl';
-import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import { ConfirmDelete } from 'components';
 import {

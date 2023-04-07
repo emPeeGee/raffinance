@@ -21,7 +21,7 @@ type AccountsStore = {
   getAccount: (id: string, includeTransaction: boolean) => Promise<AccountDetailsModel>;
   addAccount: (account: CreateAccountDTO) => Promise<boolean>;
   updateAccount: (id: string, account: CreateAccountDTO) => Promise<boolean>;
-  // removeAccount: (id: string) => void;
+  deleteAccount: (id: number) => Promise<boolean>;
 };
 
 const accountStore = 'Accounts store';
@@ -98,6 +98,28 @@ export const useAccountStore = create<AccountsStore>()(
 
           set({ ...get(), accounts: [...accounts] });
           return true;
+        } catch (reason) {
+          console.log(reason);
+          return false;
+        }
+      },
+      deleteAccount: async (id: number): Promise<boolean> => {
+        const { accounts } = get();
+
+        try {
+          const response = await api.delete<any>({
+            url: `accounts/${id}`,
+            token: useAuthStore.getState().token
+          });
+
+          if (response.ok) {
+            const updatedAccounts = accounts.filter((t) => t.id !== id);
+
+            set({ ...get(), accounts: [...updatedAccounts] });
+            return true;
+          }
+
+          return false;
         } catch (reason) {
           console.log(reason);
           return false;
