@@ -1,5 +1,6 @@
 import { ConfirmDelete } from './common/ConfirmDelete/ConfirmDelete';
 import { Iconify } from './common/Iconify/Iconify';
+import { IconPicker } from './common/IconPicker/IconPicker';
 import LanguagePicker from './common/LangPicker/LangPicker';
 import { MultiPicker } from './common/MultiPicker/MultiPicker';
 import { ToggleColor } from './common/ToggleColor/ToggleColor';
@@ -31,5 +32,6 @@ export {
   Iconify,
   ViewSwitcher,
   MultiPicker,
+  IconPicker,
   TransactionTypePicker
 };

@@ -1,17 +1,15 @@
-import React, { forwardRef, useState } from 'react';
+import React, { useState } from 'react';
 
 import {
-  TextInput,
   Button,
-  createStyles,
-  rem,
-  Text,
-  Title,
-  Flex,
   ColorInput,
-  Loader,
+  Flex,
   Group,
-  Select
+  Loader,
+  TextInput,
+  Title,
+  createStyles,
+  rem
 } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { IconArrowBackUp, IconBolt, IconSignature } from '@tabler/icons-react';
@@ -19,9 +17,9 @@ import { Controller, useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
-import { Iconify } from 'components';
+import { IconPicker, Iconify } from 'components';
 import { useCategoriesStore } from 'store';
-import { DateUnit, ICONS, SWATCHES } from 'utils';
+import { DateUnit, SWATCHES } from 'utils';
 
 import { CreateCategoryDTO } from '../categories.model';
 
@@ -36,23 +34,6 @@ const useStyles = createStyles((theme) => ({
     }
   }
 }));
-
-interface SelectItemProps extends React.ComponentPropsWithoutRef<'div'> {
-  label: string;
-  value: string;
-}
-
-const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
-  ({ label, value, ...others }: SelectItemProps, ref) => (
-    <div ref={ref} {...others}>
-      <Group noWrap>
-        <Iconify icon={value} />
-        <Text size="sm">{label}</Text>
-      </Group>
-    </div>
-  )
-);
-SelectItem.displayName = 'SelectItem';
 
 // TODO: Rename to both create and edit
 export function CategoryForm() {
@@ -149,23 +130,11 @@ export function CategoryForm() {
             control={control}
             rules={{ required: true, maxLength: 64, minLength: 2 }}
             render={({ field }) => (
-              <Select
+              <IconPicker
                 {...field}
-                label={formatMessage({ id: 'co-icon' })}
-                nothingFound={formatMessage({ id: 'co-no-opts' })}
-                description={formatMessage({ id: 'cat-c-icon' })}
-                searchable
-                clearable
-                required
-                allowDeselect
-                size="md"
                 icon={<Iconify icon={field.value} />}
-                itemComponent={SelectItem}
-                data={ICONS}
+                description={formatMessage({ id: 'cat-c-icon' })}
                 error={errors.icon ? 'Field is invalid' : null}
-                filter={(value: string, item: SelectItemProps) =>
-                  item.label.toLowerCase().includes(value.toLowerCase().trim())
-                }
               />
             )}
           />
