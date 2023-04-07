@@ -48,8 +48,6 @@ func (h *handler) createAccount(c *gin.Context) {
 		return
 	}
 
-	h.logger.Debug(input)
-
 	if err := h.validate.Struct(input); err != nil {
 		errorutil.BadRequest(c, "your request did not pass validation", err.Error())
 		return
