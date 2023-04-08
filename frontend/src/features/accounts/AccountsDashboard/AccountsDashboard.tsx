@@ -63,7 +63,7 @@ export function AccountsDashboard() {
   return (
     <Container>
       <Group position="apart" mb="md">
-        <Title className={classes.title}>{formatMessage({ id: 'accounts' })}</Title>
+        <Title className={classes.title}>{formatMessage({ id: 'acc' })}</Title>
         <Button
           component={Link}
           to="/accounts/create"

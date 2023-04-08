@@ -189,6 +189,7 @@ export function AccountDetail() {
         </Group>
       </Card>
 
+      {/* // TODO: will only work with transactions and not with accounts trans */}
       <TransactionsList transactions={account.transactions} currency={account.currency} />
 
       <Modal

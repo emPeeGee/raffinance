@@ -1,27 +1,15 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 
-import {
-  Accordion,
-  ActionIcon,
-  Button,
-  Group,
-  Loader,
-  SimpleGrid,
-  Text,
-  TextInput,
-  Title,
-  useMantineTheme
-} from '@mantine/core';
-import { IconArrowLeft, IconArrowRight, IconSearch } from '@tabler/icons-react';
+import { Accordion, Group, Loader, SimpleGrid, Text, Title } from '@mantine/core';
 import { FormattedDate, FormattedNumber, useIntl } from 'react-intl';
 
 import { ViewSwitcher } from 'components';
 import {
-  TransactionType,
   NoTransactions,
   TransactionCard,
   TransactionModel,
   TransactionTable,
+  TransactionType,
   TransactionsFilter
 } from 'features/transactions';
 import { useTransactionStore } from 'store';
@@ -66,11 +54,7 @@ interface Props {
 
 export function TransactionsList({ transactions, currency }: Props) {
   const { formatMessage } = useIntl();
-  const theme = useMantineTheme();
-  const [showTransactions, setShowTransactions] = useState(true);
   const { viewMode, setViewMode, pending } = useTransactionStore();
-
-  const toggleTransactions = () => setShowTransactions((show) => !show);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const aggregatedTxns = useMemo(() => {
@@ -143,34 +127,12 @@ export function TransactionsList({ transactions, currency }: Props) {
     <div>
       <TransactionsFilter />
 
-      <Button variant="light" onClick={toggleTransactions} mb="md">
-        {formatMessage({ id: showTransactions ? 'txn-hide' : 'txn-show' })}
-      </Button>
-
-      <TextInput
-        icon={<IconSearch size="1.1rem" stroke={1.5} />}
-        radius="xl"
-        size="md"
-        mb="md"
-        rightSection={
-          <ActionIcon size={32} radius="xl" color={theme.primaryColor} variant="filled">
-            {theme.dir === 'ltr' ? (
-              <IconArrowRight size="1.1rem" stroke={1.5} />
-            ) : (
-              <IconArrowLeft size="1.1rem" stroke={1.5} />
-            )}
-          </ActionIcon>
-        }
-        placeholder={formatMessage({ id: 'txn-search' })}
-        rightSectionWidth={42}
-      />
-
       {pending ? (
         <Group position="center" p="lg">
           <Loader />
         </Group>
       ) : (
-        showTransactions && content
+        content
       )}
     </div>
   );

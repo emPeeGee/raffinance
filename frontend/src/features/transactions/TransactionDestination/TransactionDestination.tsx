@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Group, Badge, Text, MantineSize } from '@mantine/core';
-import { IconArrowNarrowRight } from '@tabler/icons-react';
+import { IconArrowNarrowRight, IconQuestionMark } from '@tabler/icons-react';
 import { useIntl } from 'react-intl';
 
 import { AccountModel } from 'features/accounts';
@@ -21,9 +21,12 @@ export function TransactionDestination({ transaction, withLabel = false, size = 
   const { accounts } = useAccountStore();
 
   const toAccount = accounts.find((a) => a.id === transaction.toAccountId) as AccountModel;
-  const { color: toAccountColor } = toAccount;
-
   const fromAcc = accounts.find((a) => a.id === transaction?.fromAccountId);
+
+  if (!toAccount) {
+    // TODO: iDK fails
+    return <IconQuestionMark size="3rem" />;
+  }
 
   return (
     <Group mb="xs" spacing={0}>
@@ -41,7 +44,7 @@ export function TransactionDestination({ transaction, withLabel = false, size = 
             <IconArrowNarrowRight />
           </>
         )}
-        <Badge size={size} c={getContrastColor(toAccountColor)} bg={toAccountColor}>
+        <Badge size={size} c={getContrastColor(toAccount.color)} bg={toAccount.color}>
           {toAccount?.name}
         </Badge>
       </Group>
