@@ -260,7 +260,7 @@ func (r *repository) findByFilter(filter TransactionFilter) ([]TransactionRespon
 	// Filter by accounts
 	// ASK: from_account_id too?
 	if len(filter.Accounts) > 0 {
-		query = query.Where("to_account_id IN (?)", filter.Accounts)
+		query = query.Where("to_account_id IN (?) OR from_account_id IN (?)", filter.Accounts, filter.Accounts)
 	}
 
 	// Filter by categories
