@@ -22,10 +22,9 @@ func NewTagService(repo Repository, logger log.Logger) *service {
 	return &service{repo: repo, logger: logger}
 }
 
-func (s *service) createTag(userId uint, tag createTagDTO) (*tagResponse, error) {
+func (s *service) createTag(userID uint, tag createTagDTO) (*tagResponse, error) {
 	// check if such name or email already exists, email and name should be unique per user
-	// TODO: is not per user, check other places
-	exists, err := s.repo.tagExists(tag.Name)
+	exists, err := s.repo.tagExistsAndBelongsToUser(userID, 0, tag.Name)
 	if err != nil {
 		return nil, err
 	}
@@ -34,12 +33,12 @@ func (s *service) createTag(userId uint, tag createTagDTO) (*tagResponse, error)
 		return nil, fmt.Errorf("tag with name %s exists", tag.Name)
 	}
 
-	return s.repo.createTag(userId, tag)
+	return s.repo.createTag(userID, tag)
 }
 
 func (s *service) deleteTag(userId, id uint) error {
 	// another user hasn't to be able to access tags
-	ok, err := s.repo.tagExistsAndBelongsToUser(userId, id)
+	ok, err := s.repo.tagExistsAndBelongsToUser(userId, id, "")
 	if err != nil {
 		return err
 	}
@@ -60,7 +59,7 @@ func (s *service) getTags(userId uint) ([]tagResponse, error) {
 }
 
 func (s *service) updateTag(userId, tagId uint, tag updateTagDTO) (*tagResponse, error) {
-	exists, err := s.repo.tagExistsAndBelongsToUser(userId, tagId)
+	exists, err := s.repo.tagExistsAndBelongsToUser(userId, tagId, "")
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +69,7 @@ func (s *service) updateTag(userId, tagId uint, tag updateTagDTO) (*tagResponse,
 	}
 
 	// check if such name exists, name should be unique per user
-	exists, err = s.repo.tagExists(tag.Name)
+	exists, err = s.repo.tagExistsAndBelongsToUser(userId, 0, tag.Name)
 	if err != nil {
 		return nil, err
 	}

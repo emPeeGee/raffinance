@@ -39,7 +39,7 @@ func NewAccountService(transactionService transaction.Service, repo Repository, 
 
 func (s *service) createAccount(userId uint, account createAccountDTO) (*accountResponse, error) {
 	// check if such name or email already exists, email and name should be unique per user
-	exists, err := s.repo.accountExists(account.Name)
+	exists, err := s.repo.accountExistsAndBelongsToUser(userId, 0, account.Name)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (s *service) createAccount(userId uint, account createAccountDTO) (*account
 }
 
 func (s *service) deleteAccount(userId, id uint) error {
-	ok, err := s.repo.accountExistsAndBelongsToUser(userId, id)
+	ok, err := s.repo.accountExistsAndBelongsToUser(userId, id, "")
 	if err != nil {
 		return err
 	}
@@ -88,7 +88,7 @@ func (s *service) getAccounts(userId uint) ([]accountResponse, error) {
 }
 
 func (s *service) updateAccount(userId, accountId uint, account updateAccountDTO) (*accountResponse, error) {
-	exists, err := s.repo.accountExistsAndBelongsToUser(userId, accountId)
+	exists, err := s.repo.accountExistsAndBelongsToUser(userId, accountId, "")
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +98,7 @@ func (s *service) updateAccount(userId, accountId uint, account updateAccountDTO
 	}
 
 	// check if such name exists, name should be unique per user
-	exists, err = s.repo.accountExists(account.Name)
+	exists, err = s.repo.accountExistsAndBelongsToUser(userId, 0, account.Name)
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +134,7 @@ func (s *service) updateAccount(userId, accountId uint, account updateAccountDTO
 }
 
 func (s *service) getAccount(userId, id uint) (*accountDetailsResponse, error) {
-	ok, err := s.repo.accountExistsAndBelongsToUser(userId, id)
+	ok, err := s.repo.accountExistsAndBelongsToUser(userId, id, "")
 	if err != nil {
 		return nil, fmt.Errorf("error checking account ownership: %v", err)
 	}
@@ -153,7 +153,7 @@ func (s *service) getAccount(userId, id uint) (*accountDetailsResponse, error) {
 
 // Returns account details and transaction from current month
 func (s *service) getAccountWithTransactions(userId, id uint) (*accountDetailsResponse, error) {
-	ok, err := s.repo.accountExistsAndBelongsToUser(userId, id)
+	ok, err := s.repo.accountExistsAndBelongsToUser(userId, id, "")
 	if err != nil {
 		return nil, fmt.Errorf("error checking account ownership: %v", err)
 	}
@@ -197,7 +197,7 @@ func (s *service) getAccountTransactionsByMonth(accountId uint, year int, month 
 // TODO: this should be a part of user log.
 // / WTF comment above means ???
 func (s *service) getAccountBalance(userId, id uint) (float64, error) {
-	ok, err := s.repo.accountExistsAndBelongsToUser(userId, id)
+	ok, err := s.repo.accountExistsAndBelongsToUser(userId, id, "")
 	if err != nil {
 		return -1, err
 	}

@@ -1,6 +1,7 @@
 package category
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/emPeeGee/raffinance/internal/entity"
@@ -15,9 +16,8 @@ type Repository interface {
 	createCategory(userId uint, category createCategoryDTO) (*categoryResponse, error)
 	updateCategory(userId, categoryId uint, category updateCategoryDTO) (*categoryResponse, error)
 	deleteCategory(userId, id uint) error
-	categoryExists(name string) (bool, error)
-	categoryExistsAndBelongsToUser(userId, id uint) (bool, error)
-	categoryIsUsed(tagId uint) error
+	categoryExistsAndBelongsToUser(userID, id uint, name string) (bool, error)
+	categoryIsUsed(categoryId uint) error
 }
 
 type repository struct {
@@ -101,20 +101,27 @@ func (r *repository) getCategories(userId uint) ([]categoryResponse, error) {
 	return categories, nil
 }
 
-func (r *repository) categoryExistsAndBelongsToUser(userId, id uint) (bool, error) {
+func (r *repository) categoryExistsAndBelongsToUser(userID, id uint, name string) (bool, error) {
 	var count int64
+	var whereClause string
+	var values []interface{}
 
-	if err := r.db.Model(&entity.Category{}).Where("id = ? AND user_id = ?", id, userId).Count(&count).Error; err != nil {
-		return false, err
+	whereClause = "user_id = ?"
+	values = append(values, userID)
+
+	if id > 0 {
+		whereClause += " AND id = ?"
+		values = append(values, id)
+	} else if name != "" {
+		whereClause += " AND name = ?"
+		values = append(values, name)
+	} else {
+		return false, errors.New("id or name parameter is required")
 	}
 
-	return count > 0, nil
-}
-
-func (r *repository) categoryExists(name string) (bool, error) {
-	var count int64
-
-	if err := r.db.Model(&entity.Category{}).Where("name = ?", name).Count(&count).Error; err != nil {
+	if err := r.db.Model(&entity.Category{}).
+		Where(whereClause, values...).
+		Count(&count).Error; err != nil {
 		return false, err
 	}
 
@@ -122,17 +129,17 @@ func (r *repository) categoryExists(name string) (bool, error) {
 }
 
 // TODO: Can this be achieved using constraints ???
-func (r *repository) categoryIsUsed(tagId uint) error {
+func (r *repository) categoryIsUsed(categoryId uint) error {
 	var count int64
 	if err := r.db.Model(&entity.Category{}).
 		Joins("JOIN transactions ON transactions.category_id = categories.id").
-		Where("categories.id = ?", tagId).
+		Where("categories.id = ?", categoryId).
 		Count(&count).Error; err != nil {
 		return err
 	}
 
 	if count > 0 {
-		return fmt.Errorf("cannot delete category %d that is used in %d transactions", tagId, count)
+		return fmt.Errorf("cannot delete category %d that is used in %d transactions", categoryId, count)
 	}
 
 	return nil

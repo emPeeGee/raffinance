@@ -18,8 +18,7 @@ type Repository interface {
 	createAccount(userId uint, Account createAccountDTO) (*accountResponse, error)
 	updateAccount(userId, accountId uint, account updateAccountDTO) (*accountResponse, error)
 	deleteAccount(userId, id uint) error
-	accountExists(name string) (bool, error)
-	accountExistsAndBelongsToUser(userId, id uint) (bool, error)
+	accountExistsAndBelongsToUser(userID, id uint, name string) (bool, error)
 	accountIsUsed(accountId uint) error
 	// TODO: rename to calculate*****
 	getAccountBalance(id uint) (float64, error)
@@ -130,20 +129,27 @@ func (r *repository) getAccounts(userId uint) ([]accountResponse, error) {
 	return accounts, nil
 }
 
-func (r *repository) accountExistsAndBelongsToUser(userId, id uint) (bool, error) {
+func (r *repository) accountExistsAndBelongsToUser(userID, id uint, name string) (bool, error) {
 	var count int64
+	var whereClause string
+	var values []interface{}
 
-	if err := r.db.Model(&entity.Account{}).Where("id = ? AND user_id = ?", id, userId).Count(&count).Error; err != nil {
-		return false, err
+	whereClause = "user_id = ?"
+	values = append(values, userID)
+
+	if id > 0 {
+		whereClause += " AND id = ?"
+		values = append(values, id)
+	} else if name != "" {
+		whereClause += " AND name = ?"
+		values = append(values, name)
+	} else {
+		return false, errors.New("id or name parameter is required")
 	}
 
-	return count > 0, nil
-}
-
-func (r *repository) accountExists(name string) (bool, error) {
-	var count int64
-
-	if err := r.db.Model(&entity.Account{}).Where("name = ?", name).Count(&count).Error; err != nil {
+	if err := r.db.Model(&entity.Account{}).
+		Where(whereClause, values...).
+		Count(&count).Error; err != nil {
 		return false, err
 	}
 

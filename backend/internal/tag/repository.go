@@ -1,6 +1,7 @@
 package tag
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/emPeeGee/raffinance/internal/entity"
@@ -15,8 +16,7 @@ type Repository interface {
 	createTag(userId uint, Tag createTagDTO) (*tagResponse, error)
 	updateTag(userId, tagId uint, tag updateTagDTO) (*tagResponse, error)
 	deleteTag(userId, id uint) error
-	tagExists(name string) (bool, error)
-	tagExistsAndBelongsToUser(userId, id uint) (bool, error)
+	tagExistsAndBelongsToUser(userID, id uint, name string) (bool, error)
 	tagIsUsed(tagId uint) error
 }
 
@@ -103,20 +103,28 @@ func (r *repository) getTags(userId uint) ([]tagResponse, error) {
 	return tags, nil
 }
 
-func (r *repository) tagExistsAndBelongsToUser(userId, id uint) (bool, error) {
+// if id < 0, will search by name
+func (r *repository) tagExistsAndBelongsToUser(userID, id uint, name string) (bool, error) {
 	var count int64
+	var whereClause string
+	var values []interface{}
 
-	if err := r.db.Model(&entity.Tag{}).Where("id = ? AND user_id = ?", id, userId).Count(&count).Error; err != nil {
-		return false, err
+	whereClause = "user_id = ?"
+	values = append(values, userID)
+
+	if id > 0 {
+		whereClause += " AND id = ?"
+		values = append(values, id)
+	} else if name != "" {
+		whereClause += " AND name = ?"
+		values = append(values, name)
+	} else {
+		return false, errors.New("id or name parameter is required")
 	}
 
-	return count > 0, nil
-}
-
-func (r *repository) tagExists(name string) (bool, error) {
-	var count int64
-
-	if err := r.db.Model(&entity.Tag{}).Where("name = ?", name).Count(&count).Error; err != nil {
+	if err := r.db.Model(&entity.Tag{}).
+		Where(whereClause, values...).
+		Count(&count).Error; err != nil {
 		return false, err
 	}
 

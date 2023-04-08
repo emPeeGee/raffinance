@@ -9,15 +9,15 @@ import (
 
 type Service interface {
 	createTransaction(userId uint, transaction CreateTransactionDTO) (*TransactionResponse, error)
-	GetAccountTransactionsByMonth(accountId uint, year int, month time.Month) ([]TransactionResponse, error)
-	GetTransactionsByFilter(filter TransactionFilter) ([]TransactionResponse, error)
 	// TODO: They are not validated, validation is in handler
 	CreateAdjustmentTransaction(userId, accountId uint, amount float64, trType TransactionType) (*TransactionResponse, error)
 	CreateInitialTransaction(userId, accountId uint, amount float64) (*TransactionResponse, error)
 	deleteTransaction(userId, id uint) error
 	updateTransaction(usedId, transactionId uint, transaction UpdateTransactionDTO) (*TransactionResponse, error)
+	getTransaction(userID, txnId uint) (*TransactionResponse, error)
+	GetAccountTransactionsByMonth(accountId uint, year int, month time.Month) ([]TransactionResponse, error)
+	GetTransactionsByFilter(filter TransactionFilter) ([]TransactionResponse, error)
 	getTransactions(userId uint) ([]TransactionResponse, error)
-	getTransaction(txnId uint) (*TransactionResponse, error)
 }
 
 type service struct {
@@ -102,8 +102,16 @@ func (s *service) getTransactions(userId uint) ([]TransactionResponse, error) {
 	return s.repo.getTransactions(userId)
 }
 
-func (s *service) getTransaction(txnId uint) (*TransactionResponse, error) {
-	// TODO: every user can access it
+func (s *service) getTransaction(userID, txnId uint) (*TransactionResponse, error) {
+	ok, err := s.repo.transactionExistsAndBelongsToUser(userID, txnId)
+	if err != nil {
+		return nil, err
+	}
+
+	if !ok {
+		return nil, fmt.Errorf("transaction with ID %d does not exist or belong to user with ID %d", txnId, userID)
+	}
+
 	return s.repo.getTransaction(txnId)
 }
 

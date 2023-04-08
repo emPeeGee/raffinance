@@ -22,9 +22,9 @@ func NewCategoryService(repo Repository, logger log.Logger) *service {
 	return &service{repo: repo, logger: logger}
 }
 
-func (s *service) createCategory(userId uint, category createCategoryDTO) (*categoryResponse, error) {
+func (s *service) createCategory(userID uint, category createCategoryDTO) (*categoryResponse, error) {
 	// name should be unique per user
-	exists, err := s.repo.categoryExists(category.Name)
+	exists, err := s.repo.categoryExistsAndBelongsToUser(userID, 0, category.Name)
 	if err != nil {
 		return nil, err
 	}
@@ -33,11 +33,11 @@ func (s *service) createCategory(userId uint, category createCategoryDTO) (*cate
 		return nil, fmt.Errorf("category with name %s exists", category.Name)
 	}
 
-	return s.repo.createCategory(userId, category)
+	return s.repo.createCategory(userID, category)
 }
 
 func (s *service) deleteCategory(userId, id uint) error {
-	ok, err := s.repo.categoryExistsAndBelongsToUser(userId, id)
+	ok, err := s.repo.categoryExistsAndBelongsToUser(userId, id, "")
 	if err != nil {
 		return err
 	}
@@ -57,19 +57,19 @@ func (s *service) getCategories(userId uint) ([]categoryResponse, error) {
 	return s.repo.getCategories(userId)
 }
 
-func (s *service) updateCategory(userId, categoryId uint, category updateCategoryDTO) (*categoryResponse, error) {
+func (s *service) updateCategory(userID, categoryId uint, category updateCategoryDTO) (*categoryResponse, error) {
 	// TODO: bug, when user updates only icon or color. the category won't be updated
-	exists, err := s.repo.categoryExistsAndBelongsToUser(userId, categoryId)
+	exists, err := s.repo.categoryExistsAndBelongsToUser(userID, categoryId, "")
 	if err != nil {
 		return nil, err
 	}
 
 	if !exists {
-		return nil, fmt.Errorf("category with ID %d does not exist or belong to user with ID %d", categoryId, userId)
+		return nil, fmt.Errorf("category with ID %d does not exist or belong to user with ID %d", categoryId, userID)
 	}
 
 	// check if such name exists, name should be unique per user
-	exists, err = s.repo.categoryExists(category.Name)
+	exists, err = s.repo.categoryExistsAndBelongsToUser(userID, 0, category.Name)
 	if err != nil {
 		return nil, err
 	}
@@ -78,5 +78,5 @@ func (s *service) updateCategory(userId, categoryId uint, category updateCategor
 		return nil, fmt.Errorf("category with name %s already exists", category.Name)
 	}
 
-	return s.repo.updateCategory(userId, categoryId, category)
+	return s.repo.updateCategory(userID, categoryId, category)
 }

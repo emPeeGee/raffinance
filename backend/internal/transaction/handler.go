@@ -198,7 +198,7 @@ func (h *handler) getTransaction(c *gin.Context) {
 		return
 	}
 
-	transaction, err := h.service.getTransaction(uint(transactionId))
+	transaction, err := h.service.getTransaction(*userID, uint(transactionId))
 	if err != nil {
 		errorutil.InternalServer(c, err.Error(), err.Error())
 		return
