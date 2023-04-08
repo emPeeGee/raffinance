@@ -46,7 +46,7 @@ const useStyles = createStyles((theme) => ({
 
 export function AccountDetail() {
   const { formatMessage } = useIntl();
-  const { classes } = useStyles();
+  const { classes, theme } = useStyles();
   const [isLoading, setIsLoading] = useState(false);
   const [account, setAccount] = useState<AccountDetailsModel>();
 
@@ -106,7 +106,7 @@ export function AccountDetail() {
       <Card padding="lg" my="lg" radius="md" bg={account.color} classNames={classes.accountCard}>
         <Group align="flex-start" mb="sm">
           <ThemeIcon bg="rgba(0, 0, 0, 0.7)" radius="lg" size={70}>
-            <Iconify color={textColor} icon={account.icon} size="3rem" />
+            <Iconify color={theme.white} icon={account.icon} size="3rem" />
           </ThemeIcon>
 
           <div style={{ marginLeft: 20 }}>

@@ -15,6 +15,7 @@ import { getContrastColor } from 'utils';
 const useStyles = createStyles((theme) => ({
   transactionTitle: {
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
+    lineHeight: 1,
 
     [theme.fn.smallerThan('sm')]: {
       fontSize: rem(32)
@@ -55,25 +56,26 @@ export function TransactionCard({ transaction, currency }: Props) {
     <div>
       <Paper withBorder h="100%" radius="md" key={`${description}${date}`}>
         <UnstyledButton p="md" w="100%" h="100%" onClick={gotoTransaction}>
-          <Group mb="xs" spacing={0}>
-            <Badge bg={category.color} c={getContrastColor(category.color)}>
-              {category.name}
-            </Badge>
-          </Group>
-          <Group position="apart">
-            <Title order={5} mb="sm" className={classes.transactionTitle}>
+          <TransactionDestination transaction={transaction} />
+
+          <Group mb="sm" position="apart">
+            <Title order={5} className={classes.transactionTitle}>
               {description}
             </Title>
           </Group>
 
-          <Group align="center" mb="xs" spacing="0.25rem">
+          <Group align="center" mb="sm" spacing="0.25rem">
             <TransactionTypeView transaction={transaction} withAmount />
             <Text className={classes.currency} size="sm" fw={500}>
               {txnAcc?.currency}
             </Text>
           </Group>
 
-          <TransactionDestination transaction={transaction} />
+          <Group mb="xs" spacing={0}>
+            <Badge bg={category.color} c={getContrastColor(category.color)}>
+              {category.name}
+            </Badge>
+          </Group>
 
           <Group mb="sm">
             <Text color="dimmed">
