@@ -34,3 +34,12 @@ export interface CreateTransactionDTO {
   categoryId: number;
   tagIds: number[];
 }
+
+export interface TransactionFilterModel {
+  dateRange: [Date | null, Date | null];
+  description: string;
+  type: string;
+  categories: string[];
+  tags: string[];
+  accounts: string[];
+}

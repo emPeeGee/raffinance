@@ -3,7 +3,12 @@ import { TransactionCard } from './TransactionCard/TransactionCard';
 import { TransactionDestination } from './TransactionDestination/TransactionDestination';
 import { TransactionForm } from './TransactionForm/TransactionForm';
 import { Transactions } from './Transactions/Transactions';
-import { TransactionModel, CreateTransactionDTO, TransactionType } from './transactions.model';
+import {
+  TransactionModel,
+  CreateTransactionDTO,
+  TransactionType,
+  TransactionFilterModel
+} from './transactions.model';
 import { TransactionsDashboard } from './TransactionsDashboard/TransactionsDashboard';
 import { TransactionsFilter } from './TransactionsFilter/TransactionsFilter';
 import { TransactionsList } from './TransactionsList/TransactionsList';
@@ -23,4 +28,4 @@ export {
   TransactionTypeView,
   TransactionForm as TransactionCreate
 };
-export type { TransactionModel, CreateTransactionDTO };
+export type { TransactionModel, CreateTransactionDTO, TransactionFilterModel };

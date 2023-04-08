@@ -1,7 +1,12 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
-import { TransactionModel, CreateTransactionDTO } from 'features/transactions';
+import {
+  TransactionModel,
+  CreateTransactionDTO,
+  TransactionFilterModel
+} from 'features/transactions';
 import { api } from 'services/http';
 import { useAuthStore } from 'store';
 import { ViewMode } from 'utils';
@@ -11,7 +16,7 @@ type TransactionsStore = {
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;
   transactions: TransactionModel[];
-  fetchTransactions: () => void;
+  fetchTransactions: (filters?: TransactionFilterModel) => void;
   getTransactions: () => void;
   getTransaction: (id: string) => Promise<TransactionModel | null>;
   addTransaction: (transaction: CreateTransactionDTO) => Promise<boolean>;
@@ -28,11 +33,15 @@ export const useTransactionStore = create<TransactionsStore>()(
       viewMode: 'card',
       setViewMode: (viewMode) => set({ viewMode }),
       transactions: [],
-      getTransactions: () => {
+      getTransactions: (filters?: TransactionFilterModel) => {
         const { transactions } = get();
 
+        // if (filters) {
+        //   get().fetchTransactions(filters);
+        // } else {
         if (transactions.length === 0) {
           get().fetchTransactions();
+          // }
         }
       },
 
@@ -49,12 +58,26 @@ export const useTransactionStore = create<TransactionsStore>()(
         }
       },
 
-      fetchTransactions: async () => {
+      fetchTransactions: async (filters?: TransactionFilterModel) => {
         set({ ...get(), pending: true });
+        let queryParams: URLSearchParams = new URLSearchParams();
+        if (filters) {
+          queryParams = new URLSearchParams({
+            start_date: filters.dateRange[0]?.toISOString() ?? '',
+            end_date: filters.dateRange[1]?.toISOString() ?? '',
+            accounts: filters.accounts.join(','),
+            categories: filters.categories.join(','),
+            tags: filters.tags.join(','),
+            type: filters.type,
+            description: filters.description
+          });
+        }
+
         const transactions = await api.get<TransactionModel[]>({
-          url: 'transactions',
+          url: filters ? `transactions/f?${queryParams}` : 'transactions',
           token: useAuthStore.getState().token
         });
+
         set({ transactions, pending: false });
       },
 

@@ -31,6 +31,8 @@
   "co-profile": "Profile",
   "co-latest-log": "The latest logins",
 
+  "co-apply": "Apply",
+  "co-clear-all": "Clear all",
   "co-inc": "Income",
   "co-exp": "Expense",
   "co-tra": "Transfer",
@@ -47,7 +49,7 @@
   "co-del-suc": "The selected item has been successfully removed.",
   "co-del-err": "Unable to remove the item from the system. Please check your connection and try again.",
 
-  "accounts": "Accounts",
+  "acc": "Accounts",
   "acc-to": "To account",
   "acc-from": "From account",
   "acc-create": "Create an account",
