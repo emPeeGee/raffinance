@@ -85,8 +85,6 @@ func (r *repository) getCategories(userId uint) ([]categoryResponse, error) {
 		return nil, err
 	}
 
-	r.logger.Debug(user)
-
 	for _, category := range user.Categories {
 		categories = append(categories, categoryResponse{
 			ID:        category.ID,

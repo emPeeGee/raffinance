@@ -40,26 +40,26 @@ func ParseStringToByte(valueStr string) (*byte, error) {
 	return &b, nil
 }
 
-func ParseMonthRange(startMonthStr, endMonthStr string) (*time.Time, *time.Time, error) {
+func ParseDateRange(startDateStr, endDateStr string) (*time.Time, *time.Time, error) {
 
 	// both are required
-	if startMonthStr == "" || endMonthStr == "" {
+	if startDateStr == "" || endDateStr == "" {
 		return nil, nil, nil
 	}
 
-	startMonth, err := time.Parse("2006-01", startMonthStr)
+	startDate, err := time.Parse(time.RFC3339, startDateStr)
 	if err != nil {
 		return nil, nil, fmt.Errorf("invalid start_month parameter: %w", err)
 	}
 
-	endMonth, err := time.Parse("2006-01", endMonthStr)
+	endDate, err := time.Parse(time.RFC3339, endDateStr)
 	if err != nil {
 		return nil, nil, fmt.Errorf("invalid end_month parameter: %w", err)
 	}
 
-	if startMonth.After(endMonth) {
+	if startDate.After(endDate) {
 		return nil, nil, errors.New("start_month can be after end_month")
 	}
 
-	return &startMonth, &endMonth, nil
+	return &startDate, &endDate, nil
 }

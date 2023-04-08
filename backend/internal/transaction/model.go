@@ -64,8 +64,9 @@ type UpdateTransactionDTO struct {
 type TransactionFilter struct {
 	userID      *uint
 	Type        *byte
-	StartMonth  *time.Time
-	EndMonth    *time.Time
+	StartDate   *time.Time
+	EndDate     *time.Time
+	Accounts    []uint
 	Categories  []uint
 	Tags        []uint
 	Description string

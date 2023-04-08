@@ -249,12 +249,18 @@ func (r *repository) findByFilter(filter TransactionFilter) ([]TransactionRespon
 	}
 
 	// Filter by month range
-	if filter.StartMonth != nil && filter.EndMonth != nil {
-		startOfMonth := filter.StartMonth.Day() - 1
-		endOfMonth := filter.EndMonth.AddDate(0, 1, -1).Day() - 1
-		start := filter.StartMonth.AddDate(0, 0, -startOfMonth)
-		end := filter.EndMonth.AddDate(0, 0, endOfMonth)
+	if filter.StartDate != nil && filter.EndDate != nil {
+		startOfMonth := filter.StartDate.Day() - 1
+		endOfMonth := filter.EndDate.AddDate(0, 1, -1).Day() - 1
+		start := filter.StartDate.AddDate(0, 0, -startOfMonth)
+		end := filter.EndDate.AddDate(0, 0, endOfMonth)
 		query = query.Where("date BETWEEN ? AND ?", start, end)
+	}
+
+	// Filter by accounts
+	// ASK: from_account_id too?
+	if len(filter.Accounts) > 0 {
+		query = query.Where("to_account_id IN (?)", filter.Accounts)
 	}
 
 	// Filter by categories
@@ -277,6 +283,7 @@ func (r *repository) findByFilter(filter TransactionFilter) ([]TransactionRespon
 
 	// Execute the query and return the results
 	if err := query.Find(&transactions).Error; err != nil {
+		r.logger.Debugf(util.StringifyAny(err))
 		return nil, err
 	}
 

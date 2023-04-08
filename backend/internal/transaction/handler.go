@@ -152,27 +152,33 @@ func (h *handler) getTransactionsFiltered(c *gin.Context) {
 	filter.Description = c.Query("description")
 	filter.Type, err = util.ParseStringToByte(c.Query("type"))
 	if err != nil {
-		c.AbortWithError(http.StatusBadRequest, err)
+		errorutil.BadRequest(c, err.Error(), "")
 		return
 	}
 
-	startMonth, endMonth, err := util.ParseMonthRange(c.Query("start_month"), c.Query("end_month"))
+	startMonth, endMonth, err := util.ParseDateRange(c.Query("start_date"), c.Query("end_date"))
 	if err != nil {
 		errorutil.BadRequest(c, err.Error(), "")
 		return
 	}
-	filter.StartMonth = startMonth
-	filter.EndMonth = endMonth
+	filter.StartDate = startMonth
+	filter.EndDate = endMonth
+
+	filter.Accounts, err = util.ParseStringToUintArr(c.Query("accounts"))
+	if err != nil {
+		errorutil.BadRequest(c, fmt.Sprintf("invalid accounts parameter: %s", err.Error()), "")
+		return
+	}
 
 	filter.Categories, err = util.ParseStringToUintArr(c.Query("categories"))
 	if err != nil {
-		errorutil.BadRequest(c, fmt.Errorf("invalid categories parameter: %w", err).Error(), "")
+		errorutil.BadRequest(c, fmt.Sprintf("invalid categories parameter: %s", err.Error()), "")
 		return
 	}
 
 	filter.Tags, err = util.ParseStringToUintArr(c.Query("tags"))
 	if err != nil {
-		errorutil.BadRequest(c, fmt.Errorf("invalid tags parameter: %w", err).Error(), "")
+		errorutil.BadRequest(c, fmt.Sprintf("invalid tags parameter: %s", err.Error()), "")
 		return
 	}
 
@@ -181,6 +187,8 @@ func (h *handler) getTransactionsFiltered(c *gin.Context) {
 		errorutil.InternalServer(c, err.Error(), "")
 		return
 	}
+
+	h.logger.Debugf(util.StringifyAny(filter))
 
 	c.JSON(http.StatusOK, transactions)
 }

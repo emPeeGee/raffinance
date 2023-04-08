@@ -11,3 +11,4 @@
 10. On transaction create, accounts are not updated. It will be hard. websocket?
 11. Delete to confirm feature in settings, 3 level, not confirm, click to confirm and write to confirm.
 12. Horizontal icons picker
+13. 9d28463 commit. Check in every place if other users can access the data
