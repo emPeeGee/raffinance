@@ -24,6 +24,7 @@ func NewTagService(repo Repository, logger log.Logger) *service {
 
 func (s *service) createTag(userId uint, tag createTagDTO) (*tagResponse, error) {
 	// check if such name or email already exists, email and name should be unique per user
+	// TODO: is not per user, check other places
 	exists, err := s.repo.tagExists(tag.Name)
 	if err != nil {
 		return nil, err

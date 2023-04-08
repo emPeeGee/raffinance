@@ -17,6 +17,8 @@ type Repository interface {
 	getTransactions(userId uint) ([]TransactionResponse, error)
 	getTransaction(txnId uint) (*TransactionResponse, error)
 	getAccountTransactionsByMonth(accountId uint, year int, month time.Month) ([]TransactionResponse, error)
+	// NOTE: do I need transaction work here?
+	findByFilter(filter TransactionFilter) ([]TransactionResponse, error)
 	createTransaction(userId uint, transaction CreateTransactionDTO) (*TransactionResponse, error)
 	updateTransaction(transactionId uint, transaction UpdateTransactionDTO) (*TransactionResponse, error)
 	deleteTransaction(userId, id uint) error
@@ -214,6 +216,7 @@ func (r *repository) getAccountTransactionsByMonth(accountId uint, year int, mon
 	startOfMonth := time.Date(year, month, 1, 0, 0, 0, 0, time.UTC)
 	endOfMonth := startOfMonth.AddDate(0, 1, 0).Add(-time.Nanosecond)
 
+	// TODO: Test on another user
 	var transactions []entity.Transaction
 	if err := r.db.Where("from_account_id = ? OR to_account_id = ?", accountId, accountId).
 		Where("date >= ? AND date <= ?", startOfMonth, endOfMonth).
@@ -230,6 +233,57 @@ func (r *repository) getAccountTransactionsByMonth(accountId uint, year int, mon
 	}
 
 	r.logger.Debug(util.StringifyAny(transactions))
+
+	return response, nil
+}
+
+func (r *repository) findByFilter(filter TransactionFilter) ([]TransactionResponse, error) {
+	var transactions []entity.Transaction
+	query := r.db.Preload("Category").Preload("Tags").
+		Joins("INNER JOIN accounts ON transactions.to_account_id = accounts.id").
+		Where("accounts.user_id = ?", filter.userID)
+
+	// Filter by transaction type
+	if filter.Type != nil {
+		query = query.Where("transaction_type_id = ?", filter.Type)
+	}
+
+	// Filter by month range
+	if filter.StartMonth != nil && filter.EndMonth != nil {
+		startOfMonth := filter.StartMonth.Day() - 1
+		endOfMonth := filter.EndMonth.AddDate(0, 1, -1).Day() - 1
+		start := filter.StartMonth.AddDate(0, 0, -startOfMonth)
+		end := filter.EndMonth.AddDate(0, 0, endOfMonth)
+		query = query.Where("date BETWEEN ? AND ?", start, end)
+	}
+
+	// Filter by categories
+	if len(filter.Categories) > 0 {
+		query = query.Where("category_id IN (?)", filter.Categories)
+	}
+
+	// Filter by tags
+	if len(filter.Tags) > 0 {
+		subquery := r.db.Table("transaction_tags").
+			Select("DISTINCT transaction_id").
+			Where("tag_id IN (?)", filter.Tags)
+		query = query.Where("transactions.id IN (?)", subquery)
+	}
+
+	// Filter by description
+	if filter.Description != "" {
+		query = query.Where("description ILIKE ?", "%"+filter.Description+"%")
+	}
+
+	// Execute the query and return the results
+	if err := query.Find(&transactions).Error; err != nil {
+		return nil, err
+	}
+
+	response := make([]TransactionResponse, len(transactions))
+	for i, t := range transactions {
+		response[i] = entityToResponse(&t)
+	}
 
 	return response, nil
 }

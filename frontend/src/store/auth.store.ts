@@ -141,3 +141,8 @@ const unsub = useAuthStore.subscribe(
 );
 
 // TODO: rename file
+
+// TODO: TODO: TODO: clear all store after logout
+
+// TODO: instruction in case first time login, like you should have account and categs
+// to make transactions

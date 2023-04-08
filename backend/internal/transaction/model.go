@@ -60,3 +60,13 @@ type UpdateTransactionDTO struct {
 	ToAccountID       uint  `json:"toAccountId" validate:"required,numeric"`
 	TransactionTypeID byte  `json:"transactionTypeId" validate:"numeric,transactiontype"`
 }
+
+type TransactionFilter struct {
+	userID      *uint
+	Type        *byte
+	StartMonth  *time.Time
+	EndMonth    *time.Time
+	Categories  []uint
+	Tags        []uint
+	Description string
+}

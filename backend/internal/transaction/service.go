@@ -10,6 +10,7 @@ import (
 type Service interface {
 	createTransaction(userId uint, transaction CreateTransactionDTO) (*TransactionResponse, error)
 	GetAccountTransactionsByMonth(accountId uint, year int, month time.Month) ([]TransactionResponse, error)
+	GetTransactionsByFilter(filter TransactionFilter) ([]TransactionResponse, error)
 	// TODO: They are not validated, validation is in handler
 	CreateAdjustmentTransaction(userId, accountId uint, amount float64, trType TransactionType) (*TransactionResponse, error)
 	CreateInitialTransaction(userId, accountId uint, amount float64) (*TransactionResponse, error)
@@ -102,6 +103,7 @@ func (s *service) getTransactions(userId uint) ([]TransactionResponse, error) {
 }
 
 func (s *service) getTransaction(txnId uint) (*TransactionResponse, error) {
+	// TODO: every user can access it
 	return s.repo.getTransaction(txnId)
 }
 
@@ -116,6 +118,10 @@ func (s *service) GetAccountTransactionsByMonth(accountId uint, year int, month 
 	}
 
 	return s.repo.getAccountTransactionsByMonth(accountId, year, month)
+}
+
+func (s *service) GetTransactionsByFilter(filter TransactionFilter) ([]TransactionResponse, error) {
+	return s.repo.findByFilter(filter)
 }
 
 func (s *service) updateTransaction(userId, transactionId uint, transaction UpdateTransactionDTO) (*TransactionResponse, error) {
