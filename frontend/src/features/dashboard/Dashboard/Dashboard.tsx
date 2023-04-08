@@ -15,11 +15,6 @@ import { useAuthStore } from 'store';
 import { getRandomNumber } from 'utils';
 
 const useStyles = createStyles((theme) => ({
-  root: {
-    paddingTop: rem(120),
-    paddingBottom: rem(120)
-  },
-
   title: {
     fontWeight: 900,
     fontSize: rem(34),
@@ -44,7 +39,7 @@ export function Dashboard() {
 
   return (
     <Container my="xl">
-      <Box py="sm">
+      <Box>
         <Title className={classes.title}>Dashboard</Title>
         <Text mb="sm" c="dimmed" size="lg">
           {randomGreeting}

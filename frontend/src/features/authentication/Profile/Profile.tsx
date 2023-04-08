@@ -58,12 +58,12 @@ export function Profile() {
   });
 
   return (
-    <Container my={32}>
-      <Title order={1} py={rem('2rem')}>
+    <Container my="xl">
+      <Title order={1} mb="lg">
         {formatMessage({ id: 'co-profile' })}
       </Title>
       <Flex direction="column">
-        <Paper withBorder p={rem('2rem')} mb={rem('2rem')} radius="md">
+        <Paper withBorder p="lg" mb="lg" radius="md">
           <Group noWrap>
             <Avatar src={avatar} size={94} radius="md" />
             <div>

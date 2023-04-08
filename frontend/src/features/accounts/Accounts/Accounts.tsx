@@ -11,15 +11,7 @@ import { AccountsDashboard } from '../AccountsDashboard/AccountsDashboard';
 
 // TODO: Breadcrumbs ???
 
-const useStyles = createStyles(() => ({
-  root: {
-    paddingTop: rem(120),
-    paddingBottom: rem(120)
-  }
-}));
-
 export function Accounts() {
-  const { classes } = useStyles();
   const { getAccounts } = useAccountStore();
 
   useEffect(() => {
@@ -27,7 +19,7 @@ export function Accounts() {
   }, []);
 
   return (
-    <Container className={classes.root}>
+    <Container my="xl">
       <Routes>
         <Route path="/" element={<AccountsDashboard />} />
         <Route path="/:id" element={<AccountDetail />} />

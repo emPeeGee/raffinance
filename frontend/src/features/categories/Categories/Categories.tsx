@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { Container, createStyles, rem } from '@mantine/core';
+import { Container } from '@mantine/core';
 import { Route, Routes } from 'react-router-dom';
 
 import { useCategoriesStore } from 'store';
@@ -10,15 +10,7 @@ import { CategoryForm } from '../CategoryForm/CategoryForm';
 
 // TODO: Breadcrumbs ???
 
-const useStyles = createStyles(() => ({
-  root: {
-    paddingTop: rem(120),
-    paddingBottom: rem(120)
-  }
-}));
-
 export function Categories() {
-  const { classes } = useStyles();
   const { getCategories } = useCategoriesStore();
 
   useEffect(() => {
@@ -26,7 +18,7 @@ export function Categories() {
   }, []);
 
   return (
-    <Container className={classes.root}>
+    <Container my="xl">
       <Routes>
         <Route path="/" element={<CategoriesList />} />
         <Route path="/create" element={<CategoryForm />} />

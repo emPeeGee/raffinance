@@ -11,15 +11,7 @@ import { TransactionsDashboard } from '../TransactionsDashboard/TransactionsDash
 
 // TODO: Breadcrumbs ???
 
-const useStyles = createStyles(() => ({
-  root: {
-    paddingTop: rem(120),
-    paddingBottom: rem(120)
-  }
-}));
-
 export function Transactions() {
-  const { classes } = useStyles();
   const { getTransactions } = useTransactionStore();
 
   useEffect(() => {
@@ -27,7 +19,7 @@ export function Transactions() {
   }, []);
 
   return (
-    <Container className={classes.root}>
+    <Container my="xl">
       <Routes>
         <Route path="/" element={<TransactionsDashboard />} />
         <Route path="/:id" element={<TransactionDetails />} />
