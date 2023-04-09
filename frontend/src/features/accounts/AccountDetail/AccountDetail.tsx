@@ -30,7 +30,11 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import { ConfirmDelete, Iconify } from 'components';
 import { AccountDetailsModel } from 'features/accounts';
-import { TransactionsList } from 'features/transactions';
+import {
+  TransactionFilterModel,
+  TransactionsFilter,
+  TransactionsList
+} from 'features/transactions';
 import { useAccountStore } from 'store';
 import { getContrastColor } from 'utils';
 
@@ -52,7 +56,7 @@ export function AccountDetail() {
 
   const [opened, { open, close }] = useDisclosure(false);
 
-  const { getAccount, deleteAccount } = useAccountStore();
+  const { getAccount, deleteAccount, getAccountTransactions } = useAccountStore();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -63,12 +67,30 @@ export function AccountDetail() {
     setIsLoading(false);
   };
 
+  const applyFiltersHandler = async (filters: TransactionFilterModel) => {
+    setIsLoading(true);
+    const transactions = await getAccountTransactions(id ?? '', filters);
+    setAccount(
+      (prev) =>
+        ({
+          ...prev,
+          transactions
+        } as any)
+    );
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 5000);
+  };
+
+  const clearAllHandler = () => {
+    fetchAccount();
+  };
+
   useEffect(() => {
     fetchAccount();
   }, []);
 
-  // /* TODO: Description for every field */
-  if (account === undefined || isLoading) {
+  if (account === undefined) {
     // TODO: Skeleton instead of lading
     return <LoadingOverlay visible />;
   }
@@ -102,7 +124,6 @@ export function AccountDetail() {
 
         <Title order={1}>Account details</Title>
       </Group>
-
       <Card padding="lg" my="lg" radius="md" bg={account.color} classNames={classes.accountCard}>
         <Group align="flex-start" mb="sm">
           <ThemeIcon bg="rgba(0, 0, 0, 0.7)" radius="lg" size={70}>
@@ -148,11 +169,9 @@ export function AccountDetail() {
           </Flex>
         </Flex>
       </Card>
-
       <Alert icon={<IconAlertCircle size="1rem" />} color="gray">
         {formatMessage({ id: 'acc-det-info' })}
       </Alert>
-
       <Card my="lg" withBorder radius="md">
         <Title order={4} mb="md">
           <Group>
@@ -188,10 +207,13 @@ export function AccountDetail() {
           </Button>
         </Group>
       </Card>
-
-      {/* // TODO: will only work with transactions and not with accounts trans */}
-      <TransactionsList transactions={account.transactions} currency={account.currency} />
-
+      <TransactionsFilter
+        withTitle
+        onApply={applyFiltersHandler}
+        onClear={clearAllHandler}
+        defaultFilters={{ dateRange: [new Date(), null] }}
+      />
+      <TransactionsList transactions={account.transactions} pending={isLoading} />
       <Modal
         opened={opened}
         onClose={close}
@@ -202,5 +224,4 @@ export function AccountDetail() {
   );
 }
 
-// TODO: WTF is dayjs
 // TODO: Remove unused packages like styled components

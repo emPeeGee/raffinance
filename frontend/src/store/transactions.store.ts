@@ -9,12 +9,9 @@ import {
 } from 'features/transactions';
 import { api } from 'services/http';
 import { useAuthStore } from 'store';
-import { ViewMode } from 'utils';
 
 type TransactionsStore = {
   pending: boolean;
-  viewMode: ViewMode;
-  setViewMode: (mode: ViewMode) => void;
   transactions: TransactionModel[];
   fetchTransactions: (filters?: TransactionFilterModel) => void;
   getTransactions: () => void;
@@ -30,18 +27,12 @@ export const useTransactionStore = create<TransactionsStore>()(
   devtools(
     (set, get) => ({
       pending: false,
-      viewMode: 'card',
-      setViewMode: (viewMode) => set({ viewMode }),
       transactions: [],
-      getTransactions: (filters?: TransactionFilterModel) => {
+      getTransactions: () => {
         const { transactions } = get();
 
-        // if (filters) {
-        //   get().fetchTransactions(filters);
-        // } else {
         if (transactions.length === 0) {
           get().fetchTransactions();
-          // }
         }
       },
 

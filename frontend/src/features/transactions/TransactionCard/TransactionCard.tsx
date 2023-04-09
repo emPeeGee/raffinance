@@ -36,10 +36,9 @@ const useStyles = createStyles((theme) => ({
 
 interface Props {
   transaction: TransactionModel;
-  currency: string;
 }
 
-export function TransactionCard({ transaction, currency }: Props) {
+export function TransactionCard({ transaction }: Props) {
   const { id, category, tags, date, description } = transaction;
   const { classes } = useStyles();
   const navigate = useNavigate();

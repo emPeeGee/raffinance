@@ -9,10 +9,9 @@ import {
   TransactionCard,
   TransactionModel,
   TransactionTable,
-  TransactionType,
-  TransactionsFilter
+  TransactionType
 } from 'features/transactions';
-import { useTransactionStore } from 'store';
+import { useSettingsStore } from 'store';
 
 interface GroupedTransaction {
   amount: number;
@@ -49,12 +48,12 @@ function groupTransactionsByDay(transactions: TransactionModel[]): {
 
 interface Props {
   transactions: TransactionModel[];
-  currency: string;
+  pending: boolean;
 }
 
-export function TransactionsList({ transactions, currency }: Props) {
+export function TransactionsList({ transactions, pending }: Props) {
   const { formatMessage } = useIntl();
-  const { viewMode, setViewMode, pending } = useTransactionStore();
+  const { viewMode, setViewMode } = useSettingsStore();
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const aggregatedTxns = useMemo(() => {
@@ -104,11 +103,7 @@ export function TransactionsList({ transactions, currency }: Props) {
                     { maxWidth: 'xs', cols: 1 }
                   ]}>
                   {aggregatedTxns[groupDate].transactions.map((transaction) => (
-                    <TransactionCard
-                      key={transaction.id}
-                      transaction={transaction}
-                      currency={currency}
-                    />
+                    <TransactionCard key={transaction.id} transaction={transaction} />
                   ))}
                 </SimpleGrid>
               )}
@@ -125,8 +120,6 @@ export function TransactionsList({ transactions, currency }: Props) {
 
   return (
     <div>
-      <TransactionsFilter />
-
       {pending ? (
         <Group position="center" p="lg">
           <Loader />

@@ -48,6 +48,9 @@
   "co-conf-text": "Confirmation field",
   "co-del-suc": "The selected item has been successfully removed.",
   "co-del-err": "Unable to remove the item from the system. Please check your connection and try again.",
+  "co-all-time": "All-time transactions",
+  "co-for-month": "Transactions for {month}",
+  "co-for-months": "Transactions from {start} to {end}",
 
   "acc": "Accounts",
   "acc-to": "To account",

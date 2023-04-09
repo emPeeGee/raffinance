@@ -1,21 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import {
-  Button,
-  Container,
-  Group,
-  Title,
-  createStyles,
-  rem,
-  Blockquote,
-  Alert
-} from '@mantine/core';
-import { IconCircle, IconHeartPlus, IconInfoCircle } from '@tabler/icons-react';
+import { Alert, Button, Group, Text, Title, createStyles, rem } from '@mantine/core';
+import { IconCircle, IconInfoCircle } from '@tabler/icons-react';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
-import { TransactionsList, NoTransactions } from 'features/transactions';
+import {
+  TransactionFilterModel,
+  TransactionsFilter,
+  TransactionsList
+} from 'features/transactions';
 import { useTransactionStore } from 'store';
+import { getDateRangeText } from 'utils';
 
 // import { useTransactionStore } from 'store';
 
@@ -36,17 +32,33 @@ const useStyles = createStyles((theme) => ({
 export function TransactionsDashboard() {
   const { formatMessage } = useIntl();
   const { classes } = useStyles();
+  const [range, setRange] = useState<[Date | null, Date | null]>([null, null]);
 
-  const { transactions, getTransactions } = useTransactionStore();
+  const { transactions, getTransactions, pending, fetchTransactions } = useTransactionStore();
 
   useEffect(() => {
     getTransactions();
   }, []);
 
+  const applyFiltersHandler = (filters: TransactionFilterModel) => {
+    setRange(filters.dateRange);
+    fetchTransactions(filters);
+  };
+
+  const clearAllHandler = () => {
+    setRange([null, null]);
+    fetchTransactions();
+  };
+
   return (
     <>
       <Group position="apart" mb="md">
-        <Title className={classes.title}>{formatMessage({ id: 'txn' })}</Title>
+        <Title className={classes.title}>
+          {formatMessage({ id: 'txn' })}
+          <Text inline color="blue">
+            {getDateRangeText(range, formatMessage)}
+          </Text>
+        </Title>
         <Button
           component={Link}
           to="/transactions/create"
@@ -60,9 +72,9 @@ export function TransactionsDashboard() {
       <Alert icon={<IconInfoCircle size="1rem" />} color="gray" my="lg">
         {formatMessage({ id: 'txn-info' })}
       </Alert>
-      <Group>{/* <TransactionViewSwitcher /> */}</Group>
 
-      <TransactionsList transactions={transactions} currency="aa" />
+      <TransactionsFilter onApply={applyFiltersHandler} onClear={clearAllHandler} withAccount />
+      <TransactionsList transactions={transactions} pending={pending} />
     </>
   );
 }

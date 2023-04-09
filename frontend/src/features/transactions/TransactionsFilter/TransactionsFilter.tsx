@@ -1,7 +1,7 @@
 import React from 'react';
 
-import 'dayjs/locale/ru';
 import 'dayjs/locale/ro';
+import 'dayjs/locale/ru';
 
 import {
   Accordion,
@@ -10,7 +10,7 @@ import {
   Button,
   Card,
   Group,
-  LoadingOverlay,
+  Text,
   SegmentedControl,
   SimpleGrid,
   TextInput,
@@ -29,18 +29,13 @@ import { Controller, useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
 
 import { MultiPicker } from 'components';
-import {
-  useAccountStore,
-  useCategoriesStore,
-  useI18nStore,
-  useTagsStore,
-  useTransactionStore
-} from 'store';
+import { useAccountStore, useCategoriesStore, useI18nStore, useTagsStore } from 'store';
+import { getDateRangeText } from 'utils';
 
 import { TransactionFilterModel, TransactionType } from '../transactions.model';
 
-const defaultFilters: TransactionFilterModel = {
-  dateRange: [new Date(), new Date()],
+const zeroFilters: TransactionFilterModel = {
+  dateRange: [null, null],
   accounts: [],
   categories: [],
   tags: [],
@@ -48,49 +43,73 @@ const defaultFilters: TransactionFilterModel = {
   description: ''
 };
 
-export function TransactionsFilter() {
+interface Props {
+  withAccount?: boolean;
+  withTitle?: boolean;
+  onApply: (aa: TransactionFilterModel) => void;
+  onClear: () => void;
+  defaultFilters?: Partial<TransactionFilterModel>;
+}
+
+export function TransactionsFilter({
+  withAccount = false,
+  withTitle = false,
+  onApply,
+  onClear,
+  defaultFilters = undefined
+}: Props) {
   const { formatMessage } = useIntl();
+  const defaultValues = {
+    ...zeroFilters,
+    ...defaultFilters
+  };
   const {
     register,
     handleSubmit,
     control,
     reset,
+    watch,
     formState: { isDirty, isValid }
   } = useForm<TransactionFilterModel>({
     mode: 'onChange',
-    defaultValues: { ...defaultFilters }
+    defaultValues
   });
   const { accounts } = useAccountStore();
   const { categories } = useCategoriesStore();
   const { tags } = useTagsStore();
-  const { pending, fetchTransactions } = useTransactionStore();
   const { locale } = useI18nStore();
   const theme = useMantineTheme();
+  const range = watch('dateRange');
 
   const applyFilters = (filters: TransactionFilterModel) => {
-    fetchTransactions(filters);
+    onApply(filters);
   };
 
   const clearAll = () => {
-    reset({ ...defaultFilters });
-    fetchTransactions();
+    reset({ ...defaultValues });
+    onClear();
   };
 
   return (
     <Box mb="lg">
-      <LoadingOverlay visible={pending} />
       <Accordion variant="filled" my="md">
         <Accordion.Item value="filters">
           <Accordion.Control icon={<IconFilter />}>
             {formatMessage({ id: 'co-filters' })}
+            {withTitle && (
+              <Text inline color="blue">
+                {getDateRangeText(range, formatMessage)}
+              </Text>
+            )}
           </Accordion.Control>
           <Accordion.Panel>
-            <Card my="lg" withBorder radius="md">
+            <Card mb="lg" withBorder radius="md">
               <Group position="apart" mb="md">
                 <Controller
                   name="type"
                   control={control}
                   render={({ field }) => (
+                    // TODO: With gradient and reusable
                     <SegmentedControl
                       {...field}
                       data={[
@@ -122,7 +141,6 @@ export function TransactionsFilter() {
                     <MonthPicker
                       {...field}
                       type="range"
-                      allowSingleDateInRange
                       numberOfColumns={3}
                       defaultDate={new Date()}
                       locale={locale.value}
@@ -136,22 +154,6 @@ export function TransactionsFilter() {
             </Card>
 
             <SimpleGrid cols={2} breakpoints={[{ maxWidth: 'md', cols: 1, spacing: 40 }]}>
-              <Controller
-                name="accounts"
-                control={control}
-                render={({ field }) => (
-                  <MultiPicker
-                    {...field}
-                    label={formatMessage({ id: 'acc' })}
-                    data={accounts.map((a) => ({
-                      label: a.name,
-                      value: String(a.id),
-                      icon: a.icon,
-                      color: a.color
-                    }))}
-                  />
-                )}
-              />
               <Controller
                 name="categories"
                 control={control}
@@ -185,6 +187,25 @@ export function TransactionsFilter() {
                   />
                 )}
               />
+
+              {withAccount && (
+                <Controller
+                  name="accounts"
+                  control={control}
+                  render={({ field }) => (
+                    <MultiPicker
+                      {...field}
+                      label={formatMessage({ id: 'acc' })}
+                      data={accounts.map((a) => ({
+                        label: a.name,
+                        value: String(a.id),
+                        icon: a.icon,
+                        color: a.color
+                      }))}
+                    />
+                  )}
+                />
+              )}
             </SimpleGrid>
           </Accordion.Panel>
         </Accordion.Item>

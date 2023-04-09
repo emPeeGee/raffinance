@@ -10,6 +10,7 @@ export * from './copy-to-clipboard';
 export * from './is-empty';
 export * from './select-element';
 export * from './noop';
+export * from './date-range-text';
 export * from './colors';
 export * from './random-number';
 

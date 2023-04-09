@@ -6,19 +6,21 @@ import {
   AccountModel,
   CreateAccountDTO
 } from 'features/accounts/accounts.model';
+import { TransactionFilterModel, TransactionModel } from 'features/transactions';
 import { api } from 'services/http';
 import { useAuthStore } from 'store';
-import { ViewMode } from 'utils';
 
 // TODO: is loading in store?
 type AccountsStore = {
-  viewMode: ViewMode;
-  setViewMode: (mode: ViewMode) => void;
   accounts: AccountModel[];
   fetchAccounts: () => void;
   getAccounts: () => void;
   // TODO: should it be in store??? because it doesn't store anything
   getAccount: (id: string, includeTransaction: boolean) => Promise<AccountDetailsModel>;
+  getAccountTransactions: (
+    accountId: string,
+    filters: TransactionFilterModel
+  ) => Promise<TransactionModel[]>;
   addAccount: (account: CreateAccountDTO) => Promise<boolean>;
   updateAccount: (id: string, account: CreateAccountDTO) => Promise<boolean>;
   deleteAccount: (id: number) => Promise<boolean>;
@@ -29,8 +31,6 @@ const accountStore = 'Accounts store';
 export const useAccountStore = create<AccountsStore>()(
   devtools(
     (set, get) => ({
-      viewMode: 'card',
-      setViewMode: (viewMode) => set({ viewMode }),
       accounts: [],
       getAccounts: () => {
         console.log(get().accounts);
@@ -51,6 +51,31 @@ export const useAccountStore = create<AccountsStore>()(
         });
         console.log(account);
         return account;
+      },
+
+      getAccountTransactions: async (
+        accountId: string,
+        filters: TransactionFilterModel
+      ): Promise<TransactionModel[]> => {
+        let queryParams: URLSearchParams = new URLSearchParams();
+        if (filters) {
+          queryParams = new URLSearchParams({
+            accounts: accountId,
+            start_date: filters.dateRange[0]?.toISOString() ?? '',
+            end_date: filters.dateRange[1]?.toISOString() ?? '',
+            categories: filters.categories.join(','),
+            tags: filters.tags.join(','),
+            type: filters.type,
+            description: filters.description
+          });
+        }
+
+        const transactions = await api.get<TransactionModel[]>({
+          url: filters ? `transactions/f?${queryParams}` : 'transactions',
+          token: useAuthStore.getState().token
+        });
+
+        return transactions;
       },
 
       fetchAccounts: async () => {
