@@ -7,8 +7,7 @@ import { Link } from 'react-router-dom';
 
 import { ViewSwitcher } from 'components';
 import { AccountsList, NoAccounts } from 'features/accounts';
-import { useAccountStore } from 'store';
-import { ViewMode } from 'utils';
+import { useAccountStore, useSettingsStore } from 'store';
 
 // TODO: Breadcrumbs ???
 
@@ -49,16 +48,12 @@ const useStyles = createStyles((theme) => ({
 export function AccountsDashboard() {
   const { formatMessage } = useIntl();
   const { classes } = useStyles();
-
-  const { viewMode, accounts, getAccounts, setViewMode } = useAccountStore();
+  const { accounts, getAccounts } = useAccountStore();
+  const { viewMode, setViewMode } = useSettingsStore();
 
   useEffect(() => {
     getAccounts();
   }, []);
-
-  const handleViewChange = (mode: ViewMode) => {
-    setViewMode(mode);
-  };
 
   return (
     <Container>
@@ -81,7 +76,7 @@ export function AccountsDashboard() {
         {formatMessage({ id: 'acc-info' })}
       </Blockquote>
       <Group>
-        <ViewSwitcher defaultValue={viewMode} onChange={handleViewChange} />
+        <ViewSwitcher defaultValue={viewMode} onChange={setViewMode} />
       </Group>
 
       {accounts.length > 0 ? <AccountsList /> : <NoAccounts />}

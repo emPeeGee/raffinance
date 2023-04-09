@@ -17,6 +17,7 @@ import { FormattedDate, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
 import { Iconify } from 'components';
+import { useSettingsStore } from 'store';
 import { getContrastColor } from 'utils';
 
 import { useAccountStore } from '../../../store/accounts.store';
@@ -56,10 +57,11 @@ const useStyles = createStyles((theme) => ({
 type Props = {};
 
 export function AccountsList(props: Props) {
-  const { accounts, viewMode } = useAccountStore();
-  const { classes, theme } = useStyles();
+  const { accounts } = useAccountStore();
+  const { classes } = useStyles();
   const navigate = useNavigate();
   const { formatMessage } = useIntl();
+  const { viewMode } = useSettingsStore();
 
   const gotoAccount = (id: number) => () => {
     navigate(`/accounts/${id}`);
