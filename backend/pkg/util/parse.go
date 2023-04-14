@@ -41,7 +41,6 @@ func ParseStringToByte(valueStr string) (*byte, error) {
 }
 
 func ParseDateRange(startDateStr, endDateStr string) (*time.Time, *time.Time, error) {
-
 	// both are required
 	if startDateStr == "" || endDateStr == "" {
 		return nil, nil, nil

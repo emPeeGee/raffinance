@@ -53,9 +53,11 @@ export const useTransactionStore = create<TransactionsStore>()(
         set({ ...get(), pending: true });
         let queryParams: URLSearchParams = new URLSearchParams();
         if (filters) {
+          const startDate = filters.dateRange[0]?.toISOString();
+          const endDate = filters.dateRange[1]?.toISOString();
           queryParams = new URLSearchParams({
-            start_date: filters.dateRange[0]?.toISOString() ?? '',
-            end_date: filters.dateRange[1]?.toISOString() ?? '',
+            start_date: startDate ?? '',
+            end_date: endDate ?? startDate ?? '', // if only one month is selected, put end_date be same as start_date
             accounts: filters.accounts.join(','),
             categories: filters.categories.join(','),
             tags: filters.tags.join(','),
