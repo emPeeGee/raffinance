@@ -80,6 +80,7 @@
   "txn-info": "Transactions are a core feature of our app that allows you to easily keep track of your expenses, incomes, and transfers. With just a few clicks, you can create a new transaction, specifying the date, amount, description, and other important details. You can also assign categories and tags to your transactions to help you better organize and analyze your spending. Plus, our intuitive interface allows you to quickly view all of your transactions, filter by date or category, and easily edit or delete any transaction as needed. With our Transactions feature, you'll always be in control of your finances, giving you greater peace of mind and helping you achieve your financial goals.",
   "txn-det-info": "The page provides a comprehensive view of a specific transaction, including its date, amount, category, and any associated tags. You can also view the location of the transaction and any notes or descriptions that were added. This page also allows you to edit or delete the transaction, as well as view related transactions and account balances. With this information at your fingertips, you can easily keep track of your finances and make informed decisions about your spending habits.",
   "no-txn-found": "No transactions yet!",
+  "no-txn-found-for": "No transactions yet for {range}",
   "no-txn-desc": "You can add a new transaction by clicking the button below.",
   "txn-create": "Add a transaction",
   "txn-update": "Edit transaction",

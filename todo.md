@@ -7,7 +7,7 @@
 6. Transactions count in a account from backend
 7. Customizable primary color as user wants https://mantine.dev/theming/colors/
 8. Accounts, view transactions by month, now you can select month, only current one
-9. Accounts, create txn, with defined account
+9. [x] Accounts, create txn, with defined account
 10. On transaction create, accounts are not updated. It will be hard. websocket?
 11. Delete to confirm feature in settings, 3 level, not confirm, click to confirm and write to confirm.
 12. Horizontal icons picker
@@ -15,6 +15,7 @@
 14. Calendar view for transactions. For examples, in Dashboard, there we make a calendar and with count of transactions per day....
 15. User has transactions, but he is blind on them, he doesn't know when, so I should work on better visibility with count of them ???. Some statistic count of txns per monts, and show last 3 years
 16. Global search, Elastic search and solr
-17. No transactions yet, this month and no transaction found
+17. [x] No transactions yet, this month and no transaction found
 18. Do I need in backend request with accounts + transactions anymore coz of filter
 19. Every txn card searches for account
+20. Create a feature file, where I will describe every feature of the app in short

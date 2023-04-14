@@ -49,9 +49,10 @@ function groupTransactionsByDay(transactions: TransactionModel[]): {
 interface Props {
   transactions: TransactionModel[];
   pending: boolean;
+  range?: [Date | null, Date | null];
 }
 
-export function TransactionsList({ transactions, pending }: Props) {
+export function TransactionsList({ transactions, pending, range }: Props) {
   const { formatMessage } = useIntl();
   const { viewMode, setViewMode } = useSettingsStore();
 
@@ -64,7 +65,7 @@ export function TransactionsList({ transactions, pending }: Props) {
   const isEmpty = Object.keys(aggregatedTxns).length === 0;
 
   const content = isEmpty ? (
-    <NoTransactions />
+    <NoTransactions range={range} />
   ) : (
     <>
       <ViewSwitcher defaultValue={viewMode} onChange={setViewMode} />

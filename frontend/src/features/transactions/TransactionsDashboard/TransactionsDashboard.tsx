@@ -50,13 +50,15 @@ export function TransactionsDashboard() {
     fetchTransactions();
   };
 
+  const dateRange = getDateRangeText(range, formatMessage);
+
   return (
     <>
       <Group position="apart" mb="md">
         <Title className={classes.title}>
           {formatMessage({ id: 'txn' })}
           <Text inline color="blue">
-            {getDateRangeText(range, formatMessage)}
+            {dateRange}
           </Text>
         </Title>
         <Button
@@ -74,7 +76,7 @@ export function TransactionsDashboard() {
       </Alert>
 
       <TransactionsFilter onApply={applyFiltersHandler} onClear={clearAllHandler} withAccount />
-      <TransactionsList transactions={transactions} pending={pending} />
+      <TransactionsList transactions={transactions} pending={pending} range={range} />
     </>
   );
 }

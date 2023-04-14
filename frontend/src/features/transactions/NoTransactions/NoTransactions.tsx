@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Button, Card, Text, Title, createStyles, rem } from '@mantine/core';
 import { IconPlus, IconSearchOff } from '@tabler/icons-react';
-import { useIntl } from 'react-intl';
+import { FormattedDate, useIntl } from 'react-intl';
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -27,18 +27,38 @@ const useStyles = createStyles((theme) => ({
   }
 }));
 
-interface Props {}
+interface Props {
+  range?: [Date | null, Date | null];
+}
 
-export function NoTransactions(props: Props) {
+export function NoTransactions({ range }: Props) {
   const { classes } = useStyles();
   const { formatMessage } = useIntl();
+
+  // calculates the rangeView, or null if range is falsy
+  const rangeView = range
+    ? (() => {
+        const [startDate, endDate] = range;
+        return endDate ? (
+          <Text span c="blue">
+            <FormattedDate month="long" year="2-digit" value={startDate ?? ''} />
+            {' - '}
+            <FormattedDate month="long" year="2-digit" value={endDate ?? ''} />
+          </Text>
+        ) : (
+          <FormattedDate month="long" year="2-digit" value={startDate ?? ''} />
+        );
+      })()
+    : null;
 
   return (
     <Card withBorder p="2rem" my="lg" className={classes.root}>
       <IconSearchOff size="5rem" className={classes.icon} />
 
       <Title order={2} mb="1rem" weight={700} classNames={classes.title}>
-        {formatMessage({ id: 'no-txn-found' })}
+        {range
+          ? formatMessage({ id: 'no-txn-found-for' }, { range: rangeView })
+          : formatMessage({ id: 'no-txn-found' })}
       </Title>
       <Text pb="sm" c="dimmed">
         {formatMessage({ id: 'no-txn-desc' })}
