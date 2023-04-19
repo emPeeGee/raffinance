@@ -17,19 +17,10 @@ import {
 } from '@mantine/core';
 import { useIntl } from 'react-intl';
 
+import { useFirstRender } from 'hooks';
 import { ICONS, Icon } from 'utils';
 
 import { Iconify } from '../Iconify/Iconify';
-
-function useFirstRender() {
-  const [isFirstRender, setIsFirstRender] = useState(true);
-
-  useEffect(() => {
-    setIsFirstRender(false);
-  }, []);
-
-  return isFirstRender;
-}
 
 const useStyles = createStyles((theme) => ({
   error: {
