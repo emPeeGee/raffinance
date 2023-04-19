@@ -25,9 +25,27 @@ import { COLOR_SCHEME_STORAGE_KEY, Theme, DateUnit } from 'utils';
 //   padding: 0,
 //   fontFamily: 'Open Sans sans-serif',
 // }
+
 const customTheme = (colorScheme: 'light' | 'dark'): MantineThemeOverride => ({
   colorScheme,
   fontFamily: 'Open Sans, sans serif',
+  // TODO: User can choose accent color in settings
+  // colors: {
+  //   brand: [
+  //     '#F0BBDD',
+  //     '#ED9BCF',
+  //     '#EC7CC3',
+  //     '#ED5DB8',
+  //     '#F13EAF',
+  //     '#F71FA7',
+  //     '#FF00A1',
+  //     '#E00890',
+  //     '#C50E82',
+  //     '#AD1374'
+  //   ]
+  // },
+  // primaryColor: 'brand',
+
   components: {
     Button: {
       styles: (theme) => ({

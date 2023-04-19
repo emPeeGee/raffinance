@@ -15,7 +15,6 @@ import Navbar from './layout/Navbar/Navbar';
 import { NotFound } from './layout/NotFound/NotFound';
 // import Logo from './layout/Logo/Logo';
 import { Offline } from './layout/Offline/Offline';
-import { Anchor } from './navigation/Anchor/Anchor';
 import { ProtectedRoute } from './navigation/ProtectedRoute/ProtectedRoute';
 
 export {
@@ -25,7 +24,6 @@ export {
   ConfirmDelete,
   NotFound,
   // Logo,
-  Anchor,
   ProtectedRoute,
   Offline,
   Navbar,
