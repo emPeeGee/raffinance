@@ -7,6 +7,7 @@ export interface AccountModel {
   balance: number;
   icon: string;
   color: string;
+  transactionCount?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -28,5 +29,6 @@ export interface AccountDetailsModel {
   color: string;
   createdAt: string;
   updatedAt: string;
+  transactionCount?: number;
   transactions: TransactionModel[];
 }

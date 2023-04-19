@@ -118,7 +118,7 @@ export function AccountsList(props: Props) {
             { maxWidth: 'md', cols: 2 },
             { maxWidth: 'xs', cols: 1 }
           ]}>
-          {accounts.map(({ id, name, color, icon, currency, balance }) => {
+          {accounts.map(({ id, name, color, icon, currency, balance, transactionCount }) => {
             const textColor = getContrastColor(color);
 
             return (
@@ -157,7 +157,7 @@ export function AccountsList(props: Props) {
 
                   {/* // TODO: number of transactions */}
                   <Text fz="sm" my="0.5rem" c={textColor}>
-                    20 transactions
+                    {transactionCount} transactions
                   </Text>
                 </UnstyledButton>
               </Paper>

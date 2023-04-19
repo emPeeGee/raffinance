@@ -100,34 +100,65 @@ func (r *repository) deleteAccount(userId, id uint) error {
 }
 
 func (r *repository) getAccounts(userId uint) ([]accountResponse, error) {
-	var accounts []accountResponse = make([]accountResponse, 0)
-	var user entity.User
+	var accounts []accountResponse
 
-	if err := r.db.Preload("Accounts").Where("id = ?", userId).First(&user).Error; err != nil {
+	query := `
+		SELECT accounts.*,
+				(SELECT COUNT(DISTINCT id)
+				FROM transactions
+				WHERE transactions.from_account_id = accounts.id OR transactions.to_account_id = accounts.id) AS transaction_count
+		FROM accounts
+		WHERE accounts.user_id = ?
+	`
+
+	if err := r.db.Raw(query, userId).Scan(&accounts).Error; err != nil {
 		return nil, err
-	}
-
-	for _, account := range user.Accounts {
-		// TODO: get the account balance dynamically. Is there better way for it?
-		accountBalance, err := r.getAccountBalance(account.ID)
-		if err != nil {
-			return []accountResponse{}, err
-		}
-
-		accounts = append(accounts, accountResponse{
-			ID:        account.ID,
-			Name:      account.Name,
-			Currency:  account.Currency,
-			Balance:   accountBalance,
-			Color:     account.Color,
-			Icon:      account.Icon,
-			CreatedAt: account.CreatedAt,
-			UpdatedAt: account.UpdatedAt,
-		})
 	}
 
 	return accounts, nil
 }
+
+// func (r *repository) getAccounts(userId uint) ([]accountResponse, error) {
+// 	var accounts []accountResponse = make([]accountResponse, 0)
+// 	var user entity.User
+
+// 	if err := r.db.Preload("Accounts").
+// 		Where("id = ?", userId).
+// 		First(&user).
+// 		Error; err != nil {
+// 		return nil, err
+// 	}
+
+// 	for _, account := range user.Accounts {
+// 		var transactionCount int64
+// 		if err := r.db.Model(&entity.Transaction{}).
+// 			Where("from_account_id = ? OR to_account_id = ?", account.ID, account.ID).
+// 			Count(&transactionCount).
+// 			Error; err != nil {
+// 			return nil, err
+// 		}
+
+// 		// TODO: get the account balance dynamically. Is there a better way for it?
+// 		accountBalance, err := r.getAccountBalance(account.ID)
+// 		if err != nil {
+// 			return nil, err
+// 		}
+
+// 		accounts = append(accounts, accountResponse{
+// 			ID:               account.ID,
+// 			Name:             account.Name,
+// 			Currency:         account.Currency,
+// 			Balance:          accountBalance,
+// 			Color:            account.Color,
+// 			Icon:             account.Icon,
+// 			CreatedAt:        account.CreatedAt,
+// 			UpdatedAt:        account.UpdatedAt,
+// 			TransactionCount: &transactionCount,
+// 		})
+// 	}
+
+// 	return accounts, nil
+// }
 
 func (r *repository) accountExistsAndBelongsToUser(userID, id uint, name string) (bool, error) {
 	var count int64
