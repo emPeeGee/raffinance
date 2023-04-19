@@ -1,6 +1,8 @@
 import { ConfirmDelete } from './common/ConfirmDelete/ConfirmDelete';
 import { Iconify } from './common/Iconify/Iconify';
+// TODO: deprecate iconpicker
 import { IconPicker } from './common/IconPicker/IconPicker';
+import { IconPicker2 } from './common/IconPicker2/IconPicker2';
 import LanguagePicker from './common/LangPicker/LangPicker';
 import { MultiPicker } from './common/MultiPicker/MultiPicker';
 import { ToggleColor } from './common/ToggleColor/ToggleColor';
@@ -33,5 +35,6 @@ export {
   ViewSwitcher,
   MultiPicker,
   IconPicker,
+  IconPicker2,
   TransactionTypePicker
 };

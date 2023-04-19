@@ -27,6 +27,9 @@ SelectItem.displayName = 'SelectItem';
 
 interface Props extends Omit<SelectProps, 'data' | 'value'> {}
 
+/**
+ * @deprecated The method should not be used
+ */
 export function IconPicker({ ...props }: Props) {
   const { formatMessage } = useIntl();
 

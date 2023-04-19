@@ -17,7 +17,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
-import { IconPicker, Iconify } from 'components';
+import { IconPicker2 } from 'components';
 import { useCategoriesStore } from 'store';
 import { DateUnit, SWATCHES } from 'utils';
 
@@ -53,7 +53,7 @@ export function CategoryForm() {
     defaultValues: { ...category }
   });
 
-  console.log(category);
+  // console.log(category);
   const [isLoading, setIsLoading] = useState(false);
 
   const create = async (cat: CreateCategoryDTO) => {
@@ -130,9 +130,16 @@ export function CategoryForm() {
             control={control}
             rules={{ required: true, maxLength: 64, minLength: 2 }}
             render={({ field }) => (
-              <IconPicker
+              <IconPicker2
                 {...field}
-                icon={<Iconify icon={field.value} />}
+                value={field.value ? [String(field.value)] : undefined}
+                onChange={(e) =>
+                  e.length === 0 ? field.onChange(undefined) : field.onChange(e[0] || undefined)
+                }
+                singlePick
+                withItemLabel
+                required
+                label={formatMessage({ id: 'co-icon' })}
                 description={formatMessage({ id: 'cat-c-icon' })}
                 error={errors.icon ? 'Field is invalid' : null}
               />

@@ -26,7 +26,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
-import { IconPicker, Iconify } from 'components';
+import { IconPicker2 } from 'components';
 import { useAccountStore } from 'store';
 import { CURRENCY_LIST, DateUnit, SWATCHES } from 'utils';
 
@@ -107,7 +107,6 @@ export function AccountForm() {
 
   const create = async (acc: CreateAccountDTO) => {
     setIsLoading(true);
-    console.log(acc);
     const success = await addAccount(acc);
 
     if (success) {
@@ -213,6 +212,27 @@ export function AccountForm() {
             control={control}
             rules={{ required: true, maxLength: 64, minLength: 2 }}
             render={({ field }) => (
+              <IconPicker2
+                {...field}
+                value={field.value ? [String(field.value)] : undefined}
+                onChange={(e) =>
+                  e.length === 0 ? field.onChange(undefined) : field.onChange(e[0] || undefined)
+                }
+                singlePick
+                withItemLabel
+                required
+                label={formatMessage({ id: 'co-icon' })}
+                description={formatMessage({ id: 'acc-c-icon' })}
+                error={errors.icon ? 'Field is invalid' : null}
+              />
+            )}
+          />
+          {/* 
+          <Controller
+            name="icon"
+            control={control}
+            rules={{ required: true, maxLength: 64, minLength: 2 }}
+            render={({ field }) => (
               <IconPicker
                 {...field}
                 icon={<Iconify icon={field.value} />}
@@ -220,7 +240,7 @@ export function AccountForm() {
                 error={errors.icon ? 'Field is invalid' : null}
               />
             )}
-          />
+          /> */}
 
           <Controller
             name="color"
