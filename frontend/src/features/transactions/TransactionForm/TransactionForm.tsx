@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import {
+  Box,
   Button,
   Flex,
   Grid,
@@ -8,7 +9,6 @@ import {
   Loader,
   LoadingOverlay,
   NumberInput,
-  SimpleGrid,
   TextInput,
   Title,
   createStyles,
@@ -21,7 +21,7 @@ import {
   IconArrowRight,
   IconBolt,
   IconCalendarTime,
-  IconCoins,
+  IconMapPin,
   IconMoneybag,
   IconSignature
 } from '@tabler/icons-react';
@@ -43,6 +43,12 @@ const useStyles = createStyles((theme) => ({
 
     [theme.fn.smallerThan('sm')]: {
       fontSize: rem(32)
+    }
+  },
+
+  whitespace: {
+    [theme.fn.smallerThan('md')]: {
+      display: 'none'
     }
   }
 }));
@@ -170,6 +176,64 @@ export function TransactionForm() {
     }
   };
 
+  const toAccountField = (
+    <Controller
+      name="toAccountId"
+      control={control}
+      rules={{ required: true }}
+      render={({ field }) => (
+        <MultiPicker
+          {...field}
+          required
+          clearable
+          value={field.value ? [String(field.value)] : undefined}
+          onChange={(e) =>
+            e.length === 0 ? field.onChange([]) : field.onChange(parseInt(e[0], 10) || undefined)
+          }
+          description={formatMessage({ id: 'txn-c-to' })}
+          label={formatMessage({ id: 'acc-to' })}
+          maxSelectedValues={1}
+          error={errors.toAccountId ? 'Field is invalid' : null}
+          data={accounts
+            .filter((a) => a.id !== fromAccount)
+            .map((a) => ({
+              label: a.name,
+              value: String(a.id),
+              color: a.color
+            }))}
+        />
+      )}
+    />
+  );
+
+  const fromAccountField = type === TransactionType.TRANSFER && (
+    <Controller
+      name="fromAccountId"
+      control={control}
+      rules={{ required: false }}
+      render={({ field }) => (
+        <MultiPicker
+          {...field}
+          value={field.value ? [String(field.value)] : undefined}
+          onChange={(e) =>
+            e.length === 0 ? field.onChange([]) : field.onChange(parseInt(e[0], 10) || undefined)
+          }
+          description={formatMessage({ id: 'txn-c-from' })}
+          label={formatMessage({ id: 'acc-from' })}
+          maxSelectedValues={1}
+          error={errors.fromAccountId ? 'Field is invalid' : null}
+          data={accounts
+            .filter((a) => a.id !== toAccount)
+            .map((a) => ({
+              label: a.name,
+              value: String(a.id),
+              color: a.color
+            }))}
+        />
+      )}
+    />
+  );
+
   return (
     <>
       <Group mb="md">
@@ -203,124 +267,74 @@ export function TransactionForm() {
           <Grid grow>
             {/* // cols={type === TransactionType.TRANSFER ? 3 : 2}
             // breakpoints={[{ maxWidth: 'sm', cols: 1, spacing: 40 }]}> */}
-            <Grid.Col span={5}>
-              <Controller
-                name="toAccountId"
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <MultiPicker
-                    {...field}
-                    required
-                    clearable
-                    value={field.value ? [String(field.value)] : undefined}
-                    onChange={(e) =>
-                      e.length === 0
-                        ? field.onChange([])
-                        : field.onChange(parseInt(e[0], 10) || undefined)
-                    }
-                    description={formatMessage({ id: 'txn-c-to' })}
-                    label={formatMessage({ id: 'acc-to' })}
-                    maxSelectedValues={1}
-                    error={errors.toAccountId ? 'Field is invalid' : null}
-                    data={accounts
-                      .filter((a) => a.id !== fromAccount)
-                      .map((a) => ({
-                        label: a.name,
-                        value: String(a.id),
-                        color: a.color
-                      }))}
-                  />
-                )}
-              />
-            </Grid.Col>
 
-            {type === TransactionType.TRANSFER && (
+            {type === TransactionType.TRANSFER ? (
               <>
+                <Grid.Col span={5}>{fromAccountField}</Grid.Col>
                 <Grid.Col span="content">
                   <Flex justify="center" align="flex-end" pb="0.5rem" h="100%" w="100%">
                     <IconArrowRight size="2rem" />
                   </Flex>
                 </Grid.Col>
-
-                <Grid.Col span={5}>
-                  <Controller
-                    name="fromAccountId"
-                    control={control}
-                    rules={{ required: false }}
-                    render={({ field }) => (
-                      <MultiPicker
-                        {...field}
-                        value={field.value ? [String(field.value)] : undefined}
-                        onChange={(e) =>
-                          e.length === 0
-                            ? field.onChange([])
-                            : field.onChange(parseInt(e[0], 10) || undefined)
-                        }
-                        description={formatMessage({ id: 'txn-c-from' })}
-                        label={formatMessage({ id: 'acc-from' })}
-                        maxSelectedValues={1}
-                        error={errors.fromAccountId ? 'Field is invalid' : null}
-                        data={accounts
-                          .filter((a) => a.id !== toAccount)
-                          .map((a) => ({
-                            label: a.name,
-                            value: String(a.id),
-                            color: a.color
-                          }))}
-                      />
-                    )}
-                  />
-                </Grid.Col>
+                <Grid.Col span={5}>{toAccountField}</Grid.Col>
               </>
+            ) : (
+              <Grid.Col span={5}>{toAccountField}</Grid.Col>
             )}
           </Grid>
 
-          <SimpleGrid
-            spacing={80}
-            cols={2}
-            breakpoints={[{ maxWidth: 'sm', cols: 1, spacing: 40 }]}>
-            <Controller
-              name="amount"
-              control={control}
-              rules={{ required: true, maxLength: 3, minLength: 3 }}
-              render={({ field }) => (
-                <NumberInput
-                  {...field}
-                  required
-                  type="number"
-                  label={formatMessage({ id: 'co-amo' })}
-                  description={formatMessage({ id: 'txn-c-amount' })}
-                  size="md"
-                  min={0}
-                  stepHoldDelay={500}
-                  stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
-                  icon={<IconMoneybag size="1rem" />}
-                  error={errors.amount ? 'Field is invalid' : null}
-                />
-              )}
-            />
+          <Grid grow>
+            <Grid.Col md={5} sm={12}>
+              <Controller
+                name="amount"
+                control={control}
+                rules={{ required: true, maxLength: 3, minLength: 3 }}
+                render={({ field }) => (
+                  <NumberInput
+                    {...field}
+                    required
+                    w="100%"
+                    type="number"
+                    label={formatMessage({ id: 'co-amo' })}
+                    description={formatMessage({ id: 'txn-c-amount' })}
+                    size="md"
+                    min={0}
+                    stepHoldDelay={500}
+                    stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
+                    icon={<IconMoneybag size="1rem" />}
+                    error={errors.amount ? 'Field is invalid' : null}
+                  />
+                )}
+              />
+            </Grid.Col>
 
-            <Controller
-              name="date"
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) => (
-                <DateTimePicker
-                  {...field}
-                  clearable
-                  w="100%"
-                  size="md"
-                  label={formatMessage({ id: 'co-date' })}
-                  description={formatMessage({ id: 'txn-c-date' })}
-                  icon={<IconCalendarTime />}
-                  maw={400}
-                  mx="auto"
-                  error={errors.date ? 'Field is invalid' : null}
-                />
-              )}
-            />
-          </SimpleGrid>
+            <Grid.Col span="content" sm={0} className={classes.whitespace}>
+              <Flex justify="center" align="flex-end" pb="0.5rem" h="100%" w="100%">
+                <Box w="2rem" />
+              </Flex>
+            </Grid.Col>
+
+            <Grid.Col md={5} sm={12}>
+              <Controller
+                name="date"
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <DateTimePicker
+                    {...field}
+                    clearable
+                    w="100%"
+                    size="md"
+                    label={formatMessage({ id: 'co-date' })}
+                    description={formatMessage({ id: 'txn-c-date' })}
+                    icon={<IconCalendarTime />}
+                    mx="auto"
+                    error={errors.date ? 'Field is invalid' : null}
+                  />
+                )}
+              />
+            </Grid.Col>
+          </Grid>
 
           <TextInput
             {...register('description', {
@@ -365,18 +379,6 @@ export function TransactionForm() {
             )}
           />
 
-          <TextInput
-            {...register('location', {
-              required: false,
-              maxLength: 127
-            })}
-            label={formatMessage({ id: 'co-loc' })}
-            description={formatMessage({ id: 'txn-c-loc' })}
-            size="md"
-            icon={<IconCoins />}
-            error={errors.description ? 'Field is invalid' : null}
-          />
-
           <Controller
             name="tagIds"
             control={control}
@@ -396,6 +398,18 @@ export function TransactionForm() {
                 }))}
               />
             )}
+          />
+
+          <TextInput
+            {...register('location', {
+              required: false,
+              maxLength: 127
+            })}
+            label={formatMessage({ id: 'co-loc' })}
+            description={formatMessage({ id: 'txn-c-loc' })}
+            size="md"
+            icon={<IconMapPin />}
+            error={errors.description ? 'Field is invalid' : null}
           />
 
           <Button
