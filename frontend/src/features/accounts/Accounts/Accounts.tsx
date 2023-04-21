@@ -1,9 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
-import { Container, createStyles, rem } from '@mantine/core';
+import { Container } from '@mantine/core';
 import { Route, Routes } from 'react-router-dom';
-
-import { useAccountStore } from 'store';
 
 import { AccountDetail } from '../AccountDetail/AccountDetail';
 import { AccountForm } from '../AccountForm/AccountForm';
@@ -12,12 +10,6 @@ import { AccountsDashboard } from '../AccountsDashboard/AccountsDashboard';
 // TODO: Breadcrumbs ???
 
 export function Accounts() {
-  const { getAccounts } = useAccountStore();
-
-  useEffect(() => {
-    getAccounts();
-  }, []);
-
   return (
     <Container my="xl">
       <Routes>

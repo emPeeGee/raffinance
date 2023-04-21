@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
-import { Button, Container, Group, Title, createStyles, rem, Blockquote } from '@mantine/core';
+import { Blockquote, Button, Container, Group, Title, createStyles, rem } from '@mantine/core';
 import { IconInfoCircle, IconSquare } from '@tabler/icons-react';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
@@ -48,12 +48,8 @@ const useStyles = createStyles((theme) => ({
 export function AccountsDashboard() {
   const { formatMessage } = useIntl();
   const { classes } = useStyles();
-  const { accounts, getAccounts } = useAccountStore();
+  const { accounts } = useAccountStore();
   const { viewMode, setViewMode } = useSettingsStore();
-
-  useEffect(() => {
-    getAccounts();
-  }, []);
 
   return (
     <Container>
