@@ -7,15 +7,16 @@ import (
 )
 
 type accountResponse struct {
-	ID               uint      `json:"id"`
-	Name             string    `json:"name"`
-	Currency         string    `json:"currency"`
-	Balance          float64   `json:"balance" gorm:"-"`
-	Color            string    `json:"color"`
-	Icon             string    `json:"icon"`
-	TransactionCount *int64    `json:"transactionCount" gorm:"transaction_count"`
-	CreatedAt        time.Time `json:"createdAt"`
-	UpdatedAt        time.Time `json:"updatedAt"`
+	ID                uint      `json:"id"`
+	Name              string    `json:"name"`
+	Currency          string    `json:"currency"`
+	Balance           float64   `json:"balance" gorm:"-"`
+	Color             string    `json:"color"`
+	Icon              string    `json:"icon"`
+	TransactionCount  *int64    `json:"transactionCount" gorm:"transaction_count"`
+	CreatedAt         time.Time `json:"createdAt"`
+	UpdatedAt         time.Time `json:"updatedAt"`
+	RateWithPrevMonth *float64  `json:"rateWithPrevMonth"`
 }
 
 type accountDetailsResponse struct {

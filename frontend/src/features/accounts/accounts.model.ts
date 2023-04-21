@@ -8,6 +8,7 @@ export interface AccountModel {
   icon: string;
   color: string;
   transactionCount?: number;
+  rateWithPrevMonth?: number;
   createdAt: string;
   updatedAt: string;
 }

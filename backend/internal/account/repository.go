@@ -3,6 +3,7 @@ package account
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/emPeeGee/raffinance/internal/entity"
 	"github.com/emPeeGee/raffinance/internal/transaction"
@@ -101,64 +102,67 @@ func (r *repository) deleteAccount(userId, id uint) error {
 
 func (r *repository) getAccounts(userId uint) ([]accountResponse, error) {
 	var accounts []accountResponse
+	var accountsR []accountResponse
 
 	query := `
-		SELECT accounts.*,
-				(SELECT COUNT(DISTINCT id)
+		SELECT ac.id, ac.created_at, ac.updated_at, ac.name, ac.color, ac.currency, ac.icon,
+      (SELECT COUNT(DISTINCT id)
 				FROM transactions
-				WHERE transactions.from_account_id = accounts.id OR transactions.to_account_id = accounts.id) AS transaction_count
-		FROM accounts
-		WHERE accounts.user_id = ?
+				WHERE transactions.from_account_id = ac.id OR transactions.to_account_id = ac.id) AS transaction_count
+    FROM accounts as ac
+    WHERE ac.user_id = ? AND ac.deleted_at IS NULL;
 	`
 
 	if err := r.db.Raw(query, userId).Scan(&accounts).Error; err != nil {
 		return nil, err
 	}
 
-	return accounts, nil
+	for _, account := range accounts {
+		// TODO: get the account balance dynamically. Is there a better way for it?
+		accountBalance, err := r.getAccountBalance(account.ID)
+		if err != nil {
+			return nil, err
+		}
+
+		// TODO:
+
+		currentMonth := time.Now()
+		lastMonth := currentMonth.AddDate(0, -1, 0)
+
+		accountBalanceThisMonth, err := r.getAccountBalancePerMonth(account.ID, currentMonth)
+		accountBalanceLastMonth, err := r.getAccountBalancePerMonth(account.ID, lastMonth)
+
+		if err != nil {
+			// handle error
+		}
+
+		var rate float64
+		if accountBalanceLastMonth == 0 {
+			// avoid division by zero
+			rate = 0
+		} else {
+			rate = ((accountBalanceThisMonth - accountBalanceLastMonth) / accountBalanceLastMonth) * 100
+		}
+
+		diff := accountBalanceLastMonth - accountBalanceThisMonth
+		r.logger.Debugf("%f %f and DIFF %f", accountBalanceThisMonth, accountBalanceLastMonth, diff)
+
+		accountsR = append(accountsR, accountResponse{
+			ID:                account.ID,
+			Name:              account.Name,
+			Currency:          account.Currency,
+			Balance:           accountBalance,
+			Color:             account.Color,
+			Icon:              account.Icon,
+			CreatedAt:         account.CreatedAt,
+			UpdatedAt:         account.UpdatedAt,
+			TransactionCount:  account.TransactionCount,
+			RateWithPrevMonth: &rate,
+		})
+	}
+
+	return accountsR, nil
 }
-
-// func (r *repository) getAccounts(userId uint) ([]accountResponse, error) {
-// 	var accounts []accountResponse = make([]accountResponse, 0)
-// 	var user entity.User
-
-// 	if err := r.db.Preload("Accounts").
-// 		Where("id = ?", userId).
-// 		First(&user).
-// 		Error; err != nil {
-// 		return nil, err
-// 	}
-
-// 	for _, account := range user.Accounts {
-// 		var transactionCount int64
-// 		if err := r.db.Model(&entity.Transaction{}).
-// 			Where("from_account_id = ? OR to_account_id = ?", account.ID, account.ID).
-// 			Count(&transactionCount).
-// 			Error; err != nil {
-// 			return nil, err
-// 		}
-
-// 		// TODO: get the account balance dynamically. Is there a better way for it?
-// 		accountBalance, err := r.getAccountBalance(account.ID)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-
-// 		accounts = append(accounts, accountResponse{
-// 			ID:               account.ID,
-// 			Name:             account.Name,
-// 			Currency:         account.Currency,
-// 			Balance:          accountBalance,
-// 			Color:            account.Color,
-// 			Icon:             account.Icon,
-// 			CreatedAt:        account.CreatedAt,
-// 			UpdatedAt:        account.UpdatedAt,
-// 			TransactionCount: &transactionCount,
-// 		})
-// 	}
-
-// 	return accounts, nil
-// }
 
 func (r *repository) accountExistsAndBelongsToUser(userID, id uint, name string) (bool, error) {
 	var count int64
@@ -238,6 +242,48 @@ func (r *repository) getAccountBalance(id uint) (float64, error) {
 	}
 
 	r.logger.Infof("Account %d balance: balance excluding transfers %f, transfer total %f", id, balanceExcludingTransfers, transfersTotal)
+
+	return balanceExcludingTransfers + transfersTotal, nil
+}
+
+// refactor in one
+func (r *repository) getAccountBalancePerMonth(id uint, month time.Time) (float64, error) {
+	// Calculate the total balance of this account for the given month
+	var balanceExcludingTransfers, transfersTotal float64
+
+	err := r.db.Transaction(func(tx *gorm.DB) error {
+		// Calculate the non-transfer total balance for the given month
+		err := tx.Table("transactions").
+			Where("deleted_at is null and to_account_id = ? and transaction_type_id <> ? and to_char(date, 'YYYY-MM') = ?", id, transaction.TRANSFER, month.Format("2006-01")).
+			Select("COALESCE(SUM(CASE WHEN transaction_type_id = ? THEN amount ELSE -amount END), 0)", transaction.INCOME).
+			Row().
+			Scan(&balanceExcludingTransfers)
+		if err != nil {
+			return err
+		}
+
+		// Calculate the transfer total balance for the given month
+		err = tx.Table("transactions").
+			Where("deleted_at is null and (to_account_id = ? or from_account_id = ?) and transaction_type_id = ? and to_char(date, 'YYYY-MM') = ?", id, id, transaction.TRANSFER, month.Format("2006-01")).
+			Select("COALESCE(SUM(CASE WHEN to_account_id = ? THEN amount ELSE -amount END), 0)", id).
+			Row().
+			Scan(&transfersTotal)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return 0, errors.New("account balance not found")
+		}
+
+		return 0, err
+	}
+
+	r.logger.Infof("MONTHHHH", balanceExcludingTransfers, transfersTotal)
 
 	return balanceExcludingTransfers + transfersTotal, nil
 }

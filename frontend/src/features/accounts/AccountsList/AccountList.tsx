@@ -13,7 +13,7 @@ import {
   rem
 } from '@mantine/core';
 import { IconArrowUpRight } from '@tabler/icons-react';
-import { FormattedDate, useIntl } from 'react-intl';
+import { FormattedDate, FormattedNumber, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
 import { Iconify } from 'components';
@@ -118,51 +118,60 @@ export function AccountsList(props: Props) {
             { maxWidth: 'md', cols: 2 },
             { maxWidth: 'xs', cols: 1 }
           ]}>
-          {accounts.map(({ id, name, color, icon, currency, balance, transactionCount }) => {
-            const textColor = getContrastColor(color);
+          {accounts.map(
+            ({ id, name, color, icon, currency, balance, transactionCount, rateWithPrevMonth }) => {
+              const textColor = getContrastColor(color);
 
-            return (
-              <Paper withBorder p="md" radius="md" key={name} className={classes.root} bg={color}>
-                <UnstyledButton w="100%" onClick={gotoAccount(id)}>
-                  <Group position="apart">
-                    <Group align="center" spacing="0.25rem">
-                      <Text size="xs" color={textColor} className={classes.title}>
-                        {name}
-                      </Text>
-                      <Iconify icon={icon} color={textColor} size="1rem" />
+              return (
+                <Paper withBorder p="md" radius="md" key={name} className={classes.root} bg={color}>
+                  <UnstyledButton w="100%" onClick={gotoAccount(id)}>
+                    <Group position="apart">
+                      <Group align="center" spacing="0.25rem">
+                        <Text size="xs" color={textColor} className={classes.title}>
+                          {name}
+                        </Text>
+                        <Iconify icon={icon} color={textColor} size="1rem" />
+                      </Group>
+                      <Text color={textColor}>{currency}</Text>
                     </Group>
-                    <Text color={textColor}>{currency}</Text>
-                  </Group>
 
-                  <Group align="flex-end" spacing="xs" mt={25}>
-                    <Text className={classes.value} color={textColor}>
-                      {balance}
+                    <Group align="flex-end" spacing="xs" mt={25}>
+                      <Text className={classes.value} color={textColor}>
+                        {balance}
+                      </Text>
+
+                      <div className={classes.diffWrapper}>
+                        <Text
+                          color={50 > 0 ? 'teal' : 'red'}
+                          fz="sm"
+                          fw={700}
+                          className={classes.diff}>
+                          {/* <FormattedNumber
+                            // eslint-disable-next-line react/style-prop-object
+                            style="percent"
+                            value={rateWithPrevMonth ?? 0}
+                            maximumFractionDigits={0}
+                          /> */}
+                          <IconArrowUpRight size="1rem" stroke={3.5} />
+                          {/* // TODO: formatNumber */}
+                          {rateWithPrevMonth?.toFixed(2)} %
+                        </Text>
+                      </div>
+                    </Group>
+                    {/* // TODO: balance comparision */}
+                    <Text fz="sm" my="0.5rem" c={textColor}>
+                      Compared to previous month
                     </Text>
 
-                    <div className={classes.diffWrapper}>
-                      <Text
-                        color={50 > 0 ? 'teal' : 'red'}
-                        fz="sm"
-                        fw={700}
-                        className={classes.diff}>
-                        <span>{50}%</span>
-                        <IconArrowUpRight size="1rem" stroke={3.5} />
-                      </Text>
-                    </div>
-                  </Group>
-                  {/* // TODO: balance comparision */}
-                  <Text fz="sm" my="0.5rem" c={textColor}>
-                    Compared to previous month
-                  </Text>
-
-                  {/* // TODO: number of transactions */}
-                  <Text fz="sm" my="0.5rem" c={textColor}>
-                    {transactionCount} transactions
-                  </Text>
-                </UnstyledButton>
-              </Paper>
-            );
-          })}
+                    {/* // TODO: number of transactions */}
+                    <Text fz="sm" my="0.5rem" c={textColor}>
+                      {transactionCount} transactions
+                    </Text>
+                  </UnstyledButton>
+                </Paper>
+              );
+            }
+          )}
         </SimpleGrid>
       )}
     </>
