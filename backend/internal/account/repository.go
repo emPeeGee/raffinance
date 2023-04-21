@@ -13,6 +13,8 @@ import (
 	"gorm.io/gorm"
 )
 
+var ErrAccountBalanceNotFound = errors.New("account balance not found")
+
 type Repository interface {
 	getAccounts(userId uint) ([]accountResponse, error)
 	getAccount(accountId uint) (*accountDetailsResponse, error)
@@ -22,7 +24,7 @@ type Repository interface {
 	accountExistsAndBelongsToUser(userID, id uint, name string) (bool, error)
 	accountIsUsed(accountId uint) error
 	// TODO: rename to calculate*****
-	getAccountBalance(id uint) (float64, error)
+	getAccountBalance(id uint, month *time.Time) (float64, error)
 	getUserBalance(userID uint) (float64, error)
 }
 
@@ -85,7 +87,7 @@ func (r *repository) updateAccount(userId, accountId uint, account updateAccount
 	}
 
 	// Calculating the balance dynamically
-	accountBalance, err := r.getAccountBalance(accountId)
+	accountBalance, err := r.getAccountBalance(accountId, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -119,27 +121,28 @@ func (r *repository) getAccounts(userId uint) ([]accountResponse, error) {
 
 	for _, account := range accounts {
 		// TODO: get the account balance dynamically. Is there a better way for it?
-		accountBalance, err := r.getAccountBalance(account.ID)
+		accountBalance, err := r.getAccountBalance(account.ID, nil)
 		if err != nil {
 			return nil, err
 		}
 
-		// TODO:
+		now := new(time.Time)
+		*now = time.Now()
+		lastMonth := now.AddDate(0, -1, 0)
 
-		currentMonth := time.Now()
-		lastMonth := currentMonth.AddDate(0, -1, 0)
-
-		accountBalanceThisMonth, err := r.getAccountBalancePerMonth(account.ID, currentMonth)
-		accountBalanceLastMonth, err := r.getAccountBalancePerMonth(account.ID, lastMonth)
-
+		accountBalanceThisMonth, err := r.getAccountBalance(account.ID, now)
 		if err != nil {
-			// handle error
+			return nil, err
+		}
+
+		accountBalanceLastMonth, err := r.getAccountBalance(account.ID, &lastMonth)
+		if err != nil {
+			return nil, err
 		}
 
 		var rate float64
 		if accountBalanceLastMonth == 0 {
-			// avoid division by zero
-			rate = 0
+			rate = 0 // avoid division by zero
 		} else {
 			rate = ((accountBalanceThisMonth - accountBalanceLastMonth) / accountBalanceLastMonth) * 100
 		}
@@ -206,26 +209,35 @@ func (r *repository) accountIsUsed(accountId uint) error {
 	return nil
 }
 
-func (r *repository) getAccountBalance(id uint) (float64, error) {
-	// Calculate the total balance of this account
-	var balanceExcludingTransfers, transfersTotal float64
+func (r *repository) getAccountBalance(id uint, month *time.Time) (float64, error) {
+	// Calculate the total balance of this account for the given month
+	var nonTransferBalance, transferBalance float64
+
 	err := r.db.Transaction(func(tx *gorm.DB) error {
 		// Calculate the non-transfer total balance
-		err := tx.Table("transactions").
+		txQuery := tx.Table("transactions").
 			Where("deleted_at is null and to_account_id = ? and transaction_type_id <> ?", id, transaction.TRANSFER).
-			Select("COALESCE(SUM(CASE WHEN transaction_type_id = ? THEN amount ELSE -amount END), 0)", transaction.INCOME).
-			Row().
-			Scan(&balanceExcludingTransfers)
+			Select("COALESCE(SUM(CASE WHEN transaction_type_id = ? THEN amount ELSE -amount END), 0)", transaction.INCOME)
+
+		if month != nil {
+			txQuery = txQuery.Where("to_char(date, 'YYYY-MM') = ?", month.Format("2006-01"))
+		}
+
+		err := txQuery.Row().Scan(&nonTransferBalance)
 		if err != nil {
 			return err
 		}
 
 		// Calculate the transfer total balance
-		err = tx.Table("transactions").
+		txQuery = tx.Table("transactions").
 			Where("deleted_at is null and (to_account_id = ? or from_account_id = ?) and transaction_type_id = ?", id, id, transaction.TRANSFER).
-			Select("COALESCE(SUM(CASE WHEN to_account_id = ? THEN amount ELSE -amount END), 0)", id).
-			Row().
-			Scan(&transfersTotal)
+			Select("COALESCE(SUM(CASE WHEN to_account_id = ? THEN amount ELSE -amount END), 0)", id)
+
+		if month != nil {
+			txQuery = txQuery.Where("to_char(date, 'YYYY-MM') = ?", month.Format("2006-01"))
+		}
+
+		err = txQuery.Row().Scan(&transferBalance)
 		if err != nil {
 			return err
 		}
@@ -235,57 +247,15 @@ func (r *repository) getAccountBalance(id uint) (float64, error) {
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return 0, errors.New("account balance not found")
+			return 0, ErrAccountBalanceNotFound
 		}
 
 		return 0, err
 	}
 
-	r.logger.Infof("Account %d balance: balance excluding transfers %f, transfer total %f", id, balanceExcludingTransfers, transfersTotal)
+	r.logger.Infof("Account %d balance: balance excluding transfers %f, transfer total %f", id, nonTransferBalance, transferBalance)
 
-	return balanceExcludingTransfers + transfersTotal, nil
-}
-
-// refactor in one
-func (r *repository) getAccountBalancePerMonth(id uint, month time.Time) (float64, error) {
-	// Calculate the total balance of this account for the given month
-	var balanceExcludingTransfers, transfersTotal float64
-
-	err := r.db.Transaction(func(tx *gorm.DB) error {
-		// Calculate the non-transfer total balance for the given month
-		err := tx.Table("transactions").
-			Where("deleted_at is null and to_account_id = ? and transaction_type_id <> ? and to_char(date, 'YYYY-MM') = ?", id, transaction.TRANSFER, month.Format("2006-01")).
-			Select("COALESCE(SUM(CASE WHEN transaction_type_id = ? THEN amount ELSE -amount END), 0)", transaction.INCOME).
-			Row().
-			Scan(&balanceExcludingTransfers)
-		if err != nil {
-			return err
-		}
-
-		// Calculate the transfer total balance for the given month
-		err = tx.Table("transactions").
-			Where("deleted_at is null and (to_account_id = ? or from_account_id = ?) and transaction_type_id = ? and to_char(date, 'YYYY-MM') = ?", id, id, transaction.TRANSFER, month.Format("2006-01")).
-			Select("COALESCE(SUM(CASE WHEN to_account_id = ? THEN amount ELSE -amount END), 0)", id).
-			Row().
-			Scan(&transfersTotal)
-		if err != nil {
-			return err
-		}
-
-		return nil
-	})
-
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return 0, errors.New("account balance not found")
-		}
-
-		return 0, err
-	}
-
-	r.logger.Infof("MONTHHHH", balanceExcludingTransfers, transfersTotal)
-
-	return balanceExcludingTransfers + transfersTotal, nil
+	return nonTransferBalance + transferBalance, nil
 }
 
 func (r *repository) getUserBalance(userID uint) (float64, error) {
@@ -299,7 +269,7 @@ func (r *repository) getUserBalance(userID uint) (float64, error) {
 
 	// Iterate over each account to calculate the total balance
 	for _, account := range accounts {
-		accountBalance, err := r.getAccountBalance(account.ID)
+		accountBalance, err := r.getAccountBalance(account.ID, nil)
 		if err != nil {
 			return 0, err
 		}

@@ -206,7 +206,7 @@ func (s *service) getAccountBalance(userId, id uint) (float64, error) {
 		return -1, fmt.Errorf("account with ID %d does not exist or belong to user with ID %d", id, userId)
 	}
 
-	return s.repo.getAccountBalance(id)
+	return s.repo.getAccountBalance(id, nil)
 }
 
 // TODO: to be moved in user
