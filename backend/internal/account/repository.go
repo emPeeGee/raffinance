@@ -286,25 +286,25 @@ func (r *repository) getUserBalance(userID uint) (float64, error) {
 func (r *repository) getAccount(accountId uint) (*accountDetailsResponse, error) {
 	var account *accountDetailsResponse
 
-	if err := r.db.Model(&entity.Account{}).First(&account, accountId).Error; err != nil {
+	query := `
+		SELECT ac.id, ac.created_at, ac.updated_at, ac.name, ac.color, ac.currency, ac.icon,
+      (SELECT COUNT(DISTINCT t.id)
+				FROM transactions AS t
+				WHERE t.deleted_at IS NULL AND (t.from_account_id = ac.id OR t.to_account_id = ac.id)) AS transaction_count
+    FROM accounts as ac
+    WHERE ac.id = ? AND ac.deleted_at IS NULL;
+		`
+
+	if err := r.db.Raw(query, accountId).Scan(&account).Error; err != nil {
 		return nil, err
 	}
 
-	// All the account transactions here
-	// MOdel should be :  Transactions []entity.Transaction `json:"transactions" gorm:"foreignkey:to_account_id"`
+	accountBalance, err := r.getAccountBalance(accountId, nil)
+	if err != nil {
+		return nil, err
+	}
 
-	// if err := r.db.Model(&entity.Account{}).
-	// 	Preload("Transactions", func(db *gorm.DB) *gorm.DB {
-	// 		return db.
-	// 			Preload("Tags").
-	// 			Preload("Category").
-	// 			Order("date DESC")
-	// 	}).
-	// 	Limit(50).
-	// 	Where("id = ?", accountId).
-	// 	First(&account).Error; err != nil {
-	// 	return nil, err
-	// }
+	account.Balance = accountBalance
 
 	return account, nil
 }

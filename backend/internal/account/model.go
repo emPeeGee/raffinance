@@ -20,15 +20,17 @@ type accountResponse struct {
 }
 
 type accountDetailsResponse struct {
-	ID           uint                              `json:"id"`
-	Name         string                            `json:"name"`
-	Currency     string                            `json:"currency"`
-	Balance      float64                           `json:"balance" gorm:"-"`
-	Color        string                            `json:"color"`
-	Icon         string                            `json:"icon"`
-	CreatedAt    time.Time                         `json:"createdAt"`
-	UpdatedAt    time.Time                         `json:"updatedAt"`
-	Transactions []transaction.TransactionResponse `json:"transactions" gorm:"foreignkey:to_account_id"`
+	ID               uint      `json:"id"`
+	Name             string    `json:"name"`
+	Currency         string    `json:"currency"`
+	Balance          float64   `json:"balance" gorm:"-"`
+	TransactionCount *int64    `json:"transactionCount" gorm:"transaction_count"`
+	Color            string    `json:"color"`
+	Icon             string    `json:"icon"`
+	CreatedAt        time.Time `json:"createdAt"`
+	UpdatedAt        time.Time `json:"updatedAt"`
+	// Transactions     []transaction.TransactionResponse `json:"transactions" gorm:"foreignkey:to_account_id"`
+	Transactions []transaction.TransactionResponse `json:"transactions" gorm:"-"`
 }
 
 type createAccountDTO struct {

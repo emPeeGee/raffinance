@@ -24,7 +24,7 @@ func RegisterHandlers(apiRg *gin.RouterGroup, service Service, validate *validat
 
 		api.GET("", h.getAccounts)
 		api.GET("/:id", h.getAccount)
-		api.GET("/:id/transactions", h.getAccountTransactionsByMonth)
+		// api.GET("/:id/transactions", h.getAccountTransactionsByMonth)
 	}
 }
 

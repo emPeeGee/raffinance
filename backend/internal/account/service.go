@@ -145,7 +145,7 @@ func (s *service) getAccount(userId, id uint) (*accountDetailsResponse, error) {
 
 	account, err := s.repo.getAccount(id)
 	if err != nil {
-		return nil, fmt.Errorf("account with ID %d does not exist or does not belong to user with ID %d", id, userId)
+		return nil, err
 	}
 
 	return account, nil
@@ -164,7 +164,7 @@ func (s *service) getAccountWithTransactions(userId, id uint) (*accountDetailsRe
 
 	account, err := s.repo.getAccount(id)
 	if err != nil {
-		return nil, fmt.Errorf("account with ID %d does not exist or does not belong to user with ID %d", id, userId)
+		return nil, err
 	}
 
 	today := time.Now()
