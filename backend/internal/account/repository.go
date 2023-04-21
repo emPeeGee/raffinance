@@ -107,8 +107,8 @@ func (r *repository) getAccounts(userId uint) ([]accountResponse, error) {
 	query := `
 		SELECT ac.id, ac.created_at, ac.updated_at, ac.name, ac.color, ac.currency, ac.icon,
       (SELECT COUNT(DISTINCT id)
-				FROM transactions
-				WHERE transactions.from_account_id = ac.id OR transactions.to_account_id = ac.id) AS transaction_count
+				FROM transactions AS t
+				WHERE t.deleted_at IS NULL AND (t.from_account_id = ac.id OR t.to_account_id = ac.id)) AS transaction_count
     FROM accounts as ac
     WHERE ac.user_id = ? AND ac.deleted_at IS NULL;
 	`
