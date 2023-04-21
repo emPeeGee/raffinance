@@ -51,6 +51,7 @@
   "co-all-time": "All-time transactions",
   "co-for-month": "Transactions for {month}",
   "co-for-months": "Transactions from {start} to {end}",
+  "co-comp-prev-month": "Compared to previous month",
 
   "acc": "Accounts",
   "acc-to": "To account",

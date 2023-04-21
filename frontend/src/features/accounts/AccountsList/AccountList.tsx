@@ -6,13 +6,14 @@ import {
   Group,
   Paper,
   SimpleGrid,
+  Space,
   Table,
   Text,
   UnstyledButton,
   createStyles,
   rem
 } from '@mantine/core';
-import { IconArrowUpRight } from '@tabler/icons-react';
+import { IconArrowDownRight, IconArrowUpRight, IconArrowsDoubleNeSw } from '@tabler/icons-react';
 import { FormattedDate, FormattedNumber, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
@@ -58,13 +59,45 @@ type Props = {};
 
 export function AccountsList(props: Props) {
   const { accounts } = useAccountStore();
-  const { classes } = useStyles();
+  const { classes, theme } = useStyles();
   const navigate = useNavigate();
   const { formatMessage } = useIntl();
   const { viewMode } = useSettingsStore();
 
   const gotoAccount = (id: number) => () => {
     navigate(`/accounts/${id}`);
+  };
+
+  const getRateColor = (rate?: number) => {
+    if (rate === 0 || rate === undefined) {
+      const color =
+        theme.colorScheme === 'light' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.7)';
+
+      return (
+        <Text color={color} fz="sm" fw={700} className={classes.diff}>
+          <IconArrowsDoubleNeSw size="1rem" stroke={3.5} />
+          <Space w="0.25rem" />
+          <FormattedNumber value={rate ?? 0} minimumFractionDigits={2} maximumFractionDigits={2} />
+        </Text>
+      );
+    }
+    if (rate > 0) {
+      return (
+        <Text color="green" fz="sm" fw={700} className={classes.diff}>
+          <IconArrowUpRight size="1rem" stroke={3.5} />
+          <Space w="0.25rem" />
+          <FormattedNumber value={rate ?? 0} minimumFractionDigits={2} maximumFractionDigits={2} />
+        </Text>
+      );
+    }
+
+    return (
+      <Text color="red" fz="sm" fw={700} className={classes.diff}>
+        <IconArrowDownRight size="1rem" stroke={3.5} />
+        <Space w="0.25rem" />
+        <FormattedNumber value={rate ?? 0} minimumFractionDigits={2} maximumFractionDigits={2} />
+      </Text>
+    );
   };
 
   /* eslint-disable  no-constant-condition */
@@ -140,32 +173,14 @@ export function AccountsList(props: Props) {
                         {balance}
                       </Text>
 
-                      <div className={classes.diffWrapper}>
-                        <Text
-                          color={50 > 0 ? 'teal' : 'red'}
-                          fz="sm"
-                          fw={700}
-                          className={classes.diff}>
-                          {/* <FormattedNumber
-                            // eslint-disable-next-line react/style-prop-object
-                            style="percent"
-                            value={rateWithPrevMonth ?? 0}
-                            maximumFractionDigits={0}
-                          /> */}
-                          <IconArrowUpRight size="1rem" stroke={3.5} />
-                          {/* // TODO: formatNumber */}
-                          {rateWithPrevMonth?.toFixed(2)} %
-                        </Text>
-                      </div>
+                      <div className={classes.diffWrapper}>{getRateColor(rateWithPrevMonth)}</div>
                     </Group>
-                    {/* // TODO: balance comparision */}
                     <Text fz="sm" my="0.5rem" c={textColor}>
-                      Compared to previous month
+                      {formatMessage({ id: 'co-comp-prev-month' })}
                     </Text>
 
-                    {/* // TODO: number of transactions */}
                     <Text fz="sm" my="0.5rem" c={textColor}>
-                      {transactionCount} transactions
+                      {transactionCount} {formatMessage({ id: 'txn' }).toLocaleLowerCase()}
                     </Text>
                   </UnstyledButton>
                 </Paper>
@@ -177,3 +192,5 @@ export function AccountsList(props: Props) {
     </>
   );
 }
+
+// TODO: enter in delete confirm to confirm
