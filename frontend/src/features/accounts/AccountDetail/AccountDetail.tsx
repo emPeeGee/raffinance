@@ -77,9 +77,7 @@ export function AccountDetail() {
           transactions
         } as any)
     );
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 5000);
+    setIsLoading(false);
   };
 
   const clearAllHandler = () => {
@@ -150,6 +148,10 @@ export function AccountDetail() {
         <Flex gap="sm">
           <Flex direction="column" gap="0.3rem">
             <Text fw={700} c={textColor}>
+              {formatMessage({ id: 'co-tot-txn' })}
+            </Text>
+
+            <Text fw={700} c={textColor}>
               {formatMessage({ id: 'co-cre-at' })}
             </Text>
 
@@ -159,6 +161,8 @@ export function AccountDetail() {
           </Flex>
 
           <Flex direction="column" gap="0.3rem">
+            <Text c={textColor}>{account.transactionCount}</Text>
+
             <Text c={textColor}>
               <FormattedDate value={account.createdAt} dateStyle="full" timeStyle="medium" />
             </Text>
