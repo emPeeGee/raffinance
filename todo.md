@@ -23,3 +23,4 @@
 22. Currency support with features
 23. suspense for base fetch ?, effects
 24. components organization, do i need folder for each component?
+25. useAuthStore.getState().token. I don't like to call it every time.

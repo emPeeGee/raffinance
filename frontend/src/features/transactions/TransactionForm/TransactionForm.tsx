@@ -257,8 +257,6 @@ export function TransactionForm() {
                   {...field}
                   value={String(field.value)}
                   onChange={(v) => field.onChange(parseInt(v, 10) || undefined)}
-                  // TODO: Error
-                  // error={errors.transactionTypeId ? 'formatMessage({id: 'co-field-inv'})' : null}
                 />
               )}
             />

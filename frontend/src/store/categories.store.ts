@@ -118,5 +118,3 @@ export const useCategoriesStore = create<CategoriesStore>()(
   )
 );
 // TODO: kinda, response enum with different statuses
-
-// TODO  useAuthStore.getState().token. I don't like to call it every time.

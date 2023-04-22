@@ -28,7 +28,6 @@ interface Props {
   spacing?: SpacingValue;
   size?: MantineSize;
 }
-// TODO: Customizable primary color as user wants https://mantine.dev/theming/colors/
 
 // TODO: Hardcoded colors
 const typeMap = {

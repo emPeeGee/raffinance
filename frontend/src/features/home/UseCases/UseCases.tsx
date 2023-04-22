@@ -1,15 +1,7 @@
 import React from 'react';
 
-import {
-  Image,
-  Text,
-  Container,
-  ThemeIcon,
-  Title,
-  SimpleGrid,
-  createStyles,
-  rem
-} from '@mantine/core';
+import { Container, SimpleGrid, Text, ThemeIcon, Title, createStyles, rem } from '@mantine/core';
+import { IconBuildingFactory2, IconReportMoney, IconSchool, IconUsers } from '@tabler/icons-react';
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -61,31 +53,30 @@ const useStyles = createStyles((theme) => ({
   }
 }));
 
-// TODO: Complete it with images if needed and check
 const data = [
   {
-    image: '',
+    image: <IconSchool size="3rem" />,
     title: 'Young Professionals',
     description:
       'Young professionals who are just starting their careers and building their financial lives'
   },
 
   {
-    image: '',
+    image: <IconReportMoney size="3rem" />,
     title: 'Small Business Owners',
     description:
       'If they have multiple accounts or need to keep business and personal finances separate'
   },
 
   {
-    image: '',
+    image: <IconBuildingFactory2 size="3rem" />,
     title: 'Freelancers and Gig Workers',
     description:
       'May benefit from features for tracking income and expenses, managing taxes, and setting financial goals. '
   },
 
   {
-    image: '',
+    image: <IconUsers size="3rem" />,
     title: 'Couples and Families',
     description:
       'Tracking shared expenses, managing family budgets, or saving for a shared goal such as a family vacation or home renovation'
@@ -96,8 +87,9 @@ export function UseCases() {
   const { classes } = useStyles();
 
   const items = data.map((item) => (
-    <div className={classes.item} key={item.image}>
+    <div className={classes.item} key={item.title}>
       <ThemeIcon variant="light" className={classes.itemIcon} size={60} radius="md">
+        {item.image}
         {/* <Image src={IMAGES[item.image]} /> */}
       </ThemeIcon>
 

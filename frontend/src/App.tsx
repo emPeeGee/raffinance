@@ -35,6 +35,7 @@ const customTheme = (colorScheme: 'light' | 'dark'): MantineThemeOverride => ({
   //   ]
   // },
   // primaryColor: 'brand',
+  // TODO: Customizable primary color as user wants https://mantine.dev/theming/colors/
 
   components: {
     Button: {

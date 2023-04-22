@@ -19,7 +19,6 @@ export function TransactionTable({ transactions }: Props) {
       <thead>
         <tr>
           <th>Date</th>
-          {/* TODO: type as transaction text */}
           <th>Type</th>
           <th>Amount</th>
           <th>Description</th>
