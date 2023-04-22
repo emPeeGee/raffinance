@@ -3,7 +3,7 @@ import React, { forwardRef } from 'react';
 import { createStyles, rem, SegmentedControlProps, SegmentedControl } from '@mantine/core';
 import { useIntl } from 'react-intl';
 
-import { TransactionType } from 'features/transactions';
+import { TransactionType, TransactionTypeWithAll } from 'features/transactions';
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -26,35 +26,60 @@ const useStyles = createStyles((theme) => ({
   }
 }));
 
-const getItems = (formatMessage: any) => {
+const getItems = (formatMessage: any, withAll: boolean) => {
   return [
-    { label: formatMessage({ id: 'co-inc' }) as string, value: String(TransactionType.INCOME) },
-    { label: formatMessage({ id: 'co-exp' }) as string, value: String(TransactionType.EXPENSE) },
-    { label: formatMessage({ id: 'co-tra' }) as string, value: String(TransactionType.TRANSFER) }
+    ...(withAll
+      ? [
+          {
+            label: formatMessage({ id: 'co-all' }),
+            value: String(TransactionTypeWithAll.ALL)
+          }
+        ]
+      : []),
+    {
+      label: formatMessage({ id: 'co-inc' }),
+      value: String(TransactionTypeWithAll.INCOME)
+    },
+    {
+      label: formatMessage({ id: 'co-exp' }),
+      value: String(TransactionTypeWithAll.EXPENSE)
+    },
+    {
+      label: formatMessage({ id: 'co-tra' }),
+      value: String(TransactionTypeWithAll.TRANSFER)
+    }
   ];
 };
 
-// TODO: use it in filter component
-function Picker(props: Omit<SegmentedControlProps, 'data'>, ref: React.Ref<any>) {
+interface Props extends Omit<SegmentedControlProps, 'data'> {
+  withAll?: boolean;
+}
+
+function Picker({ value, withAll = false, ...props }: Props, ref: React.Ref<any>) {
   const { classes, theme } = useStyles();
   const { formatMessage } = useIntl();
-  const { value } = props;
 
   const indicators = {
-    [TransactionType.INCOME]: {
+    [TransactionTypeWithAll.ALL]: {
+      backgroundImage: theme.fn.gradient({
+        from: theme.colors.yellow[4],
+        to: theme.colors.yellow[7]
+      })
+    },
+    [TransactionTypeWithAll.INCOME]: {
       backgroundImage: theme.fn.gradient({
         from: theme.colors.green[4],
         to: theme.colors.green[7]
       })
     },
 
-    [TransactionType.EXPENSE]: {
+    [TransactionTypeWithAll.EXPENSE]: {
       backgroundImage: theme.fn.gradient({
         from: theme.colors.red[4],
         to: theme.colors.red[7]
       })
     },
-    [TransactionType.TRANSFER]: {
+    [TransactionTypeWithAll.TRANSFER]: {
       backgroundImage: theme.fn.gradient({
         from: theme.colors.violet[4],
         to: theme.colors.violet[7]
@@ -70,7 +95,7 @@ function Picker(props: Omit<SegmentedControlProps, 'data'>, ref: React.Ref<any>)
       ref={ref}
       radius="xl"
       size="md"
-      data={getItems(formatMessage)}
+      data={getItems(formatMessage, withAll)}
       styles={{ indicator }}
       classNames={classes}
     />

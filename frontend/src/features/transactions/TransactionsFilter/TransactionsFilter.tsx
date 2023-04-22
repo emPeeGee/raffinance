@@ -10,9 +10,8 @@ import {
   Button,
   Card,
   Group,
-  Text,
-  SegmentedControl,
   SimpleGrid,
+  Text,
   TextInput,
   useMantineTheme
 } from '@mantine/core';
@@ -28,18 +27,18 @@ import {
 import { Controller, useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
 
-import { MultiPicker } from 'components';
+import { MultiPicker, TransactionTypePicker } from 'components';
 import { useAccountStore, useCategoriesStore, useI18nStore, useTagsStore } from 'store';
 import { MAX_AVAILABLE_DATE, MIN_AVAILABLE_DATE, getDateRangeText } from 'utils';
 
-import { TransactionFilterModel, TransactionType } from '../transactions.model';
+import { TransactionFilterModel, TransactionTypeWithAll } from '../transactions.model';
 
 const zeroFilters: TransactionFilterModel = {
   dateRange: [null, null],
   accounts: [],
   categories: [],
   tags: [],
-  type: '',
+  type: String(TransactionTypeWithAll.ALL),
   description: ''
 };
 
@@ -85,7 +84,10 @@ export function TransactionsFilter({
   const accordionName = 'filters';
 
   const applyFilters = (filters: TransactionFilterModel) => {
-    onApply(filters);
+    onApply({
+      ...filters,
+      type: filters.type === String(TransactionTypeWithAll.ALL) ? '' : filters.type
+    });
   };
 
   const clearAll = () => {
@@ -114,27 +116,8 @@ export function TransactionsFilter({
                 <Controller
                   name="type"
                   control={control}
-                  render={({ field }) => (
-                    // TODO: With gradient and reusable
-                    <SegmentedControl
-                      {...field}
-                      data={[
-                        { label: formatMessage({ id: 'co-all' }), value: '' },
-                        {
-                          label: formatMessage({ id: 'co-incs' }),
-                          value: String(TransactionType.INCOME)
-                        },
-                        {
-                          label: formatMessage({ id: 'co-exps' }),
-                          value: String(TransactionType.EXPENSE)
-                        },
-                        {
-                          label: formatMessage({ id: 'co-tras' }),
-                          value: String(TransactionType.TRANSFER)
-                        }
-                      ]}
-                    />
-                  )}
+                  rules={{ required: true }}
+                  render={({ field }) => <TransactionTypePicker {...field} withAll />}
                 />
               </Group>
 
@@ -243,7 +226,7 @@ export function TransactionsFilter({
         <Button
           variant="light"
           color="blue"
-          disabled={!isDirty || !isValid}
+          disabled={!isValid}
           leftIcon={<IconCardboards />}
           onClick={handleSubmit(applyFilters)}>
           {formatMessage({ id: 'co-apply' })}

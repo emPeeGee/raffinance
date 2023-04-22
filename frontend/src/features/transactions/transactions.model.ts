@@ -7,6 +7,13 @@ export enum TransactionType {
   'TRANSFER' = 3
 }
 
+export enum TransactionTypeWithAll {
+  'INCOME' = 1,
+  'EXPENSE' = 2,
+  'TRANSFER' = 3,
+  'ALL' = -1
+}
+
 export interface TransactionModel {
   id: number;
   date: string;

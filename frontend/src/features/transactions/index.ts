@@ -7,6 +7,7 @@ import {
   TransactionModel,
   CreateTransactionDTO,
   TransactionType,
+  TransactionTypeWithAll,
   TransactionFilterModel
 } from './transactions.model';
 import { TransactionsDashboard } from './TransactionsDashboard/TransactionsDashboard';
@@ -25,6 +26,7 @@ export {
   TransactionTable,
   TransactionDestination,
   TransactionType,
+  TransactionTypeWithAll,
   TransactionTypeView,
   TransactionForm as TransactionCreate
 };

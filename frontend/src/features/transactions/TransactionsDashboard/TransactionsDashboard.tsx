@@ -7,6 +7,7 @@ import { Link, useLocation } from 'react-router-dom';
 
 import {
   TransactionFilterModel,
+  TransactionTypeWithAll,
   TransactionsFilter,
   TransactionsList
 } from 'features/transactions';
@@ -48,7 +49,7 @@ export function TransactionsDashboard() {
         accounts: [],
         dateRange: range,
         description: '',
-        type: '',
+        type: String(TransactionTypeWithAll.ALL),
         tags: state?.tagId ? [state.tagId] : [],
         categories: state?.categoryId ? [state.categoryId] : []
       });

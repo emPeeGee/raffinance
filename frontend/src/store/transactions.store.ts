@@ -87,7 +87,6 @@ export const useTransactionStore = create<TransactionsStore>()(
             body: transaction,
             token: useAuthStore.getState().token
           });
-          console.log(response);
           set({ ...get(), transactions: [...transactions, response] });
           return true;
         } catch (reason) {
