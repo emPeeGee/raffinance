@@ -13,6 +13,7 @@ import { useAuthStore } from 'store';
 type TransactionsStore = {
   pending: boolean;
   transactions: TransactionModel[];
+  reset: () => void;
   fetchTransactions: (filters?: TransactionFilterModel) => void;
   getTransactions: () => void;
   getTransaction: (id: string) => Promise<TransactionModel | null>;
@@ -28,6 +29,9 @@ export const useTransactionStore = create<TransactionsStore>()(
     (set, get) => ({
       pending: false,
       transactions: [],
+      reset: () => {
+        set({ pending: false, transactions: [] });
+      },
       getTransactions: () => {
         const { transactions } = get();
 

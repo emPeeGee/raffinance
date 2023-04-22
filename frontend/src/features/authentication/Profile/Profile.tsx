@@ -112,7 +112,7 @@ export function Profile() {
           <Title order={2} py={rem('2rem')}>
             {formatMessage({ id: 'co-latest-log' })}
           </Title>
-          <Table miw={700}>
+          <Table miw={700} striped withColumnBorders>
             <thead className={classes.tableHeader}>
               <tr>
                 <th>#</th>

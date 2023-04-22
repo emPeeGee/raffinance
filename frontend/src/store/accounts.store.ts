@@ -14,6 +14,7 @@ import { useAuthStore } from 'store';
 type AccountsStore = {
   pending: boolean;
   accounts: AccountModel[];
+  reset: () => void;
   fetchAccounts: () => void;
   getAccounts: () => void;
   // TODO: should it be in store??? because it doesn't store anything
@@ -34,6 +35,9 @@ export const useAccountStore = create<AccountsStore>()(
     (set, get) => ({
       pending: false,
       accounts: [],
+      reset: () => {
+        set({ pending: false, accounts: [] });
+      },
       getAccounts: () => {
         set({ ...get(), pending: true });
         const { accounts } = get();

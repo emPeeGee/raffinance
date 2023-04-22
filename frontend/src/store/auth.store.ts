@@ -3,6 +3,7 @@ import { devtools, subscribeWithSelector } from 'zustand/middleware';
 
 import { UserModel } from 'features/authentication';
 import { api } from 'services/http';
+import { useAccountStore, useCategoriesStore, useTagsStore, useTransactionStore } from 'store';
 import { TOKEN_STORAGE_KEY } from 'utils';
 
 // TODO: it was hook, how it is what?
@@ -102,6 +103,11 @@ export const useAuthStore = create<AuthStore>()(
       },
       logout: () => {
         setStorageToken(null);
+        useAccountStore.getState().reset();
+        useCategoriesStore.getState().reset();
+        useTagsStore.getState().reset();
+        useTransactionStore.getState().reset();
+
         set({ ...get(), isLogged: false, user: null, token: '' });
       }
     })),
@@ -139,10 +145,6 @@ const unsub = useAuthStore.subscribe(
     console.log('Subscribe', token, prev);
   }
 );
-
-// TODO: rename file
-
-// TODO: TODO: TODO: clear all store after logout
 
 // TODO: instruction in case first time login, like you should have account and categs
 // to make transactions

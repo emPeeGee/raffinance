@@ -9,6 +9,7 @@ import { useAuthStore } from './auth.store';
 type CategoriesStore = {
   pending: boolean;
   categories: CategoryModel[];
+  reset: () => void;
   fetchCategories: () => void;
   getCategories: () => void;
   // TODO: should it be in store??? because it doesn't store anything
@@ -25,6 +26,9 @@ export const useCategoriesStore = create<CategoriesStore>()(
     (set, get) => ({
       pending: false,
       categories: [],
+      reset: () => {
+        set({ pending: false, categories: [] });
+      },
       getCategories: () => {
         set({ ...get(), pending: true });
         const { categories } = get();

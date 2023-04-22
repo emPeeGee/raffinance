@@ -9,6 +9,7 @@ import { useAuthStore } from './auth.store';
 type TagsStore = {
   pending: boolean;
   tags: TagModel[];
+  reset: () => void;
   fetchTags: () => void;
   getTags: () => void;
   // TODO: should it be in store??? because it doesn't store anything
@@ -25,6 +26,9 @@ export const useTagsStore = create<TagsStore>()(
     (set, get) => ({
       pending: false,
       tags: [],
+      reset: () => {
+        set({ pending: false, tags: [] });
+      },
       getTags: () => {
         set({ ...get(), pending: true });
         const { tags } = get();
