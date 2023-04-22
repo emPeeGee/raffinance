@@ -8,8 +8,6 @@ import { useCategoriesStore } from 'store';
 import { CategoriesList } from '../CategoriesList/CategoriesList';
 import { CategoryForm } from '../CategoryForm/CategoryForm';
 
-// TODO: Breadcrumbs ???
-
 export function Categories() {
   const { getCategories } = useCategoriesStore();
 

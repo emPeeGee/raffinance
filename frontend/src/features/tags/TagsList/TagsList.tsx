@@ -36,8 +36,6 @@ import { getContrastColor } from 'utils';
 
 import { NoTags } from '../NoTags/NoTags';
 
-// TODO: Breadcrumbs ???
-
 // TODO: styles are identical to categoires
 const useStyles = createStyles((theme) => ({
   title: {

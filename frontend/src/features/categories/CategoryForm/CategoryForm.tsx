@@ -121,7 +121,7 @@ export function CategoryForm() {
             description={formatMessage({ id: 'cat-c-name' })}
             size="md"
             icon={<IconSignature />}
-            error={errors.name ? 'Field is invalid' : null}
+            error={errors.name ? formatMessage({ id: 'co-field-inv' }) : null}
             required
           />
 
@@ -141,7 +141,7 @@ export function CategoryForm() {
                 required
                 label={formatMessage({ id: 'co-icon' })}
                 description={formatMessage({ id: 'cat-c-icon' })}
-                error={errors.icon ? 'Field is invalid' : null}
+                error={errors.icon ? formatMessage({ id: 'co-field-inv' }) : null}
               />
             )}
           />
@@ -160,7 +160,7 @@ export function CategoryForm() {
                 swatches={SWATCHES}
                 label={formatMessage({ id: 'co-color' })}
                 description={formatMessage({ id: 'cat-c-color' })}
-                error={errors.color ? 'Field is invalid' : null}
+                error={errors.color ? formatMessage({ id: 'co-field-inv' }) : null}
                 required
               />
             )}

@@ -31,6 +31,7 @@
   "co-profile": "Profile",
   "co-latest-log": "The latest logins",
   "co-tot-txn": "Total transactions",
+  "co-field-inv": "Field is invalid",
 
   "co-apply": "Apply",
   "co-clear-all": "Clear all",

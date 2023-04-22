@@ -193,7 +193,7 @@ export function TransactionForm() {
           description={formatMessage({ id: 'txn-c-to' })}
           label={formatMessage({ id: 'acc-to' })}
           maxSelectedValues={1}
-          error={errors.toAccountId ? 'Field is invalid' : null}
+          error={errors.toAccountId ? formatMessage({ id: 'co-field-inv' }) : null}
           data={accounts
             .filter((a) => a.id !== fromAccount)
             .map((a) => ({
@@ -221,7 +221,7 @@ export function TransactionForm() {
           description={formatMessage({ id: 'txn-c-from' })}
           label={formatMessage({ id: 'acc-from' })}
           maxSelectedValues={1}
-          error={errors.fromAccountId ? 'Field is invalid' : null}
+          error={errors.fromAccountId ? formatMessage({ id: 'co-field-inv' }) : null}
           data={accounts
             .filter((a) => a.id !== toAccount)
             .map((a) => ({
@@ -258,7 +258,7 @@ export function TransactionForm() {
                   value={String(field.value)}
                   onChange={(v) => field.onChange(parseInt(v, 10) || undefined)}
                   // TODO: Error
-                  // error={errors.transactionTypeId ? 'Field is invalid' : null}
+                  // error={errors.transactionTypeId ? 'formatMessage({id: 'co-field-inv'})' : null}
                 />
               )}
             />
@@ -302,7 +302,7 @@ export function TransactionForm() {
                     stepHoldDelay={500}
                     stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                     icon={<IconMoneybag size="1rem" />}
-                    error={errors.amount ? 'Field is invalid' : null}
+                    error={errors.amount ? formatMessage({ id: 'co-field-inv' }) : null}
                   />
                 )}
               />
@@ -329,7 +329,7 @@ export function TransactionForm() {
                     description={formatMessage({ id: 'txn-c-date' })}
                     icon={<IconCalendarTime />}
                     mx="auto"
-                    error={errors.date ? 'Field is invalid' : null}
+                    error={errors.date ? formatMessage({ id: 'co-field-inv' }) : null}
                     minDate={MIN_AVAILABLE_DATE}
                     maxDate={MAX_AVAILABLE_DATE}
                   />
@@ -349,7 +349,7 @@ export function TransactionForm() {
             description={formatMessage({ id: 'txn-c-desc' })}
             size="md"
             icon={<IconSignature />}
-            error={errors.description ? 'Field is invalid' : null}
+            error={errors.description ? formatMessage({ id: 'co-field-inv' }) : null}
             required
           />
 
@@ -370,7 +370,7 @@ export function TransactionForm() {
                 description={formatMessage({ id: 'txn-c-cat' })}
                 label={formatMessage({ id: 'cat-categ' })}
                 maxSelectedValues={1}
-                error={errors.categoryId ? 'Field is invalid' : null}
+                error={errors.categoryId ? formatMessage({ id: 'co-field-inv' }) : null}
                 data={categories.map((t) => ({
                   label: t.name,
                   value: String(t.id),
@@ -391,7 +391,7 @@ export function TransactionForm() {
                 onChange={(e) => field.onChange(e?.map((v) => parseInt(v, 10)))}
                 label={formatMessage({ id: 'tag-tag' })}
                 description={formatMessage({ id: 'txn-c-tag' })}
-                error={errors.tagIds ? 'Field is invalid' : null}
+                error={errors.tagIds ? formatMessage({ id: 'co-field-inv' }) : null}
                 data={allTags.map((t) => ({
                   label: t.name,
                   value: String(t.id),
@@ -411,7 +411,7 @@ export function TransactionForm() {
             description={formatMessage({ id: 'txn-c-loc' })}
             size="md"
             icon={<IconMapPin />}
-            error={errors.description ? 'Field is invalid' : null}
+            error={errors.description ? formatMessage({ id: 'co-field-inv' }) : null}
           />
 
           <Button

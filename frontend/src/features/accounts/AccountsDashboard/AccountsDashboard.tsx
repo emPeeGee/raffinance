@@ -18,8 +18,6 @@ import { ViewSwitcher } from 'components';
 import { AccountsList, NoAccounts } from 'features/accounts';
 import { useAccountStore, useSettingsStore } from 'store';
 
-// TODO: Breadcrumbs ???
-
 const useStyles = createStyles((theme) => ({
   icon: {
     color: theme.colorScheme === 'dark' ? theme.colors.dark[3] : theme.colors.gray[5]

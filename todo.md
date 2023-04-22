@@ -19,3 +19,4 @@
 18. Do I need in backend request with accounts + transactions anymore coz of filter
 19. Every txn card searches for account
 20. Create a feature file, where I will describe every feature of the app in short
+21. Breadcrumps ???

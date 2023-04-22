@@ -36,8 +36,6 @@ import { getContrastColor } from 'utils';
 
 import { NoCategories } from '../NoCategories/NoCategories';
 
-// TODO: Breadcrumbs ???
-
 const useStyles = createStyles((theme) => ({
   title: {
     fontWeight: 900,

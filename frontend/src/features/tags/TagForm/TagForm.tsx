@@ -119,7 +119,7 @@ export function TagForm() {
             description={formatMessage({ id: 'tag-c-name' })}
             size="md"
             icon={<IconSignature />}
-            error={errors.name ? 'Field is invalid' : null}
+            error={errors.name ? formatMessage({ id: 'co-field-inv' }) : null}
             required
           />
 
@@ -139,7 +139,7 @@ export function TagForm() {
                 required
                 label={formatMessage({ id: 'co-icon' })}
                 description={formatMessage({ id: 'tag-c-icon' })}
-                error={errors.icon ? 'Field is invalid' : null}
+                error={errors.icon ? formatMessage({ id: 'co-field-inv' }) : null}
               />
             )}
           />
@@ -158,7 +158,7 @@ export function TagForm() {
                 swatches={SWATCHES}
                 label={formatMessage({ id: 'co-color' })}
                 description={formatMessage({ id: 'tag-c-color' })}
-                error={errors.color ? 'Field is invalid' : null}
+                error={errors.color ? formatMessage({ id: 'co-field-inv' }) : null}
                 required
               />
             )}

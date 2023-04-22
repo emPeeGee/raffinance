@@ -8,8 +8,6 @@ import { useTagsStore } from 'store';
 import { TagForm } from '../TagForm/TagForm';
 import { TagsList } from '../TagsList/TagsList';
 
-// TODO: Breadcrumbs ???
-
 export function Tags() {
   const { getTags } = useTagsStore();
 

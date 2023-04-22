@@ -138,7 +138,6 @@ export function AccountForm() {
     }
   };
 
-  // /* TODO: Description for every field */
   return (
     <Container>
       <Group mb="md">
@@ -159,7 +158,7 @@ export function AccountForm() {
             description={formatMessage({ id: 'acc-c-name' })}
             size="md"
             icon={<IconSignature />}
-            error={errors.name ? 'Field is invalid' : null}
+            error={errors.name ? formatMessage({ id: 'co-field-inv' }) : null}
             required
           />
 
@@ -180,7 +179,7 @@ export function AccountForm() {
                 size="md"
                 icon={<IconCurrency />}
                 data={CURRENCY_LIST}
-                error={errors.currency ? 'Field is invalid' : null}
+                error={errors.currency ? formatMessage({ id: 'co-field-inv' }) : null}
               />
             )}
           />
@@ -202,7 +201,7 @@ export function AccountForm() {
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 icon={<IconMoneybag size="1rem" />}
                 // TODO: Localization
-                error={errors.balance ? 'Field is invalid' : null}
+                error={errors.balance ? formatMessage({ id: 'co-field-inv' }) : null}
               />
             )}
           />
@@ -223,7 +222,7 @@ export function AccountForm() {
                 required
                 label={formatMessage({ id: 'co-icon' })}
                 description={formatMessage({ id: 'acc-c-icon' })}
-                error={errors.icon ? 'Field is invalid' : null}
+                error={errors.icon ? formatMessage({ id: 'co-field-inv' }) : null}
               />
             )}
           />
@@ -237,7 +236,7 @@ export function AccountForm() {
                 {...field}
                 icon={<Iconify icon={field.value} />}
                 description={formatMessage({ id: 'acc-c-icon' })}
-                error={errors.icon ? 'Field is invalid' : null}
+                error={errors.icon ? 'formatMessage({id: 'co-field-inv'})' : null}
               />
             )}
           /> */}
@@ -256,7 +255,7 @@ export function AccountForm() {
                 swatches={SWATCHES}
                 label={formatMessage({ id: 'co-color' })}
                 description={formatMessage({ id: 'acc-c-color' })}
-                error={errors.color ? 'Field is invalid' : null}
+                error={errors.color ? formatMessage({ id: 'co-field-inv' }) : null}
                 required
               />
             )}

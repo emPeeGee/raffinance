@@ -9,8 +9,6 @@ import { AccountDetail } from '../AccountDetail/AccountDetail';
 import { AccountForm } from '../AccountForm/AccountForm';
 import { AccountsDashboard } from '../AccountsDashboard/AccountsDashboard';
 
-// TODO: Breadcrumbs ???
-
 export function Accounts() {
   const { getAccounts } = useAccountStore();
 
