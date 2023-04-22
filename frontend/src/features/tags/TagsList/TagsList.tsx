@@ -36,7 +36,6 @@ import { getContrastColor } from 'utils';
 
 import { NoTags } from '../NoTags/NoTags';
 
-// TODO: styles are identical to categoires
 const useStyles = createStyles((theme) => ({
   title: {
     fontWeight: 900,
@@ -202,5 +201,3 @@ export function TagsList() {
     </>
   );
 }
-
-// TODO: suspense for base fetch ?, effects and routes reorganization

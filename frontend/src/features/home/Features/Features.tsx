@@ -84,7 +84,6 @@ const useStyles = createStyles((theme) => ({
   }
 }));
 
-// TODO: Complete it with images if needed and check
 export function Features() {
   const { classes, theme } = useStyles();
   const featuresCards = features.map((feature) => (

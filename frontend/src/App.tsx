@@ -16,16 +16,6 @@ import messages from 'i18n';
 import { useI18nStore } from 'store';
 import { COLOR_SCHEME_STORAGE_KEY, Theme, DateUnit } from 'utils';
 
-// '*': {
-//   box-sizing: border-box,
-// },
-
-// 'body': {
-//   margin: 0,
-//   padding: 0,
-//   fontFamily: 'Open Sans sans-serif',
-// }
-
 const customTheme = (colorScheme: 'light' | 'dark'): MantineThemeOverride => ({
   colorScheme,
   fontFamily: 'Open Sans, sans serif',

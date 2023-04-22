@@ -57,6 +57,7 @@ func (s *seeder) seedTransactionTypes() error {
 
 func (s *seeder) seedCategories() error {
 	categories := []entity.Category{
+		// Probably, there can be problem when auto increment will reach this id number
 		{Model: gorm.Model{ID: category.SystemCategoryID}, Name: "System", Color: "#000000", Icon: "shield"},
 	}
 

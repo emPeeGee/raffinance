@@ -16,7 +16,6 @@ type AccountsStore = {
   reset: () => void;
   fetchAccounts: () => void;
   getAccounts: () => void;
-  // TODO: should it be in store??? because it doesn't store anything
   getAccount: (id: string, includeTransaction: boolean) => Promise<AccountDetailsModel>;
   getAccountTransactions: (
     accountId: string,

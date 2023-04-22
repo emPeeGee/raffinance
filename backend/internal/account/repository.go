@@ -23,7 +23,6 @@ type Repository interface {
 	deleteAccount(userId, id uint) error
 	accountExistsAndBelongsToUser(userID, id uint, name string) (bool, error)
 	accountIsUsed(accountId uint) error
-	// TODO: rename to calculate*****
 	getAccountBalance(id uint, month *time.Time) (float64, error)
 	getUserBalance(userID uint) (float64, error)
 }
@@ -93,7 +92,6 @@ func (r *repository) updateAccount(userId, accountId uint, account updateAccount
 	return &updatedAccount, nil
 }
 
-// TODO: check when there will account will contain transactions
 func (r *repository) deleteAccount(userId, id uint) error {
 	return r.db.Delete(&entity.Account{}, id).Error
 }

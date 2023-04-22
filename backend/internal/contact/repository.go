@@ -74,7 +74,6 @@ func (r *repository) updateContact(userId, contactId uint, contact updateContact
 	return &theContact, nil
 }
 
-// TODO: check when there will be some contacts used in some places
 func (r *repository) deleteContact(userId, id uint) error {
 	return r.db.Delete(&entity.Contact{}, id).Error
 }

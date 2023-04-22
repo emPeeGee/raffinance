@@ -73,7 +73,6 @@ func (r *repository) updateTag(userId, tagId uint, tag updateTagDTO) (*tagRespon
 	return &updatedTag, nil
 }
 
-// TODO: check when there will tag will contain transactions
 func (r *repository) deleteTag(userId, id uint) error {
 	return r.db.Delete(&entity.Tag{}, id).Error
 }

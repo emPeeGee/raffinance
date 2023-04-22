@@ -12,7 +12,6 @@ type CategoriesStore = {
   reset: () => void;
   fetchCategories: () => void;
   getCategories: () => void;
-  // TODO: should it be in store??? because it doesn't store anything
   getCategory: (id: number) => CategoryModel | undefined;
   addCategory: (category: CreateCategoryDTO) => Promise<boolean>;
   updateCategory: (id: number, category: CreateCategoryDTO) => Promise<boolean>;

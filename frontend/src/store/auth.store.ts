@@ -6,8 +6,7 @@ import { api } from 'services/http';
 import { useAccountStore, useCategoriesStore, useTagsStore, useTransactionStore } from 'store';
 import { TOKEN_STORAGE_KEY } from 'utils';
 
-// TODO: it was hook, how it is what?
-// TODO: Move
+// TODO: it was hook, how it is what? Move
 function getToken<T>(key: string, initialValue: T): T {
   if (typeof window === 'undefined') {
     return initialValue;
@@ -15,13 +14,9 @@ function getToken<T>(key: string, initialValue: T): T {
 
   try {
     const item = window.localStorage.getItem(key);
-
-    console.log('get loc tok', item);
     return item ? JSON.parse(item) : initialValue;
   } catch (error) {
     console.log(error);
-
-    console.log('get loc tok', initialValue);
     return initialValue;
   }
 }

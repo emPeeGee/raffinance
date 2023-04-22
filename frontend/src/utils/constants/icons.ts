@@ -71,7 +71,7 @@ export interface Icon {
 }
 
 // TODO: expand
-// TODO: I could group them by something
+// IDEA: I could group them by something
 export const ICONS: Icon[] = [
   { value: 'rocket', label: 'Rocket', component: IconRocket },
   { value: 'coins', label: 'Coins', component: IconCoins },

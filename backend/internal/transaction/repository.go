@@ -212,11 +212,9 @@ func (r *repository) getTransaction(txnId uint) (*TransactionResponse, error) {
 
 func (r *repository) getAccountTransactionsByMonth(accountId uint, year int, month time.Month) ([]TransactionResponse, error) {
 	// Get the start and end of the month in the provided year and month
-	//TODO: hard-coded the timezone to UTC
 	startOfMonth := time.Date(year, month, 1, 0, 0, 0, 0, time.UTC)
 	endOfMonth := startOfMonth.AddDate(0, 1, 0).Add(-time.Nanosecond)
 
-	// TODO: Test on another user
 	var transactions []entity.Transaction
 	if err := r.db.Where("from_account_id = ? OR to_account_id = ?", accountId, accountId).
 		Where("date >= ? AND date <= ?", startOfMonth, endOfMonth).

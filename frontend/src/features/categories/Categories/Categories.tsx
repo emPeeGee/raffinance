@@ -25,6 +25,3 @@ export function Categories() {
     </Container>
   );
 }
-
-// TODO: suspense for base fetch ?, effects and routes reorganization
-// TODO: components organization, do i need folder for each component?

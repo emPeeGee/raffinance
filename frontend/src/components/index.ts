@@ -1,6 +1,5 @@
 import { ConfirmDelete } from './common/ConfirmDelete/ConfirmDelete';
 import { Iconify } from './common/Iconify/Iconify';
-// TODO: deprecate iconpicker
 import { IconPicker } from './common/IconPicker/IconPicker';
 import { IconPicker2 } from './common/IconPicker2/IconPicker2';
 import LanguagePicker from './common/LangPicker/LangPicker';

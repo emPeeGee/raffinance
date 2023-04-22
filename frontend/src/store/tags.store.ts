@@ -12,7 +12,6 @@ type TagsStore = {
   reset: () => void;
   fetchTags: () => void;
   getTags: () => void;
-  // TODO: should it be in store??? because it doesn't store anything
   getTag: (id: number) => TagModel | undefined;
   addTag: (tag: CreateTagDTO) => Promise<boolean>;
   updateTag: (id: number, tag: CreateTagDTO) => Promise<boolean>;

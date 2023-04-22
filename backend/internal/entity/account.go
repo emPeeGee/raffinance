@@ -4,11 +4,9 @@ import "gorm.io/gorm"
 
 type Account struct {
 	gorm.Model
-	UserID *uint
-	// TODO: Validation
-	Name  string `json:"name" gorm:"notNull;size:256"`
-	Color string `json:"color" gorm:"notNull;size:7"`
-	Icon  string `gorm:"notNull;size:128"`
-	// TODO: how will currency work
+	UserID   *uint
+	Name     string `json:"name" gorm:"notNull;size:256"`
+	Color    string `json:"color" gorm:"notNull;size:7"`
+	Icon     string `gorm:"notNull;size:128"`
 	Currency string `json:"currency" gorm:"notNull;size:10"`
 }

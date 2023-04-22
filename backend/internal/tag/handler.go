@@ -17,8 +17,6 @@ func RegisterHandlers(apiRg *gin.RouterGroup, service Service, validate *validat
 	api := apiRg.Group("/tags")
 	{
 		api.GET("", h.getTags)
-		// TODO: make it when transactions are available
-		// api.GET("/:id", h.getTag)
 		api.POST("", h.createTag)
 		api.PUT("/:id", h.updateTag)
 		api.DELETE("/:id", h.deleteTag)

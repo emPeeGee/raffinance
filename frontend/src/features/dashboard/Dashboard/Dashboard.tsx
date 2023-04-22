@@ -53,7 +53,7 @@ export function Dashboard() {
             </Group>
           </Title>
           <Group>
-            {/* NOTE: // Every entity has a associated shape and color */}
+            {/* NOTE: Every entity has a associated shape and color */}
             <Button
               component={Link}
               to="/transactions/create"

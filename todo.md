@@ -20,3 +20,6 @@
 19. Every txn card searches for account
 20. Create a feature file, where I will describe every feature of the app in short
 21. Breadcrumps ???
+22. Currency support with features
+23. suspense for base fetch ?, effects
+24. components organization, do i need folder for each component?

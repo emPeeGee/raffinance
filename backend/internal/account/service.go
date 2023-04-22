@@ -24,7 +24,7 @@ type Service interface {
 
 type service struct {
 	repo Repository
-	// TODO: I need this service to make transaction on account
+	// NOTE: I need this service to make transaction on account
 	transactionService transaction.Service
 	logger             log.Logger
 }

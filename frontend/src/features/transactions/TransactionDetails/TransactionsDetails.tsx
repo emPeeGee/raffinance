@@ -249,5 +249,3 @@ export function TransactionDetails() {
     </Container>
   );
 }
-
-// TODO: WTF is dayjs
