@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/emPeeGee/raffinance/internal/category"
 	"github.com/emPeeGee/raffinance/pkg/log"
 )
 
@@ -42,9 +43,12 @@ func (s *service) createTransaction(userId uint, transaction CreateTransactionDT
 		}
 	}
 
-	exists, err := s.repo.categoryExistsAndBelongsToUser(userId, transaction.CategoryID)
-	if err != nil || !exists {
-		return nil, fmt.Errorf("categoryId with id %d doesn't exist or belong to user", transaction.CategoryID)
+	// Omit validation if it is system category
+	if transaction.CategoryID != category.SystemCategoryID {
+		exists, err := s.repo.categoryExistsAndBelongsToUser(userId, transaction.CategoryID)
+		if err != nil || !exists {
+			return nil, fmt.Errorf("categoryId with id %d doesn't exist or belong to user", transaction.CategoryID)
+		}
 	}
 
 	exist, err := s.repo.tagsExistsAndBelongsToUser(userId, transaction.TagIDs)
@@ -57,13 +61,12 @@ func (s *service) createTransaction(userId uint, transaction CreateTransactionDT
 
 func (s *service) CreateInitialTransaction(userId, accountId uint, amount float64) (*TransactionResponse, error) {
 	transaction := CreateTransactionDTO{
-		Date:        time.Now(),
-		Amount:      amount,
-		Description: "Initial balance",
-		Location:    "",
-		ToAccountID: accountId,
-		// TODO:
-		CategoryID:        2,
+		Date:              time.Now(),
+		Amount:            amount,
+		Description:       "Initial balance",
+		Location:          "",
+		ToAccountID:       accountId,
+		CategoryID:        category.SystemCategoryID,
 		TransactionTypeID: byte(INCOME),
 	}
 
@@ -72,13 +75,12 @@ func (s *service) CreateInitialTransaction(userId, accountId uint, amount float6
 
 func (s *service) CreateAdjustmentTransaction(userId, accountId uint, amount float64, trType TransactionType) (*TransactionResponse, error) {
 	transaction := CreateTransactionDTO{
-		Date:        time.Now(),
-		Amount:      amount,
-		Description: "Adjusted balance",
-		Location:    "",
-		ToAccountID: accountId,
-		// TODO:
-		CategoryID:        2,
+		Date:              time.Now(),
+		Amount:            amount,
+		Description:       "Adjusted balance",
+		Location:          "",
+		ToAccountID:       accountId,
+		CategoryID:        category.SystemCategoryID,
 		TransactionTypeID: byte(trType),
 	}
 

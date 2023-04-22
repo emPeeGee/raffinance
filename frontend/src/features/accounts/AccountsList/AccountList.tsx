@@ -69,7 +69,7 @@ export function AccountsList(props: Props) {
   };
 
   const getRateColor = (rate?: number) => {
-    if (rate === 0 || rate === undefined) {
+    if (rate === 0 || rate === undefined || rate === null) {
       const color =
         theme.colorScheme === 'light' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.7)';
 

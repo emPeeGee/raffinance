@@ -23,6 +23,10 @@ func NewCategoryService(repo Repository, logger log.Logger) *service {
 }
 
 func (s *service) createCategory(userID uint, category createCategoryDTO) (*categoryResponse, error) {
+	if err := checkForBlacklist(category.Name); err != nil {
+		return nil, err
+	}
+
 	// name should be unique per user
 	exists, err := s.repo.categoryExistsAndBelongsToUser(userID, 0, category.Name)
 	if err != nil {
@@ -58,6 +62,10 @@ func (s *service) getCategories(userId uint) ([]categoryResponse, error) {
 }
 
 func (s *service) updateCategory(userID, categoryId uint, category updateCategoryDTO) (*categoryResponse, error) {
+	if err := checkForBlacklist(category.Name); err != nil {
+		return nil, err
+	}
+
 	// TODO: bug, when user updates only icon or color. the category won't be updated
 	exists, err := s.repo.categoryExistsAndBelongsToUser(userID, categoryId, "")
 	if err != nil {

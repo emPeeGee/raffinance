@@ -56,7 +56,7 @@ func (r *repository) createContact(userId uint, contact createContactDTO) (*cont
 func (r *repository) updateContact(userId, contactId uint, contact updateContactDTO) (*contactResponse, error) {
 	fmt.Printf("%+v\n", contact)
 
-	// NOTE:NOTE When update with struct, GORM will only update non-zero fields, you might want to use
+	// NOTE: When update with struct, GORM will only update non-zero fields, you might want to use
 	// map to update attributes or use Select to specify fields to update
 	if err := r.db.Model(&entity.Contact{}).Where("id = ?", contactId).Updates(map[string]interface{}{
 		"name":  contact.Name,

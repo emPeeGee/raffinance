@@ -1,6 +1,7 @@
 package seeder
 
 import (
+	"github.com/emPeeGee/raffinance/internal/category"
 	"github.com/emPeeGee/raffinance/internal/entity"
 	"github.com/emPeeGee/raffinance/internal/transaction"
 	"github.com/emPeeGee/raffinance/pkg/log"
@@ -27,6 +28,10 @@ func (s *seeder) Run() error {
 		return err
 	}
 
+	if err := s.seedCategories(); err != nil {
+		return err
+	}
+
 	s.logger.Info("The seeding has been finished")
 	return nil
 }
@@ -45,6 +50,23 @@ func (s *seeder) seedTransactionTypes() error {
 		}
 
 		s.logger.Infof("The %s was created", trType.Name)
+	}
+
+	return nil
+}
+
+func (s *seeder) seedCategories() error {
+	categories := []entity.Category{
+		{Model: gorm.Model{ID: category.SystemCategoryID}, Name: "System", Color: "#000000", Icon: "shield"},
+	}
+
+	for _, category := range categories {
+		if err := s.db.FirstOrCreate(&category).Error; err != nil {
+			s.logger.Infof(err.Error())
+			return err
+		}
+
+		s.logger.Infof("The %s was created", category.Name)
 	}
 
 	return nil

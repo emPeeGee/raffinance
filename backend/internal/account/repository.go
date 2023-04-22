@@ -38,7 +38,6 @@ func NewAccountRepository(db *gorm.DB, logger log.Logger) *repository {
 }
 
 func (r *repository) createAccount(userId uint, account createAccountDTO) (*accountResponse, error) {
-	// TODO: When transactions will be. Create a transaction with init balance
 	newAccount := entity.Account{
 		Name:     account.Name,
 		Currency: account.Currency,
@@ -77,9 +76,6 @@ func (r *repository) updateAccount(userId, accountId uint, account updateAccount
 	}).Error; err != nil {
 		return nil, err
 	}
-
-	// TODO: when transactions will be, on currency update should change all transaction currency
-	// TODO: when transactions will be, on balance update should create new transaction
 
 	var updatedAccount accountResponse
 	if err := r.db.Model(&entity.Account{}).First(&updatedAccount, accountId).Error; err != nil {
@@ -282,7 +278,6 @@ func (r *repository) getUserBalance(userID uint) (float64, error) {
 	return totalBalance, nil
 }
 
-// TODO: get transaction from this month only
 func (r *repository) getAccount(accountId uint) (*accountDetailsResponse, error) {
 	var account *accountDetailsResponse
 
