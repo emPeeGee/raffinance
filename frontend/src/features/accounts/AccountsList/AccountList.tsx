@@ -100,7 +100,6 @@ export function AccountsList(props: Props) {
     );
   };
 
-  /* eslint-disable  no-constant-condition */
   return (
     <>
       {viewMode === 'table' && (

@@ -1,6 +1,15 @@
 import React from 'react';
 
-import { Blockquote, Button, Container, Group, Title, createStyles, rem } from '@mantine/core';
+import {
+  Blockquote,
+  Button,
+  Container,
+  Group,
+  Loader,
+  Title,
+  createStyles,
+  rem
+} from '@mantine/core';
 import { IconInfoCircle, IconSquare } from '@tabler/icons-react';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
@@ -48,8 +57,10 @@ const useStyles = createStyles((theme) => ({
 export function AccountsDashboard() {
   const { formatMessage } = useIntl();
   const { classes } = useStyles();
-  const { accounts } = useAccountStore();
+  const { accounts, pending } = useAccountStore();
   const { viewMode, setViewMode } = useSettingsStore();
+
+  const content = accounts.length > 0 ? <AccountsList /> : <NoAccounts />;
 
   return (
     <Container>
@@ -75,7 +86,13 @@ export function AccountsDashboard() {
         <ViewSwitcher defaultValue={viewMode} onChange={setViewMode} />
       </Group>
 
-      {accounts.length > 0 ? <AccountsList /> : <NoAccounts />}
+      {pending ? (
+        <Group position="center" p="lg" mt="xl">
+          <Loader />
+        </Group>
+      ) : (
+        content
+      )}
     </Container>
   );
 }

@@ -12,6 +12,7 @@ import { useAuthStore } from 'store';
 
 // TODO: is loading in store?
 type AccountsStore = {
+  pending: boolean;
   accounts: AccountModel[];
   fetchAccounts: () => void;
   getAccounts: () => void;
@@ -31,13 +32,16 @@ const accountStore = 'Accounts store';
 export const useAccountStore = create<AccountsStore>()(
   devtools(
     (set, get) => ({
+      pending: false,
       accounts: [],
       getAccounts: () => {
-        console.log(get().accounts);
+        set({ ...get(), pending: true });
         const { accounts } = get();
 
         if (accounts.length === 0) {
           get().fetchAccounts();
+        } else {
+          set({ ...get(), pending: false });
         }
       },
 
@@ -83,8 +87,7 @@ export const useAccountStore = create<AccountsStore>()(
           url: 'accounts',
           token: useAuthStore.getState().token
         });
-        console.log(accounts);
-        set({ accounts });
+        set({ accounts, pending: false });
       },
 
       addAccount: async (account: CreateAccountDTO): Promise<boolean> => {
