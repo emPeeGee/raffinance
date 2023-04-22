@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Button, Group, Text, Title, createStyles, rem } from '@mantine/core';
 import { IconCircle, IconInfoCircle } from '@tabler/icons-react';
 import { useIntl } from 'react-intl';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import {
   TransactionFilterModel,
@@ -29,12 +29,9 @@ export function TransactionsDashboard() {
   const { formatMessage } = useIntl();
   const { classes } = useStyles();
   const [range, setRange] = useState<[Date | null, Date | null]>([null, null]);
+  const { state } = useLocation();
 
   const { transactions, getTransactions, pending, fetchTransactions } = useTransactionStore();
-
-  useEffect(() => {
-    getTransactions();
-  }, []);
 
   const applyFiltersHandler = (filters: TransactionFilterModel) => {
     setRange(filters.dateRange);
@@ -43,8 +40,22 @@ export function TransactionsDashboard() {
 
   const clearAllHandler = () => {
     setRange([null, null]);
-    fetchTransactions();
   };
+
+  useEffect(() => {
+    if (state) {
+      fetchTransactions({
+        accounts: [],
+        dateRange: range,
+        description: '',
+        type: '',
+        tags: state?.tagId ? [state.tagId] : [],
+        categories: state?.categoryId ? [state.categoryId] : []
+      });
+    } else {
+      getTransactions();
+    }
+  }, []);
 
   const dateRange = getDateRangeText(range, formatMessage);
 
@@ -71,7 +82,16 @@ export function TransactionsDashboard() {
         {formatMessage({ id: 'txn-info' })}
       </Alert>
 
-      <TransactionsFilter onApply={applyFiltersHandler} onClear={clearAllHandler} withAccount />
+      <TransactionsFilter
+        defaultExpanded={state && true}
+        defaultFilters={{
+          tags: state?.tagId ? [state.tagId] : [],
+          categories: state?.categoryId ? [state.categoryId] : []
+        }}
+        onApply={applyFiltersHandler}
+        onClear={clearAllHandler}
+        withAccount
+      />
       <TransactionsList transactions={transactions} pending={pending} range={range} />
     </>
   );

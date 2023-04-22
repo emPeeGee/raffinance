@@ -67,7 +67,7 @@ export function CategoriesList() {
   const [opened, { open, close }] = useDisclosure(false);
 
   const gotoCategory = (id: number) => () => {
-    // Navigate('')
+    navigate('/transactions/', { state: { categoryId: String(id) } });
   };
 
   useEffect(() => {
@@ -118,9 +118,6 @@ export function CategoriesList() {
           return (
             <Paper pos="relative" withBorder p={0} radius="md" key={name} bg={color}>
               <UnstyledButton p="xs" h="100%" w="100%" onClick={gotoCategory(id)} title={name}>
-                {/* // TODO:  clicking on the category could take the user
-                   to a filtered view of transactions that match that category. */}
-
                 <Group position="apart" spacing="0.25rem" noWrap>
                   <Flex justify="left" align="center" gap="xs" wrap="nowrap">
                     <Box>

@@ -49,6 +49,7 @@ interface Props {
   onApply: (aa: TransactionFilterModel) => void;
   onClear: () => void;
   defaultFilters?: Partial<TransactionFilterModel>;
+  defaultExpanded?: boolean;
 }
 
 export function TransactionsFilter({
@@ -56,6 +57,7 @@ export function TransactionsFilter({
   withTitle = false,
   onApply,
   onClear,
+  defaultExpanded = false,
   defaultFilters = undefined
 }: Props) {
   const { formatMessage } = useIntl();
@@ -80,6 +82,7 @@ export function TransactionsFilter({
   const { locale } = useI18nStore();
   const theme = useMantineTheme();
   const range = watch('dateRange');
+  const accordionName = 'filters';
 
   const applyFilters = (filters: TransactionFilterModel) => {
     onApply(filters);
@@ -92,8 +95,11 @@ export function TransactionsFilter({
 
   return (
     <Box mb="lg">
-      <Accordion variant="filled" my="md">
-        <Accordion.Item value="filters">
+      <Accordion
+        variant="filled"
+        my="md"
+        defaultValue={defaultExpanded ? accordionName : undefined}>
+        <Accordion.Item value={accordionName}>
           <Accordion.Control icon={<IconFilter />}>
             {formatMessage({ id: 'co-filters' })}
             {withTitle && (
