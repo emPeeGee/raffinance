@@ -8,6 +8,7 @@ import (
 	"syscall"
 
 	"github.com/emPeeGee/raffinance/internal/account"
+	"github.com/emPeeGee/raffinance/internal/analytics"
 	"github.com/emPeeGee/raffinance/internal/auth"
 	"github.com/emPeeGee/raffinance/internal/category"
 	"github.com/emPeeGee/raffinance/internal/config"
@@ -147,6 +148,13 @@ func buildHandler(db *gorm.DB, valid *validator.Validate, logger log.Logger) htt
 	tag.RegisterHandlers(
 		apiRg,
 		tag.NewTagService(tag.NewTagRepository(db, logger), logger),
+		valid,
+		logger,
+	)
+
+	analytics.RegisterHandlers(
+		apiRg,
+		analytics.NewAnalyticsService(analytics.NewAnalyticsRepository(db, logger), logger),
 		valid,
 		logger,
 	)

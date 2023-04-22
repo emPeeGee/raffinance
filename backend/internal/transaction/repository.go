@@ -70,7 +70,7 @@ func (r *repository) createTransaction(userId uint, transaction CreateTransactio
 		return nil, err
 	}
 
-	tr := entityToResponse(createdTransaction)
+	tr := EntityToResponse(createdTransaction)
 
 	return &tr, nil
 }
@@ -138,7 +138,7 @@ func (r *repository) updateTransaction(transactionId uint, transaction UpdateTra
 		return nil, fmt.Errorf("failed to commit transaction: %w", err)
 	}
 
-	response := entityToResponse(&tr)
+	response := EntityToResponse(&tr)
 	return &response, nil
 }
 
@@ -184,7 +184,7 @@ func (r *repository) getTransactions(userId uint) ([]TransactionResponse, error)
 
 	var trans []TransactionResponse = make([]TransactionResponse, 0)
 	for _, transaction := range transactions {
-		trans = append(trans, entityToResponse(&transaction))
+		trans = append(trans, EntityToResponse(&transaction))
 	}
 
 	return trans, nil
@@ -206,7 +206,7 @@ func (r *repository) getTransaction(txnId uint) (*TransactionResponse, error) {
 		return nil, err
 	}
 
-	txn := entityToResponse(transaction)
+	txn := EntityToResponse(transaction)
 	return &txn, nil
 }
 
@@ -227,7 +227,7 @@ func (r *repository) getAccountTransactionsByMonth(accountId uint, year int, mon
 
 	response := make([]TransactionResponse, len(transactions))
 	for i, t := range transactions {
-		response[i] = entityToResponse(&t)
+		response[i] = EntityToResponse(&t)
 	}
 
 	r.logger.Debug(util.StringifyAny(transactions))
@@ -287,7 +287,7 @@ func (r *repository) findByFilter(filter TransactionFilter) ([]TransactionRespon
 
 	response := make([]TransactionResponse, len(transactions))
 	for i, t := range transactions {
-		response[i] = entityToResponse(&t)
+		response[i] = EntityToResponse(&t)
 	}
 
 	return response, nil
@@ -348,7 +348,7 @@ func (r *repository) tagsExistsAndBelongsToUser(userId uint, tagIds []uint) (boo
 	return count == int64(len(tagIds)), nil
 }
 
-func entityToResponse(trx *entity.Transaction) TransactionResponse {
+func EntityToResponse(trx *entity.Transaction) TransactionResponse {
 	var tags []tag.TagShortResponse
 
 	for _, trTag := range trx.Tags {
