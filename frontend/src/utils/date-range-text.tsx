@@ -2,7 +2,7 @@ import React from 'react';
 
 import { FormattedDate } from 'react-intl';
 
-// TODO: component or func ???
+// TODO: component or func ??? component is better
 export const getDateRangeText = (range: [Date | null, Date | null], formatMessage: any) => {
   if (range[0] === null && range[1] === null) {
     return formatMessage({ id: 'co-all-time' });

@@ -126,7 +126,6 @@ const unsub = useAuthStore.subscribe(
     //   return;
     // }
 
-    // // TODO: MOVE to service
     // api
     //   .get<UserModel>({
     //     url: `user`,
@@ -135,7 +134,6 @@ const unsub = useAuthStore.subscribe(
     //   .then((response) => {
     //     setUser(response);
     //     setIsLogged(true);
-    //     // TODO: Dashboard page
     //     navigate(`/profile`);
     //   })
     //   .catch(() => logout())

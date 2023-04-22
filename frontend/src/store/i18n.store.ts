@@ -14,12 +14,10 @@ export const useI18nStore = create<StoreState>()(
   devtools(
     (set) => ({
       locale: languages[0],
-      setLocale: (locale) => set((prev) => ({ locale }), false, 'setLocaale')
+      setLocale: (locale) => set(() => ({ locale }), false, 'setLocaale')
     }),
     {
       store: i18nStoreName
     }
   )
 );
-
-// TODO: rename file

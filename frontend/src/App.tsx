@@ -96,7 +96,6 @@ function App() {
       <MantineProvider withGlobalStyles withNormalizeCSS theme={customTheme(colorScheme)}>
         <Notifications />
         <BrowserRouter>
-          {/* // TODO: Per feature locale string? */}
           <IntlProvider messages={messages[locale.value]} locale={locale.value}>
             {!isOnline ? <Offline /> : <AppShell />}
           </IntlProvider>
@@ -107,3 +106,5 @@ function App() {
 }
 
 export default App;
+
+// IDEA: Per feature locale string?

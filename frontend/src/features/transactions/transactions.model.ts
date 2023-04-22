@@ -7,7 +7,6 @@ export enum TransactionType {
   'TRANSFER' = 3
 }
 
-// TODO:MOVE from account model
 export interface TransactionModel {
   id: number;
   date: string;

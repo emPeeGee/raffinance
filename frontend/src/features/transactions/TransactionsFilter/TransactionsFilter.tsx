@@ -30,7 +30,7 @@ import { useIntl } from 'react-intl';
 
 import { MultiPicker } from 'components';
 import { useAccountStore, useCategoriesStore, useI18nStore, useTagsStore } from 'store';
-import { getDateRangeText } from 'utils';
+import { MAX_AVAILABLE_DATE, MIN_AVAILABLE_DATE, getDateRangeText } from 'utils';
 
 import { TransactionFilterModel, TransactionType } from '../transactions.model';
 
@@ -144,9 +144,8 @@ export function TransactionsFilter({
                       numberOfColumns={3}
                       defaultDate={new Date()}
                       locale={locale.value}
-                      // TODO: Hard code
-                      minDate={new Date(2010, 1, 1)}
-                      maxDate={new Date(2029, 1, 1)}
+                      minDate={MIN_AVAILABLE_DATE}
+                      maxDate={MAX_AVAILABLE_DATE}
                     />
                   )}
                 />

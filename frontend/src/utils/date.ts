@@ -1,3 +1,7 @@
+export const NOW = new Date();
+export const MIN_AVAILABLE_DATE = new Date(2020, 1);
+export const MAX_AVAILABLE_DATE = new Date(NOW.getFullYear() + 3, NOW.getMonth());
+
 export enum DateUnit {
   second = 1000,
   minute = DateUnit.second * 60,

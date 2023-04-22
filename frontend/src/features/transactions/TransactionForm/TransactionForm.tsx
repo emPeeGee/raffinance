@@ -31,7 +31,7 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { MultiPicker, TransactionTypePicker } from 'components';
 import { useAccountStore, useCategoriesStore, useTagsStore, useTransactionStore } from 'store';
-import { DateUnit } from 'utils';
+import { DateUnit, MAX_AVAILABLE_DATE, MIN_AVAILABLE_DATE } from 'utils';
 
 import { CreateTransactionDTO, TransactionModel, TransactionType } from '../transactions.model';
 
@@ -330,6 +330,8 @@ export function TransactionForm() {
                     icon={<IconCalendarTime />}
                     mx="auto"
                     error={errors.date ? 'Field is invalid' : null}
+                    minDate={MIN_AVAILABLE_DATE}
+                    maxDate={MAX_AVAILABLE_DATE}
                   />
                 )}
               />
