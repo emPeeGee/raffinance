@@ -44,8 +44,6 @@ func (s *service) createUser(user createUserDTO) error {
 
 	user.Password = hashedPassword
 
-	s.logger.Debug(user)
-
 	err = s.repo.createUser(user)
 	if err != nil {
 		return err

@@ -144,10 +144,7 @@ func (h *handler) getTransactionsFiltered(c *gin.Context) {
 		return
 	}
 
-	// TODO: validation for queries?
-
 	var filter TransactionFilter
-
 	filter.userID = userID
 	filter.Description = c.Query("description")
 	filter.Type, err = util.ParseStringToByte(c.Query("type"))

@@ -51,7 +51,6 @@ type UpdateTransactionDTO struct {
 	Description string    `json:"description" validate:"omitempty"`
 	Location    string    `json:"location" validate:"omitempty,max=128"`
 
-	// TODO: Uncomment when category and tag are done
 	CategoryID uint `json:"categoryId" validate:"required,numeric"`
 	// NOTE: valid order matters, unique can't be the last
 	TagIDs []uint `json:"tagIds" validate:"omitempty,unique,dive,numeric,gt=0"`

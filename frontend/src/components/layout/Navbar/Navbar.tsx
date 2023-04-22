@@ -1,26 +1,24 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 
 import {
-  Navbar as MantineNavbar,
   Center,
+  Navbar as MantineNavbar,
+  Stack,
   Tooltip,
   UnstyledButton,
   createStyles,
-  Stack,
   rem
 } from '@mantine/core';
 import {
-  IconGauge,
-  IconUser,
-  IconSettings,
-  IconLogout,
-  IconCategory2,
-  IconHash,
   IconAddressBook,
+  IconCategory2,
   IconExchange,
-  IconWallet,
-  IconRocket,
-  IconSofa
+  IconHash,
+  IconLogout,
+  IconSettings,
+  IconSofa,
+  IconUser,
+  IconWallet
 } from '@tabler/icons-react';
 import { Link, useNavigate } from 'react-router-dom';
 

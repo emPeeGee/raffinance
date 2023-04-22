@@ -35,7 +35,6 @@ const useStyles = createStyles((theme) => ({
   }
 }));
 
-// TODO: Rename to both create and edit
 export function CategoryForm() {
   const navigate = useNavigate();
   const { id } = useParams();

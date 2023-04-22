@@ -200,7 +200,6 @@ export function AccountForm() {
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 icon={<IconMoneybag size="1rem" />}
-                // TODO: Localization
                 error={errors.balance ? formatMessage({ id: 'co-field-inv' }) : null}
               />
             )}

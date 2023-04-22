@@ -30,7 +30,6 @@ func NewTagRepository(db *gorm.DB, logger log.Logger) *repository {
 }
 
 func (r *repository) createTag(userId uint, tag createTagDTO) (*tagResponse, error) {
-	// TODO: When transactions will be. Create a transaction with init balance
 	newTag := entity.Tag{
 		Name:   tag.Name,
 		Icon:   tag.Icon,

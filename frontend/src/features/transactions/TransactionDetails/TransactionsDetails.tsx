@@ -251,4 +251,3 @@ export function TransactionDetails() {
 }
 
 // TODO: WTF is dayjs
-// TODO: Remove unused packages like styled components

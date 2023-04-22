@@ -132,7 +132,6 @@ export function AccountDetail() {
             <Title order={3} c={textColor}>
               {account.name}
             </Title>
-            {/* <Text color="gray">{account.iban}</Text> */}
 
             <Text
               variant="subtitle1"
@@ -143,7 +142,6 @@ export function AccountDetail() {
             </Text>
           </div>
         </Group>
-        {/* TODO: different widths */}
 
         <Flex gap="sm">
           <Flex direction="column" gap="0.3rem">
@@ -227,5 +225,3 @@ export function AccountDetail() {
     </Container>
   );
 }
-
-// TODO: Remove unused packages like styled components

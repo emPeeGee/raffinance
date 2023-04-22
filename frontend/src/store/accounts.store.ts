@@ -10,7 +10,6 @@ import { TransactionFilterModel, TransactionModel } from 'features/transactions'
 import { api } from 'services/http';
 import { useAuthStore } from 'store';
 
-// TODO: is loading in store?
 type AccountsStore = {
   pending: boolean;
   accounts: AccountModel[];

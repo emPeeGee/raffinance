@@ -186,16 +186,9 @@ func (s *service) getAccountTransactionsByMonth(accountId uint, year int, month 
 		return nil, err
 	}
 
-	// TODO: Empty array or error?
-	// if len(transactions) == 0 {
-	// 	return nil, fmt.Errorf("no transactions found for account with ID %d for year %d and month %s", accountId, year, month.String())
-	// }
-
 	return transactions, nil
 }
 
-// TODO: this should be a part of user log.
-// / WTF comment above means ???
 func (s *service) getAccountBalance(userId, id uint) (float64, error) {
 	ok, err := s.repo.accountExistsAndBelongsToUser(userId, id, "")
 	if err != nil {
