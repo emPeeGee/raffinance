@@ -17,6 +17,7 @@ func RegisterHandlers(apiRg *gin.RouterGroup, service Service, validate *validat
 	{
 		api.GET("/trendBalance", h.GetTrendBalanceReport)
 		api.GET("/topTxn", h.GetTopTransactions)
+		api.GET("/categoriesSpending", h.GetCategoriesSpending)
 	}
 }
 
@@ -72,6 +73,33 @@ func (h *handler) GetTopTransactions(c *gin.Context) {
 	}
 
 	topTransactions, err := h.service.GetTopTransactions(*userID, params)
+	if err != nil {
+		errorutil.InternalServer(c, err.Error(), "")
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": topTransactions})
+}
+
+func (h *handler) GetCategoriesSpending(c *gin.Context) {
+	userID, err := auth.GetUserId(c)
+	if err != nil || userID == nil {
+		errorutil.Unauthorized(c, err.Error(), "missing user ID")
+		return
+	}
+
+	params := &RangeDateParams{}
+	if err := c.ShouldBindQuery(params); err != nil {
+		errorutil.BadRequest(c, err.Error(), "")
+		return
+	}
+
+	if err := validateRangeDate(params); err != nil {
+		errorutil.BadRequest(c, err.Error(), "")
+		return
+	}
+
+	topTransactions, err := h.service.GetCategoriesSpending(*userID, params)
 	if err != nil {
 		errorutil.InternalServer(c, err.Error(), "")
 		return

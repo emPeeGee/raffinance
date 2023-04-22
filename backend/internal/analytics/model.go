@@ -15,9 +15,15 @@ type TopTransactionsParams struct {
 	Limit uint `form:"limit" binding:"required"`
 }
 
+type CategorySpending struct {
+	CategoryName string  `json:"category"`
+	Amount       float64 `json:"amount"`
+}
+
 type RangeDateParams struct {
-	StartDate time.Time `form:"start_date" binding:"required"`
-	EndDate   time.Time `form:"end_date" binding:"required"`
+	// TODO: make non required and default and then make requst withoud dates
+	StartDate time.Time `form:"start_date" binding:"omitempty"`
+	EndDate   time.Time `form:"end_date" binding:"omitempty"`
 }
 
 func validateRangeDate(params *RangeDateParams) error {

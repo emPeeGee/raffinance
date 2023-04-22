@@ -10,6 +10,7 @@ import (
 type Service interface {
 	GetTrendBalanceReport(userID uint, params *RangeDateParams) ([]TrendBalanceReport, error)
 	GetTopTransactions(userID uint, params *TopTransactionsParams) ([]transaction.TransactionResponse, error)
+	GetCategoriesSpending(userID uint, params *RangeDateParams) ([]CategorySpending, error)
 }
 
 type service struct {
@@ -30,6 +31,10 @@ func (s *service) GetTrendBalanceReport(userID uint, params *RangeDateParams) ([
 }
 
 func (s *service) GetTopTransactions(userID uint, params *TopTransactionsParams) ([]transaction.TransactionResponse, error) {
+	params.EndDate = params.EndDate.
+		Truncate(24 * time.Hour).
+		Add(time.Hour*23 + time.Minute*59 + time.Second*59 + time.Millisecond*999)
+
 	transactions, err := s.repo.GetTopTransactions(userID, params)
 	if err != nil {
 		return nil, err
@@ -41,4 +46,12 @@ func (s *service) GetTopTransactions(userID uint, params *TopTransactionsParams)
 	}
 
 	return topTxns, nil
+}
+
+func (s *service) GetCategoriesSpending(userID uint, params *RangeDateParams) ([]CategorySpending, error) {
+	params.EndDate = params.EndDate.
+		Truncate(24 * time.Hour).
+		Add(time.Hour*23 + time.Minute*59 + time.Second*59 + time.Millisecond*999)
+
+	return s.repo.GetCategoriesSpending(userID, params)
 }

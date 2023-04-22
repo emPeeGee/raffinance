@@ -9,6 +9,7 @@ import (
 type Repository interface {
 	GetTrendBalanceReport(userID uint, params *RangeDateParams) ([]TrendBalanceReport, error)
 	GetTopTransactions(userID uint, params *TopTransactionsParams) ([]entity.Transaction, error)
+	GetCategoriesSpending(userID uint, params *RangeDateParams) ([]CategorySpending, error)
 }
 
 type repository struct {
@@ -55,4 +56,22 @@ func (r *repository) GetTopTransactions(userID uint, params *TopTransactionsPara
 	}
 
 	return transactions, nil
+}
+
+func (r *repository) GetCategoriesSpending(userID uint, params *RangeDateParams) ([]CategorySpending, error) {
+	var categoriesSpending []CategorySpending
+
+	// Query the category-wise spending data for the user within the specified date range
+	err := r.db.Table("transactions").
+		Joins("JOIN categories ON categories.id = transactions.category_id").
+		Joins("JOIN accounts ON transactions.from_account_id = accounts.id OR transactions.to_account_id = accounts.id").
+		Select("categories.name AS category_name, SUM(transactions.amount) AS amount").
+		Where("accounts.user_id = ? AND date BETWEEN ? AND ?", userID, params.StartDate, params.EndDate).
+		Group("categories.name").
+		Scan(&categoriesSpending).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return categoriesSpending, nil
 }
