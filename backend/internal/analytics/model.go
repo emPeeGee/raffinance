@@ -16,9 +16,14 @@ type TopTransactionsParams struct {
 	Limit uint `form:"limit" binding:"required"`
 }
 
-type ByCategory struct {
-	CategoryName string  `json:"category"`
-	Amount       float64 `json:"amount"`
+type LabelValue struct {
+	Label string  `json:"label"`
+	Value float64 `json:"value"`
+}
+
+type Report struct {
+	Title string `json:"title"`
+	Data  any    `json:"data"`
 }
 
 type RangeDateParams struct {

@@ -10,7 +10,7 @@ import (
 type Repository interface {
 	GetTrendBalanceReport(userID uint, params *RangeDateParams) ([]TrendBalanceReport, error)
 	GetTopTransactions(userID uint, params *TopTransactionsParams) ([]entity.Transaction, error)
-	GetCategoriesReport(userID uint, txnType transaction.TransactionType, params *RangeDateParams) ([]ByCategory, error)
+	GetCategoriesReport(userID uint, txnType transaction.TransactionType, params *RangeDateParams) ([]LabelValue, error)
 }
 
 type repository struct {
@@ -65,14 +65,14 @@ func (r *repository) GetTopTransactions(userID uint, params *TopTransactionsPara
 	return transactions, nil
 }
 
-func (r *repository) GetCategoriesReport(userID uint, txnType transaction.TransactionType, params *RangeDateParams) ([]ByCategory, error) {
-	var byCategory []ByCategory
+func (r *repository) GetCategoriesReport(userID uint, txnType transaction.TransactionType, params *RangeDateParams) ([]LabelValue, error) {
+	var byCategory []LabelValue
 
 	// Query the category-wise spending data for the user within the specified date range
 	query := r.db.Table("transactions").
 		Joins("JOIN categories ON categories.id = transactions.category_id").
 		Joins("JOIN accounts ON transactions.from_account_id = accounts.id OR transactions.to_account_id = accounts.id").
-		Select("categories.name AS category_name, SUM(transactions.amount) AS amount").
+		Select("categories.name AS label, SUM(transactions.amount) AS value").
 		Where("accounts.user_id = ? AND transactions.transaction_type_id = ?", userID, txnType).
 		Where("transactions.deleted_at IS NULL AND categories.deleted_at IS NULL").
 		Group("categories.name")

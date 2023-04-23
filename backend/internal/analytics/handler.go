@@ -106,7 +106,7 @@ func (h *handler) GetCategoriesSpending(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": spending})
+	c.JSON(http.StatusOK, spending)
 }
 
 func (h *handler) GetCategoriesIncome(c *gin.Context) {
@@ -133,5 +133,5 @@ func (h *handler) GetCategoriesIncome(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": income})
+	c.JSON(http.StatusOK, income)
 }
