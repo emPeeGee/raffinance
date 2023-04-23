@@ -5,3 +5,4 @@ export * from './categories.store';
 export * from './tags.store';
 export * from './accounts.store';
 export * from './transactions.store';
+export * from './analytics.store';

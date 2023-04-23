@@ -1,3 +1,4 @@
+import { PieChart } from './charts/PieChart/PieChart';
 import { ConfirmDelete } from './common/ConfirmDelete/ConfirmDelete';
 import { Iconify } from './common/Iconify/Iconify';
 import { IconPicker } from './common/IconPicker/IconPicker';
@@ -20,6 +21,7 @@ export {
   AppShell,
   Footer,
   Header,
+  PieChart,
   ConfirmDelete,
   NotFound,
   // Logo,

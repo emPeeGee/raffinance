@@ -117,5 +117,3 @@ export const useTagsStore = create<TagsStore>()(
     }
   )
 );
-
-// TODO  useAuthStore.getState().token. I don't like to call it every time.
