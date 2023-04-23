@@ -1,16 +1,16 @@
 package analytics
 
 import (
-	"time"
-
 	"github.com/emPeeGee/raffinance/internal/transaction"
 	"github.com/emPeeGee/raffinance/pkg/log"
+	"github.com/emPeeGee/raffinance/pkg/util"
 )
 
 type Service interface {
 	GetTrendBalanceReport(userID uint, params *RangeDateParams) ([]TrendBalanceReport, error)
 	GetTopTransactions(userID uint, params *TopTransactionsParams) ([]transaction.TransactionResponse, error)
-	GetCategoriesSpending(userID uint, params *RangeDateParams) ([]CategorySpending, error)
+	GetCategoriesSpending(userID uint, params *RangeDateParams) ([]ByCategory, error)
+	GetCategoriesIncome(userID uint, params *RangeDateParams) ([]ByCategory, error)
 }
 
 type service struct {
@@ -23,17 +23,12 @@ func NewAnalyticsService(repo Repository, logger log.Logger) *service {
 }
 
 func (s *service) GetTrendBalanceReport(userID uint, params *RangeDateParams) ([]TrendBalanceReport, error) {
-	params.EndDate = params.EndDate.
-		Truncate(24 * time.Hour).
-		Add(time.Hour*23 + time.Minute*59 + time.Second*59 + time.Millisecond*999)
-
+	params.EndDate = util.EndOfTheDay(*params.EndDate)
 	return s.repo.GetTrendBalanceReport(userID, params)
 }
 
 func (s *service) GetTopTransactions(userID uint, params *TopTransactionsParams) ([]transaction.TransactionResponse, error) {
-	params.EndDate = params.EndDate.
-		Truncate(24 * time.Hour).
-		Add(time.Hour*23 + time.Minute*59 + time.Second*59 + time.Millisecond*999)
+	params.EndDate = util.EndOfTheDay(*params.EndDate)
 
 	transactions, err := s.repo.GetTopTransactions(userID, params)
 	if err != nil {
@@ -48,10 +43,18 @@ func (s *service) GetTopTransactions(userID uint, params *TopTransactionsParams)
 	return topTxns, nil
 }
 
-func (s *service) GetCategoriesSpending(userID uint, params *RangeDateParams) ([]CategorySpending, error) {
-	params.EndDate = params.EndDate.
-		Truncate(24 * time.Hour).
-		Add(time.Hour*23 + time.Minute*59 + time.Second*59 + time.Millisecond*999)
+func (s *service) GetCategoriesSpending(userID uint, params *RangeDateParams) ([]ByCategory, error) {
+	if params.EndDate != nil && params.StartDate != nil {
+		params.EndDate = util.EndOfTheDay(*params.EndDate)
+	}
 
 	return s.repo.GetCategoriesSpending(userID, params)
+}
+
+func (s *service) GetCategoriesIncome(userID uint, params *RangeDateParams) ([]ByCategory, error) {
+	if params.EndDate != nil && params.StartDate != nil {
+		params.EndDate = util.EndOfTheDay(*params.EndDate)
+	}
+
+	return s.repo.GetCategoriesIncome(userID, params)
 }

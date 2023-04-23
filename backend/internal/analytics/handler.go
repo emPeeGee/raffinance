@@ -18,6 +18,7 @@ func RegisterHandlers(apiRg *gin.RouterGroup, service Service, validate *validat
 		api.GET("/trendBalance", h.GetTrendBalanceReport)
 		api.GET("/topTxn", h.GetTopTransactions)
 		api.GET("/categoriesSpending", h.GetCategoriesSpending)
+		api.GET("/categoriesIncome", h.GetCategoriesIncome)
 	}
 }
 
@@ -40,10 +41,10 @@ func (h *handler) GetTrendBalanceReport(c *gin.Context) {
 		return
 	}
 
-	if err := validateRangeDate(params); err != nil {
-		errorutil.BadRequest(c, err.Error(), "")
-		return
-	}
+	// if err := validateRangeDate(params); err != nil {
+	// 	errorutil.BadRequest(c, err.Error(), "")
+	// 	return
+	// }
 
 	data, err := h.service.GetTrendBalanceReport(*userID, params)
 	if err != nil {
@@ -67,10 +68,10 @@ func (h *handler) GetTopTransactions(c *gin.Context) {
 		return
 	}
 
-	if err := validateRangeDate(params.RangeDateParams); err != nil {
-		errorutil.BadRequest(c, err.Error(), "")
-		return
-	}
+	// if err := validateRangeDate(params.RangeDateParams); err != nil {
+	// 	errorutil.BadRequest(c, err.Error(), "")
+	// 	return
+	// }
 
 	topTransactions, err := h.service.GetTopTransactions(*userID, params)
 	if err != nil {
@@ -94,16 +95,43 @@ func (h *handler) GetCategoriesSpending(c *gin.Context) {
 		return
 	}
 
-	if err := validateRangeDate(params); err != nil {
+	if err := h.validate.Struct(params); err != nil {
 		errorutil.BadRequest(c, err.Error(), "")
 		return
 	}
 
-	topTransactions, err := h.service.GetCategoriesSpending(*userID, params)
+	spending, err := h.service.GetCategoriesSpending(*userID, params)
 	if err != nil {
 		errorutil.InternalServer(c, err.Error(), "")
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": topTransactions})
+	c.JSON(http.StatusOK, gin.H{"data": spending})
+}
+
+func (h *handler) GetCategoriesIncome(c *gin.Context) {
+	userID, err := auth.GetUserId(c)
+	if err != nil || userID == nil {
+		errorutil.Unauthorized(c, err.Error(), "missing user ID")
+		return
+	}
+
+	params := &RangeDateParams{}
+	if err := c.ShouldBindQuery(params); err != nil {
+		errorutil.BadRequest(c, err.Error(), "")
+		return
+	}
+
+	if err := h.validate.Struct(params); err != nil {
+		errorutil.BadRequest(c, err.Error(), "")
+		return
+	}
+
+	income, err := h.service.GetCategoriesIncome(*userID, params)
+	if err != nil {
+		errorutil.InternalServer(c, err.Error(), "")
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": income})
 }

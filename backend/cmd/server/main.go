@@ -76,6 +76,7 @@ func main() {
 	// TODO: Error handling here
 	valid.RegisterStructValidation(transaction.ValidateCreateTransaction, transaction.CreateTransactionDTO{})
 	valid.RegisterStructValidation(transaction.ValidateUpdateTransaction, transaction.UpdateTransactionDTO{})
+	valid.RegisterStructValidation(analytics.ValidateDateRange, analytics.RangeDateParams{})
 
 	go func() {
 		if err := server.Run(cfg.Server, buildHandler(db, valid, logger)); err != nil {

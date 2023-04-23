@@ -9,7 +9,8 @@ import (
 type Repository interface {
 	GetTrendBalanceReport(userID uint, params *RangeDateParams) ([]TrendBalanceReport, error)
 	GetTopTransactions(userID uint, params *TopTransactionsParams) ([]entity.Transaction, error)
-	GetCategoriesSpending(userID uint, params *RangeDateParams) ([]CategorySpending, error)
+	GetCategoriesSpending(userID uint, params *RangeDateParams) ([]ByCategory, error)
+	GetCategoriesIncome(userID uint, params *RangeDateParams) ([]ByCategory, error)
 }
 
 type repository struct {
@@ -58,20 +59,50 @@ func (r *repository) GetTopTransactions(userID uint, params *TopTransactionsPara
 	return transactions, nil
 }
 
-func (r *repository) GetCategoriesSpending(userID uint, params *RangeDateParams) ([]CategorySpending, error) {
-	var categoriesSpending []CategorySpending
+func (r *repository) GetCategoriesSpending(userID uint, params *RangeDateParams) ([]ByCategory, error) {
+	var categoriesSpending []ByCategory
 
 	// Query the category-wise spending data for the user within the specified date range
-	err := r.db.Table("transactions").
+	query := r.db.Table("transactions").
 		Joins("JOIN categories ON categories.id = transactions.category_id").
 		Joins("JOIN accounts ON transactions.from_account_id = accounts.id OR transactions.to_account_id = accounts.id").
 		Select("categories.name AS category_name, SUM(transactions.amount) AS amount").
-		Where("accounts.user_id = ? AND date BETWEEN ? AND ?", userID, params.StartDate, params.EndDate).
-		Group("categories.name").
-		Scan(&categoriesSpending).Error
+		Where("accounts.user_id = ? AND transactions.transaction_type_id = 1", userID).
+		Where("transactions.deleted_at IS NULL AND categories.deleted_at IS NULL").
+		Group("categories.name")
+
+	if params.StartDate != nil && params.EndDate != nil {
+		query.Where("date BETWEEN ? AND ?", params.StartDate, params.EndDate)
+	}
+
+	err := query.Scan(&categoriesSpending).Error
 	if err != nil {
 		return nil, err
 	}
 
 	return categoriesSpending, nil
+}
+
+func (r *repository) GetCategoriesIncome(userID uint, params *RangeDateParams) ([]ByCategory, error) {
+	var categoriesIncome []ByCategory
+
+	// Query the category-wise income data for the user within the specified date range
+	query := r.db.Table("transactions").
+		Joins("JOIN categories ON categories.id = transactions.category_id").
+		Joins("JOIN accounts ON transactions.from_account_id = accounts.id OR transactions.to_account_id = accounts.id").
+		Select("categories.name AS category_name, SUM(transactions.amount) AS amount").
+		Where("accounts.user_id = ? AND transactions.transaction_type_id = 1", userID).
+		Where("transactions.deleted_at IS NULL AND categories.deleted_at IS NULL").
+		Group("categories.name")
+
+	if params.StartDate != nil && params.EndDate != nil {
+		query.Where("date BETWEEN ? AND ?", params.StartDate, params.EndDate)
+	}
+
+	err := query.Find(&categoriesIncome).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return categoriesIncome, nil
 }
