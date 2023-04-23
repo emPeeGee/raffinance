@@ -48,7 +48,7 @@ func (s *service) GetCategoriesSpending(userID uint, params *RangeDateParams) ([
 		params.EndDate = util.EndOfTheDay(*params.EndDate)
 	}
 
-	return s.repo.GetCategoriesSpending(userID, params)
+	return s.repo.GetCategoriesReport(userID, transaction.EXPENSE, params)
 }
 
 func (s *service) GetCategoriesIncome(userID uint, params *RangeDateParams) ([]ByCategory, error) {
@@ -56,5 +56,5 @@ func (s *service) GetCategoriesIncome(userID uint, params *RangeDateParams) ([]B
 		params.EndDate = util.EndOfTheDay(*params.EndDate)
 	}
 
-	return s.repo.GetCategoriesIncome(userID, params)
+	return s.repo.GetCategoriesReport(userID, transaction.INCOME, params)
 }
