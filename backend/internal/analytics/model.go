@@ -12,7 +12,7 @@ type TrendBalanceReport struct {
 }
 
 type TopTransactionsParams struct {
-	*RangeDateParams
+	RangeDateParams
 	Limit uint `form:"limit" binding:"required"`
 }
 

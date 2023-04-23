@@ -25,15 +25,18 @@ func NewAnalyticsRepository(db *gorm.DB, logger log.Logger) *repository {
 func (r *repository) GetTrendBalanceReport(userID uint, params *RangeDateParams) ([]TrendBalanceReport, error) {
 	var trends []TrendBalanceReport
 
-	err := r.db.Table("transactions").
+	query := r.db.Table("transactions").
 		Select("date::date AS date, SUM(CASE WHEN transactions.transaction_type_id = 1 THEN transactions.amount ELSE -transactions.amount END) AS balance").
 		Joins("JOIN accounts ON transactions.to_account_id = accounts.id").
-		Where("accounts.user_id = ? AND date BETWEEN ? AND ?", userID, params.StartDate, params.EndDate).
+		Where("transactions.deleted_at IS NULL AND accounts.user_id = ?", userID).
 		Group("date::date").
-		Order("date::date ASC").
-		Scan(&trends).Error
+		Order("date::date ASC")
 
-	if err != nil {
+	if params.StartDate != nil && params.EndDate != nil {
+		query.Where("date BETWEEN ? AND ?", params.StartDate, params.EndDate)
+	}
+
+	if err := query.Scan(&trends).Error; err != nil {
 		return nil, err
 	}
 
@@ -43,16 +46,19 @@ func (r *repository) GetTrendBalanceReport(userID uint, params *RangeDateParams)
 func (r *repository) GetTopTransactions(userID uint, params *TopTransactionsParams) ([]entity.Transaction, error) {
 	var transactions []entity.Transaction
 
-	err := r.db.Table("transactions").
+	query := r.db.Table("transactions").
 		Preload("Tags").
 		Preload("Category").
 		Joins("JOIN accounts ON transactions.from_account_id = accounts.id OR transactions.to_account_id = accounts.id").
-		Where("accounts.user_id = ? AND date BETWEEN ? AND ?", userID, params.StartDate, params.EndDate).
+		Where("transactions.deleted_at IS NULL AND accounts.user_id = ?", userID).
 		Order("amount DESC").
-		Limit(int(params.Limit)).
-		Find(&transactions).Error
+		Limit(int(params.Limit))
 
-	if err != nil {
+	if params.StartDate != nil && params.EndDate != nil {
+		query.Where("date BETWEEN ? AND ?", params.StartDate, params.EndDate)
+	}
+
+	if err := query.Scan(&transactions).Error; err != nil {
 		return nil, err
 	}
 

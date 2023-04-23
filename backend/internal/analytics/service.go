@@ -23,12 +23,17 @@ func NewAnalyticsService(repo Repository, logger log.Logger) *service {
 }
 
 func (s *service) GetTrendBalanceReport(userID uint, params *RangeDateParams) ([]TrendBalanceReport, error) {
-	params.EndDate = util.EndOfTheDay(*params.EndDate)
+	if params.EndDate != nil && params.StartDate != nil {
+		params.EndDate = util.EndOfTheDay(*params.EndDate)
+	}
+
 	return s.repo.GetTrendBalanceReport(userID, params)
 }
 
 func (s *service) GetTopTransactions(userID uint, params *TopTransactionsParams) ([]transaction.TransactionResponse, error) {
-	params.EndDate = util.EndOfTheDay(*params.EndDate)
+	if params.EndDate != nil && params.StartDate != nil {
+		params.EndDate = util.EndOfTheDay(*params.EndDate)
+	}
 
 	transactions, err := s.repo.GetTopTransactions(userID, params)
 	if err != nil {

@@ -41,10 +41,10 @@ func (h *handler) GetTrendBalanceReport(c *gin.Context) {
 		return
 	}
 
-	// if err := validateRangeDate(params); err != nil {
-	// 	errorutil.BadRequest(c, err.Error(), "")
-	// 	return
-	// }
+	if err := h.validate.Struct(params); err != nil {
+		errorutil.BadRequest(c, err.Error(), "")
+		return
+	}
 
 	data, err := h.service.GetTrendBalanceReport(*userID, params)
 	if err != nil {
@@ -68,10 +68,10 @@ func (h *handler) GetTopTransactions(c *gin.Context) {
 		return
 	}
 
-	// if err := validateRangeDate(params.RangeDateParams); err != nil {
-	// 	errorutil.BadRequest(c, err.Error(), "")
-	// 	return
-	// }
+	if err := h.validate.Struct(params); err != nil {
+		errorutil.BadRequest(c, err.Error(), "")
+		return
+	}
 
 	topTransactions, err := h.service.GetTopTransactions(*userID, params)
 	if err != nil {
