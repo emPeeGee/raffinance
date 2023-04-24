@@ -16,9 +16,19 @@ type TopTransactionsParams struct {
 	Limit uint `form:"limit" binding:"required"`
 }
 
+type BalanceEvolutionParams struct {
+	RangeDateParams
+	AccountID *uint `form:"account_id"`
+}
+
 type LabelValue struct {
 	Label string  `json:"label"`
 	Value float64 `json:"value"`
+}
+
+type DateValue struct {
+	Date  time.Time `json:"date"`
+	Value float64   `json:"value"`
 }
 
 type Report struct {

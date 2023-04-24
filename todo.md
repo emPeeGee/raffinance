@@ -24,3 +24,5 @@
 23. suspense for base fetch ?, effects
 24. components organization, do i need folder for each component?
 25. useAuthStore.getState().token. I don't like to call it every time.
+26. Search cat, accont and tag frontend
+27. Setting option: Use categories colors for chart. And tag as well

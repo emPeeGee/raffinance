@@ -1,6 +1,8 @@
 package analytics
 
 import (
+	"time"
+
 	"github.com/emPeeGee/raffinance/internal/entity"
 	"github.com/emPeeGee/raffinance/internal/transaction"
 	"github.com/emPeeGee/raffinance/pkg/log"
@@ -8,7 +10,9 @@ import (
 )
 
 type Repository interface {
-	GetTrendBalanceReport(userID uint, params *RangeDateParams) ([]TrendBalanceReport, error)
+	GetCashFlowReport(userID uint, params *RangeDateParams) ([]TrendBalanceReport, error)
+	GetBalanceEvolutionReport(userID uint, params *BalanceEvolutionParams) ([]DateValue, error)
+
 	GetTopTransactions(userID uint, params *TopTransactionsParams) ([]entity.Transaction, error)
 	GetCategoriesReport(userID uint, txnType transaction.TransactionType, params *RangeDateParams) ([]LabelValue, error)
 }
@@ -22,11 +26,11 @@ func NewAnalyticsRepository(db *gorm.DB, logger log.Logger) *repository {
 	return &repository{db: db, logger: logger}
 }
 
-func (r *repository) GetTrendBalanceReport(userID uint, params *RangeDateParams) ([]TrendBalanceReport, error) {
+func (r *repository) GetCashFlowReport(userID uint, params *RangeDateParams) ([]TrendBalanceReport, error) {
 	var trends []TrendBalanceReport
 
 	query := r.db.Table("transactions").
-		Select("date::date AS date, SUM(CASE WHEN transactions.transaction_type_id = 1 THEN transactions.amount ELSE -transactions.amount END) AS balance").
+		Select("date::date AS date, SUM(CASE WHEN transactions.transaction_type_id = 1 THEN transactions.amount WHEN transactions.transaction_type_id = 2 THEN -transactions.amount ELSE 0  END) AS value").
 		Joins("JOIN accounts ON transactions.to_account_id = accounts.id").
 		Where("transactions.deleted_at IS NULL AND accounts.user_id = ?", userID).
 		Group("date::date").
@@ -41,6 +45,53 @@ func (r *repository) GetTrendBalanceReport(userID uint, params *RangeDateParams)
 	}
 
 	return trends, nil
+}
+
+func (r *repository) GetBalanceEvolutionReport(userID uint, params *BalanceEvolutionParams) ([]DateValue, error) {
+	var reports []DateValue
+
+	query := r.db.Table("transactions").
+		Select("date::date AS date, SUM(CASE WHEN transactions.transaction_type_id = 1 THEN transactions.amount WHEN transactions.transaction_type_id = 2 THEN -transactions.amount ELSE 0  END) AS value").
+		Joins("JOIN accounts ON transactions.to_account_id = accounts.id").
+		Where("transactions.deleted_at IS NULL AND accounts.user_id = ?", userID).
+		Group("date::date").
+		Order("date::date ASC")
+
+	if params.StartDate != nil {
+		query = query.Where("date >= ?", params.StartDate)
+	}
+
+	if params.EndDate != nil {
+		query = query.Where("date <= ?", params.EndDate)
+	}
+
+	if params.AccountID != nil {
+		// If there are account id, when it should be calculated different:
+		// transfers should be taken into account
+		query = query.Where("transactions.to_account_id = ?", params.AccountID)
+	}
+
+	rows, err := query.Rows()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var balance float64 = 0
+	for rows.Next() {
+		var report DateValue
+		var date time.Time
+		var amount float64
+		if err := rows.Scan(&date, &amount); err != nil {
+			return nil, err
+		}
+		balance += amount
+		report.Date = date
+		report.Value = balance
+		reports = append(reports, report)
+	}
+
+	return reports, nil
 }
 
 func (r *repository) GetTopTransactions(userID uint, params *TopTransactionsParams) ([]entity.Transaction, error) {

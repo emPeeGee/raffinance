@@ -7,8 +7,9 @@ import (
 )
 
 type Service interface {
-	GetTrendBalanceReport(userID uint, params *RangeDateParams) ([]TrendBalanceReport, error)
-	GetTopTransactions(userID uint, params *TopTransactionsParams) ([]transaction.TransactionResponse, error)
+	GetCashFlowReport(userID uint, params *RangeDateParams) (*Report, error)
+	GetBalanceEvolution(userID uint, params *BalanceEvolutionParams) (*Report, error)
+	GetTopTransactions(userID uint, params *TopTransactionsParams) (*Report, error)
 	GetCategoriesSpending(userID uint, params *RangeDateParams) (*Report, error)
 	GetCategoriesIncome(userID uint, params *RangeDateParams) (*Report, error)
 }
@@ -22,15 +23,39 @@ func NewAnalyticsService(repo Repository, logger log.Logger) *service {
 	return &service{repo: repo, logger: logger}
 }
 
-func (s *service) GetTrendBalanceReport(userID uint, params *RangeDateParams) ([]TrendBalanceReport, error) {
+func (s *service) GetCashFlowReport(userID uint, params *RangeDateParams) (*Report, error) {
 	if params.EndDate != nil && params.StartDate != nil {
 		params.EndDate = util.EndOfTheDay(*params.EndDate)
 	}
 
-	return s.repo.GetTrendBalanceReport(userID, params)
+	data, err := s.repo.GetCashFlowReport(userID, params)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Report{
+		Title: "Balance evolution",
+		Data:  data,
+	}, nil
 }
 
-func (s *service) GetTopTransactions(userID uint, params *TopTransactionsParams) ([]transaction.TransactionResponse, error) {
+func (s *service) GetBalanceEvolution(userID uint, params *BalanceEvolutionParams) (*Report, error) {
+	if params.EndDate != nil && params.StartDate != nil {
+		params.EndDate = util.EndOfTheDay(*params.EndDate)
+	}
+
+	data, err := s.repo.GetBalanceEvolutionReport(userID, params)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Report{
+		Title: "Balance evolution",
+		Data:  data,
+	}, nil
+}
+
+func (s *service) GetTopTransactions(userID uint, params *TopTransactionsParams) (*Report, error) {
 	if params.EndDate != nil && params.StartDate != nil {
 		params.EndDate = util.EndOfTheDay(*params.EndDate)
 	}
@@ -45,7 +70,10 @@ func (s *service) GetTopTransactions(userID uint, params *TopTransactionsParams)
 		topTxns = append(topTxns, transaction.EntityToResponse(&t))
 	}
 
-	return topTxns, nil
+	return &Report{
+		Title: "Top transactions",
+		Data:  topTxns,
+	}, nil
 }
 
 func (s *service) GetCategoriesSpending(userID uint, params *RangeDateParams) (*Report, error) {

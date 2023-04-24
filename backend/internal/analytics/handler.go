@@ -15,7 +15,8 @@ func RegisterHandlers(apiRg *gin.RouterGroup, service Service, validate *validat
 
 	api := apiRg.Group("/analytics")
 	{
-		api.GET("/trendBalance", h.GetTrendBalanceReport)
+		api.GET("/cashFlow", h.GetCashFlowReport)
+		api.GET("/balanceEvolution", h.GetBalanceEvolutionReport)
 		api.GET("/topTxn", h.GetTopTransactions)
 		api.GET("/categoriesSpending", h.GetCategoriesSpending)
 		api.GET("/categoriesIncome", h.GetCategoriesIncome)
@@ -28,7 +29,7 @@ type handler struct {
 	validate *validator.Validate
 }
 
-func (h *handler) GetTrendBalanceReport(c *gin.Context) {
+func (h *handler) GetCashFlowReport(c *gin.Context) {
 	userID, err := auth.GetUserId(c)
 	if err != nil || userID == nil {
 		errorutil.Unauthorized(c, err.Error(), "you are not authorized")
@@ -46,7 +47,34 @@ func (h *handler) GetTrendBalanceReport(c *gin.Context) {
 		return
 	}
 
-	data, err := h.service.GetTrendBalanceReport(*userID, params)
+	data, err := h.service.GetCashFlowReport(*userID, params)
+	if err != nil {
+		errorutil.InternalServer(c, err.Error(), "")
+		return
+	}
+
+	c.JSON(http.StatusOK, data)
+}
+
+func (h *handler) GetBalanceEvolutionReport(c *gin.Context) {
+	userID, err := auth.GetUserId(c)
+	if err != nil || userID == nil {
+		errorutil.Unauthorized(c, err.Error(), "you are not authorized")
+		return
+	}
+
+	params := &BalanceEvolutionParams{}
+	if err := c.ShouldBindQuery(params); err != nil {
+		errorutil.BadRequest(c, err.Error(), "")
+		return
+	}
+
+	if err := h.validate.Struct(params); err != nil {
+		errorutil.BadRequest(c, err.Error(), "")
+		return
+	}
+
+	data, err := h.service.GetBalanceEvolution(*userID, params)
 	if err != nil {
 		errorutil.InternalServer(c, err.Error(), "")
 		return
