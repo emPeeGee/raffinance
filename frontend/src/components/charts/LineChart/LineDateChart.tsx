@@ -48,7 +48,8 @@ export function LineDateChart({ title, height, data }: Props) {
             }}
             axisBottom={{
               format: '%b %d',
-              tickSize: 0
+              tickSize: 0,
+              tickPadding: 12
             }}
             enablePointLabel
             pointSize={8}
@@ -58,7 +59,7 @@ export function LineDateChart({ title, height, data }: Props) {
               modifiers: [['darker', 0.3]]
             }}
             pointLabelYOffset={-10}
-            margin={{ left: 50, top: 20, bottom: 20 }}
+            margin={{ left: 50, right: 16, top: 20, bottom: 30 }}
             enableArea
             areaOpacity={0.07}
             enableSlices={false}

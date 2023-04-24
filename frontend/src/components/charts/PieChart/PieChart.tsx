@@ -52,7 +52,7 @@ export function PieChart({
   data: LabelValueModel[];
 }) {
   return (
-    <Box my="sm" w="100%">
+    <Box my="md" w="100%">
       <Paper withBorder radius="lg" p="md">
         <Title order={2}>{title}</Title>
         <Box h={height}>
