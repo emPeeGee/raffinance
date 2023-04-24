@@ -30,6 +30,7 @@ import { useAccountStore, useAnalyticsStore, useAuthStore } from 'store';
 import { getRandomNumber } from 'utils';
 
 import { BalanceEvo } from '../BalanceEvo/BalanceEvo';
+import { CashFlow } from '../CashFlow/CashFlow';
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -159,6 +160,8 @@ export function Dashboard() {
             </Flex>
           </SimpleGrid>
         </Card>
+
+        <CashFlow />
 
         <Flex w="100%" h="100%" gap="sm" justify="space-between">
           <PieChart title="Categories spending" height={400} data={categoriesSpending} />

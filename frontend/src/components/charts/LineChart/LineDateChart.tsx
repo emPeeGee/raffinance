@@ -6,10 +6,20 @@ import { ResponsiveLine, Serie } from '@nivo/line';
 interface Props {
   title: string;
   height: number;
+  colors?: string[];
+  enableArea?: boolean;
+  areaOpacity?: number;
   data: Serie[];
 }
 
-export function LineDateChart({ title, height, data }: Props) {
+export function LineDateChart({
+  title,
+  height,
+  data,
+  enableArea = false,
+  areaOpacity = 0.07,
+  colors = ['rgb(97, 205, 187)', 'rgb(244, 117, 96)']
+}: Props) {
   return (
     <Box my="sm" w="100%">
       <Paper withBorder radius="lg" p="md">
@@ -18,7 +28,7 @@ export function LineDateChart({ title, height, data }: Props) {
         </Title>
         <Box h={height}>
           <ResponsiveLine
-            colors={['rgb(97, 205, 187)', 'rgb(244, 117, 96)']}
+            colors={colors}
             theme={{
               labels: {
                 text: {
@@ -60,8 +70,8 @@ export function LineDateChart({ title, height, data }: Props) {
             }}
             pointLabelYOffset={-10}
             margin={{ left: 50, right: 16, top: 20, bottom: 30 }}
-            enableArea
-            areaOpacity={0.07}
+            enableArea={enableArea}
+            areaOpacity={areaOpacity}
             enableSlices={false}
             enableGridX={false}
             useMesh

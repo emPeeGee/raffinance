@@ -19,6 +19,13 @@ export interface DateValueModel {
   value: any;
 }
 
+export interface CashFlowModel {
+  date: string;
+  cashFlow: number;
+  income: number;
+  expense: number;
+}
+
 function getLastDayOfMonth(date: Date | null | undefined): Date | null {
   if (date === null || date === undefined) {
     return null;
@@ -52,14 +59,14 @@ type AnalyticsStore = {
   date: Range;
   setDate: (range: [Date | null, Date | null]) => void;
   categoriesSpending: LabelValueModel[];
-  categoriesIncome: LabelValueModel[];
   getCategoriesSpending: (range?: Range) => void;
+  categoriesIncome: LabelValueModel[];
   getCategoriesIncome: (range?: Range) => void;
   // TODO: Component itself should make the queries
   balanceEvo: DateValueModel[];
   getBalanceEvo: (range?: [Date | null, Date | null]) => void;
-  cashFlow: DateValueModel[];
-  getCashFlow: () => void;
+  cashFlow: CashFlowModel[];
+  getCashFlow: (range?: [Date | null, Date | null]) => void;
 };
 
 const analyticsStore = 'Analytics store';
@@ -77,6 +84,7 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
         get().getBalanceEvo(range);
         get().getCategoriesIncome(range);
         get().getCategoriesSpending(range);
+        get().getCashFlow(range);
       },
       categoriesSpending: [],
       categoriesIncome: [],
@@ -120,20 +128,15 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
         set({ balanceEvo: report.data ?? [], pending: false });
       },
 
-      getCashFlow: async () => {
+      getCashFlow: async (range?: [Date | null, Date | null]) => {
         set({ ...get(), pending: true });
-        const { cashFlow } = get();
 
-        if (cashFlow.length === 0) {
-          const report = await api.get<ReportModel<DateValueModel[]>>({
-            url: 'analytics/cashFlow',
-            token: useAuthStore.getState().token
-          });
-          set({ cashFlow: report?.data ?? [], pending: false });
-          return;
-        }
-
-        set({ ...get(), pending: false });
+        const queryParams = getDateRangeQueryParam(range);
+        const report = await api.get<ReportModel<CashFlowModel[]>>({
+          url: `analytics/cashFlow?${queryParams}`,
+          token: useAuthStore.getState().token
+        });
+        set({ cashFlow: report?.data ?? [], pending: false });
       }
     }),
     {

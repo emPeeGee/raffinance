@@ -7,12 +7,12 @@ import { LabelValueModel } from 'store';
 
 export function LineNumberChart({
   title,
-  height,
-  data
-}: {
+  height
+}: // data
+{
   title?: string;
   height: string | number;
-  data: LabelValueModel[];
+  // data: LabelValueModel[];
 }) {
   return (
     <Box my="sm" w="100%">
@@ -42,9 +42,9 @@ export function LineNumberChart({
                   { x: 2, y: 0.8 },
                   { x: 3, y: 0.6 },
                   { x: 4, y: 0.3 },
-                  { x: 5, y: 0 },
-                  { x: 6, y: null },
-                  { x: 7, y: null },
+                  { x: 5, y: 0.4 },
+                  { x: 6, y: 0.4 },
+                  { x: 7, y: 0.6 },
                   { x: 8, y: null },
                   { x: 9, y: null },
                   { x: 10, y: null },
@@ -91,9 +91,14 @@ export function LineNumberChart({
             }}
             pointLabelYOffset={-20}
             enableGridX={false}
-            xScale={{
-              type: 'linear'
-            }}
+            // xScale={{
+            //   type: 'time',
+            //   format: '%Y-%m-%d',
+            //   useUTC: false,
+            //   precision: 'day'
+            //   // nice: false
+            // }}
+            // xFormat="time:%Y-%m-%d"
             margin={{ left: 50, top: 20, bottom: 20 }}
             yScale={{
               type: 'linear',
@@ -102,14 +107,11 @@ export function LineNumberChart({
               max: 'auto',
               clamp: true
             }}
-            axisBottom={{
-              tickSize: 5,
-              tickPadding: 5,
-              tickRotation: 0,
-              legend: 'transportation',
-              legendOffset: 36,
-              legendPosition: 'middle'
-            }}
+            // axisBottom={{
+            //   format: '%b %d',
+            //   tickSize: 0,
+            //   tickPadding: 12
+            // }}
             axisLeft={{
               tickSize: 5,
               tickPadding: 5,
