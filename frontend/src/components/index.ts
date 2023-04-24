@@ -1,3 +1,5 @@
+import { LineDateChart } from './charts/LineChart/LineDateChart';
+import { LineNumberChart } from './charts/LineChart/LineNumberChart';
 import { PieChart } from './charts/PieChart/PieChart';
 import { ConfirmDelete } from './common/ConfirmDelete/ConfirmDelete';
 import { Iconify } from './common/Iconify/Iconify';
@@ -22,6 +24,8 @@ export {
   Footer,
   Header,
   PieChart,
+  LineDateChart,
+  LineNumberChart,
   ConfirmDelete,
   NotFound,
   // Logo,

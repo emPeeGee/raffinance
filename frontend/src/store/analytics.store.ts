@@ -14,6 +14,11 @@ export interface LabelValueModel {
   value: any;
 }
 
+export interface DateValueModel {
+  date: string;
+  value: any;
+}
+
 type AnalyticsStore = {
   pending: boolean;
   reset: () => void;
@@ -21,6 +26,11 @@ type AnalyticsStore = {
   categoriesIncome: LabelValueModel[];
   getCategoriesSpending: () => Promise<LabelValueModel[]>;
   getCategoriesIncome: () => Promise<LabelValueModel[]>;
+  // TODO: Component itself should make the queries
+  balanceEvo: DateValueModel[];
+  getBalanceEvo: () => void;
+  cashFlow: DateValueModel[];
+  getCashFlow: () => void;
 };
 
 const analyticsStore = 'Analytics store';
@@ -31,6 +41,8 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
       pending: false,
       categoriesSpending: [],
       categoriesIncome: [],
+      balanceEvo: [],
+      cashFlow: [],
       reset: () => {
         set({ pending: false });
       },
@@ -66,6 +78,38 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
 
         set({ ...get(), pending: false });
         return categoriesSpending;
+      },
+
+      getBalanceEvo: async () => {
+        set({ ...get(), pending: true });
+        const { balanceEvo } = get();
+
+        if (balanceEvo.length === 0) {
+          const report = await api.get<ReportModel<DateValueModel[]>>({
+            url: 'analytics/balanceEvolution',
+            token: useAuthStore.getState().token
+          });
+          set({ balanceEvo: report.data, pending: false });
+          return;
+        }
+
+        set({ ...get(), pending: false });
+      },
+
+      getCashFlow: async () => {
+        set({ ...get(), pending: true });
+        const { cashFlow } = get();
+
+        if (cashFlow.length === 0) {
+          const report = await api.get<ReportModel<DateValueModel[]>>({
+            url: 'analytics/cashFlow',
+            token: useAuthStore.getState().token
+          });
+          set({ cashFlow: report.data, pending: false });
+          return;
+        }
+
+        set({ ...get(), pending: false });
       }
     }),
     {
