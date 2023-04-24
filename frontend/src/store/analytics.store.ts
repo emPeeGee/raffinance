@@ -6,7 +6,7 @@ import { useAuthStore } from 'store';
 
 export interface ReportModel<T> {
   title: string;
-  data: T;
+  data?: T;
 }
 
 export interface LabelValueModel {
@@ -19,16 +19,45 @@ export interface DateValueModel {
   value: any;
 }
 
+function getLastDayOfMonth(date: Date | null | undefined): Date | null {
+  if (date === null || date === undefined) {
+    return null;
+  }
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const lastDayOfMonth = new Date(year, month, 0);
+  return lastDayOfMonth;
+}
+
+type Range = [Date | null, Date | null];
+
+function getDateRangeQueryParam(range: Range = [null, null]) {
+  const startDate = range[0];
+  const endDate = range[1];
+
+  const e = getLastDayOfMonth(endDate ?? startDate)?.toISOString() ?? '';
+  // if only one month is selected, put end_date be same as start_date
+
+  const queryParams = new URLSearchParams({
+    start_date: startDate?.toISOString() ?? '',
+    end_date: e
+  });
+
+  return queryParams;
+}
+
 type AnalyticsStore = {
   pending: boolean;
   reset: () => void;
+  date: Range;
+  setDate: (range: [Date | null, Date | null]) => void;
   categoriesSpending: LabelValueModel[];
   categoriesIncome: LabelValueModel[];
-  getCategoriesSpending: () => Promise<LabelValueModel[]>;
-  getCategoriesIncome: () => Promise<LabelValueModel[]>;
+  getCategoriesSpending: (range?: Range) => void;
+  getCategoriesIncome: (range?: Range) => void;
   // TODO: Component itself should make the queries
   balanceEvo: DateValueModel[];
-  getBalanceEvo: () => void;
+  getBalanceEvo: (range?: [Date | null, Date | null]) => void;
   cashFlow: DateValueModel[];
   getCashFlow: () => void;
 };
@@ -39,6 +68,16 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
   devtools(
     (set, get) => ({
       pending: false,
+      date: [null, null],
+      setDate: (range) => {
+        console.log(range);
+        const newRange: Range = [range[0], getLastDayOfMonth(range[1])];
+        set({ ...get(), date: newRange });
+
+        get().getBalanceEvo(range);
+        get().getCategoriesIncome(range);
+        get().getCategoriesSpending(range);
+      },
       categoriesSpending: [],
       categoriesIncome: [],
       balanceEvo: [],
@@ -46,54 +85,39 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
       reset: () => {
         set({ pending: false });
       },
-      getCategoriesIncome: async () => {
+      getCategoriesIncome: async (range?: Range) => {
         set({ ...get(), pending: true });
         const { categoriesIncome } = get();
 
-        if (categoriesIncome.length === 0) {
-          const report = await api.get<ReportModel<LabelValueModel[]>>({
-            url: 'analytics/categoriesIncome',
-            token: useAuthStore.getState().token
-          });
-          set({ categoriesIncome: report.data, pending: false });
-          return report.data;
-        }
-
-        set({ ...get(), pending: false });
-        return categoriesIncome;
+        const queryParams = getDateRangeQueryParam(range);
+        const report = await api.get<ReportModel<LabelValueModel[]>>({
+          url: `analytics/categoriesIncome?${queryParams}`,
+          token: useAuthStore.getState().token
+        });
+        set({ categoriesIncome: report.data ?? [], pending: false });
       },
 
-      getCategoriesSpending: async () => {
+      getCategoriesSpending: async (range?: Range) => {
         set({ ...get(), pending: true });
         const { categoriesSpending } = get();
 
-        if (categoriesSpending.length === 0) {
-          const report = await api.get<ReportModel<LabelValueModel[]>>({
-            url: 'analytics/categoriesSpending',
-            token: useAuthStore.getState().token
-          });
-          set({ categoriesSpending: report.data, pending: false });
-          return report.data;
-        }
-
-        set({ ...get(), pending: false });
-        return categoriesSpending;
+        const queryParams = getDateRangeQueryParam(range);
+        const report = await api.get<ReportModel<LabelValueModel[]>>({
+          url: `analytics/categoriesSpending?${queryParams}`,
+          token: useAuthStore.getState().token
+        });
+        set({ categoriesSpending: report?.data ?? [], pending: false });
       },
 
-      getBalanceEvo: async () => {
+      getBalanceEvo: async (range?: Range) => {
         set({ ...get(), pending: true });
-        const { balanceEvo } = get();
 
-        if (balanceEvo.length === 0) {
-          const report = await api.get<ReportModel<DateValueModel[]>>({
-            url: 'analytics/balanceEvolution',
-            token: useAuthStore.getState().token
-          });
-          set({ balanceEvo: report.data, pending: false });
-          return;
-        }
-
-        set({ ...get(), pending: false });
+        const queryParams = getDateRangeQueryParam(range);
+        const report = await api.get<ReportModel<DateValueModel[]>>({
+          url: `analytics/balanceEvolution?${queryParams}`,
+          token: useAuthStore.getState().token
+        });
+        set({ balanceEvo: report.data ?? [], pending: false });
       },
 
       getCashFlow: async () => {
@@ -105,7 +129,7 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
             url: 'analytics/cashFlow',
             token: useAuthStore.getState().token
           });
-          set({ cashFlow: report.data, pending: false });
+          set({ cashFlow: report?.data ?? [], pending: false });
           return;
         }
 
