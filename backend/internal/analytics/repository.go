@@ -10,7 +10,7 @@ import (
 )
 
 type Repository interface {
-	GetCashFlowReport(userID uint, params *RangeDateParams) ([]TrendBalanceReport, error)
+	GetCashFlowReport(userID uint, params *RangeDateParams) ([]CashFlowReport, error)
 	GetBalanceEvolutionReport(userID uint, params *BalanceEvolutionParams) ([]DateValue, error)
 
 	GetTopTransactions(userID uint, params *TopTransactionsParams) ([]entity.Transaction, error)
@@ -26,11 +26,15 @@ func NewAnalyticsRepository(db *gorm.DB, logger log.Logger) *repository {
 	return &repository{db: db, logger: logger}
 }
 
-func (r *repository) GetCashFlowReport(userID uint, params *RangeDateParams) ([]TrendBalanceReport, error) {
-	var trends []TrendBalanceReport
+func (r *repository) GetCashFlowReport(userID uint, params *RangeDateParams) ([]CashFlowReport, error) {
+	var trends []CashFlowReport
 
 	query := r.db.Table("transactions").
-		Select("date::date AS date, SUM(CASE WHEN transactions.transaction_type_id = 1 THEN transactions.amount WHEN transactions.transaction_type_id = 2 THEN -transactions.amount ELSE 0  END) AS value").
+		// Select("date::date AS date, SUM(CASE WHEN transactions.transaction_type_id = 1 THEN transactions.amount WHEN transactions.transaction_type_id = 2 THEN -transactions.amount ELSE 0  END) AS value").
+		Select(`date::date AS date, 
+		 SUM(CASE WHEN transactions.transaction_type_id = 1 THEN transactions.amount ELSE 0 END) AS income, 
+		 SUM(CASE WHEN transactions.transaction_type_id = 2 THEN transactions.amount ELSE 0 END) AS expense,
+		 SUM(CASE WHEN transactions.transaction_type_id = 1 THEN transactions.amount WHEN transactions.transaction_type_id = 2 THEN -transactions.amount ELSE 0 END) AS cash_flow`).
 		Joins("JOIN accounts ON transactions.to_account_id = accounts.id").
 		Where("transactions.deleted_at IS NULL AND accounts.user_id = ?", userID).
 		Group("date::date").

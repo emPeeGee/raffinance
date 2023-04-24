@@ -34,7 +34,7 @@ func (s *service) GetCashFlowReport(userID uint, params *RangeDateParams) (*Repo
 	}
 
 	return &Report{
-		Title: "Balance evolution",
+		Title: "Cash flow",
 		Data:  data,
 	}, nil
 }

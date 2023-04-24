@@ -6,9 +6,11 @@ import (
 	"github.com/go-playground/validator"
 )
 
-type TrendBalanceReport struct {
-	Date    time.Time `json:"date"`
-	Balance float64   `json:"balance"`
+type CashFlowReport struct {
+	Date     time.Time `json:"date"`
+	CashFlow float64   `json:"cashFlow"`
+	Income   float64   `json:"income"`
+	Expense  float64   `json:"expense"`
 }
 
 type TopTransactionsParams struct {
