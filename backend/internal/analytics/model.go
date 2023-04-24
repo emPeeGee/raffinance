@@ -41,6 +41,17 @@ type RangeDateParams struct {
 	EndDate   *time.Time `form:"end_date" binding:"omitempty,gtefield=StartDate"`
 }
 
+func (r *RangeDateParams) setTimeToNilIfZero() {
+	if r.StartDate != nil && r.StartDate.IsZero() {
+		r.StartDate = nil
+	}
+
+	if r.EndDate != nil && r.EndDate.IsZero() {
+		r.EndDate = nil
+	}
+
+}
+
 func ValidateDateRange(sl validator.StructLevel) {
 	dateRange := sl.Current().Interface().(RangeDateParams)
 

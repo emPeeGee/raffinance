@@ -42,6 +42,8 @@ func (h *handler) GetCashFlowReport(c *gin.Context) {
 		return
 	}
 
+	params.setTimeToNilIfZero()
+
 	if err := h.validate.Struct(params); err != nil {
 		errorutil.BadRequest(c, err.Error(), "")
 		return
@@ -68,6 +70,7 @@ func (h *handler) GetBalanceEvolutionReport(c *gin.Context) {
 		errorutil.BadRequest(c, err.Error(), "")
 		return
 	}
+	params.setTimeToNilIfZero()
 
 	if err := h.validate.Struct(params); err != nil {
 		errorutil.BadRequest(c, err.Error(), "")
@@ -96,6 +99,8 @@ func (h *handler) GetTopTransactions(c *gin.Context) {
 		return
 	}
 
+	params.setTimeToNilIfZero()
+
 	if err := h.validate.Struct(params); err != nil {
 		errorutil.BadRequest(c, err.Error(), "")
 		return
@@ -123,6 +128,8 @@ func (h *handler) GetCategoriesSpending(c *gin.Context) {
 		return
 	}
 
+	params.setTimeToNilIfZero()
+
 	if err := h.validate.Struct(params); err != nil {
 		errorutil.BadRequest(c, err.Error(), "")
 		return
@@ -149,6 +156,8 @@ func (h *handler) GetCategoriesIncome(c *gin.Context) {
 		errorutil.BadRequest(c, err.Error(), "")
 		return
 	}
+
+	params.setTimeToNilIfZero()
 
 	if err := h.validate.Struct(params); err != nil {
 		errorutil.BadRequest(c, err.Error(), "")
