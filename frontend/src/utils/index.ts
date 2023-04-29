@@ -13,5 +13,6 @@ export * from './noop';
 export * from './date-range-text';
 export * from './colors';
 export * from './random-number';
+export * from './capitalize-first';
 
 export * from './types/view-mode';
