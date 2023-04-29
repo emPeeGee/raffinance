@@ -20,6 +20,11 @@ export interface DateValueModel {
   value: any;
 }
 
+export interface DayValueModel {
+  day: string; // 2023-04-29 format
+  value: number;
+}
+
 export interface CashFlowModel {
   date: string;
   cashFlow: number;
@@ -70,6 +75,8 @@ type AnalyticsStore = {
   getCashFlow: (range?: Range) => void;
   topTransactions: TransactionModel[];
   getTopTransactions: (range?: Range, limit?: number) => void;
+  transactionsCount: DayValueModel[];
+  getTransactionsCount: (year?: number) => void;
 };
 
 const analyticsStore = 'Analytics store';
@@ -94,6 +101,7 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
       balanceEvo: [],
       cashFlow: [],
       topTransactions: [],
+      transactionsCount: [],
       reset: () => {
         set({ pending: false });
       },
@@ -152,6 +160,29 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
         });
 
         set({ topTransactions: report?.data ?? [], pending: false });
+      },
+
+      getTransactionsCount: async (year?: number) => {
+        set({ ...get(), pending: true });
+
+        const queryParams = new URLSearchParams({ year: String(year ?? '') });
+        const report = await api.get<ReportModel<DateValueModel[]>>({
+          url: `analytics/txnCount?${queryParams}`,
+          token: useAuthStore.getState().token
+        });
+
+        const data: DayValueModel[] = (report?.data ?? []).map((d) => {
+          // Extracting date part by splitting at T
+          const date = d.date.split('T')[0];
+          const formattedDate = date.split('-').join('-');
+
+          return {
+            day: formattedDate,
+            value: d.value
+          };
+        });
+
+        set({ transactionsCount: data, pending: false });
       }
     }),
     {

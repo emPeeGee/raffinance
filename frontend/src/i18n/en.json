@@ -99,6 +99,7 @@
   "txn-c-cat": "Select a category that best describes the transaction.",
   "txn-c-tag": "Select any relevant tags to further describe the transaction.",
   "txn-c-type": "Select the type of transaction.",
+  "txn-count": "{count} transactions recorded on {date}",
 
   "txn-c-loc": "Enter the location where the transaction occurred, such as a store or restaurant. This field is optional.",
   "txn-hide": "Hide transactions",
@@ -163,5 +164,6 @@
   "dsh-greeting-21": "Hey there, {name}! Let's start the day off right by reviewing your finances.",
   "dsh-greeting-22": "Good to have you back, {name}! Let's see how much progress you've made.",
 
-  "dsh-top-txn": "Top transactions"
+  "dsh-top-txn": "Top transactions",
+  "dsh-activity": "Transaction Activity Overview for {year}"
 }

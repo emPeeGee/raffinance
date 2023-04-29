@@ -3,7 +3,7 @@ import { Theme } from '@nivo/core';
 
 interface ChartTheme {
   chartTheme: Theme;
-  colors: { textColor: string; background: string };
+  colors: { textColor: string; background: string; emptyDays: string };
 }
 
 export function useChartTheme(): ChartTheme {
@@ -12,10 +12,19 @@ export function useChartTheme(): ChartTheme {
 
   const textColor = isDarkMode ? theme.colors.gray[1] : theme.colors.gray[7];
   const background = isDarkMode ? theme.colors.gray[7] : theme.colors.gray[1];
+  const emptyDays = isDarkMode ? theme.colors.dark[6] : theme.white;
 
   const colors = {
     textColor,
-    background
+    background,
+    emptyDays
+  };
+
+  const defaultObj = {
+    // stroke: textColor,
+    color: textColor,
+    outlineColor: textColor,
+    fill: textColor
   };
 
   const chartTheme: Theme = {
@@ -26,15 +35,16 @@ export function useChartTheme(): ChartTheme {
         stroke: background
       }
     },
+
     axis: {
       domain: {
         line: {
-          stroke: textColor
+          ...defaultObj
         }
       },
       ticks: {
         line: {
-          stroke: textColor
+          ...defaultObj
         }
       }
     },
@@ -48,30 +58,43 @@ export function useChartTheme(): ChartTheme {
         background
       }
     },
-    annotations: {
-      link: {
-        stroke: textColor,
-        outlineColor: textColor
+    legends: {
+      title: {
+        text: {
+          ...defaultObj
+        }
+      },
+      ticks: {
+        text: {
+          ...defaultObj
+        }
       },
       text: {
-        stroke: textColor,
-        outlineColor: textColor
+        ...defaultObj
+      },
+      hidden: {
+        text: {
+          ...defaultObj
+        }
+      }
+    },
+    annotations: {
+      link: {
+        ...defaultObj
+      },
+      text: {
+        ...defaultObj
       },
       outline: {
-        stroke: textColor,
-        outlineColor: textColor
+        ...defaultObj
       },
       symbol: {
-        stroke: textColor,
-        outlineColor: textColor
+        ...defaultObj
       }
     },
     labels: {
       text: {
-        fill: textColor,
-        color: textColor,
-        stroke: textColor,
-        outlineColor: textColor
+        color: textColor
       }
     }
     // colors: isDarkMode

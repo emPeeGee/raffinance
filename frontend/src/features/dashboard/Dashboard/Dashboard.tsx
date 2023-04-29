@@ -28,9 +28,10 @@ import { Link } from 'react-router-dom';
 
 import { PieChart } from 'components';
 import { TransactionTable } from 'features/transactions';
-import { useAccountStore, useAnalyticsStore, useAuthStore } from 'store';
+import { useAccountStore, useAnalyticsStore, useAuthStore, useI18nStore } from 'store';
 import { getRandomNumber } from 'utils';
 
+import { Activity } from '../Activity/Activity';
 import { BalanceEvo } from '../BalanceEvo/BalanceEvo';
 import { CashFlow } from '../CashFlow/CashFlow';
 
@@ -57,7 +58,6 @@ export function Dashboard() {
     getCategoriesIncome,
     getCategoriesSpending,
     categoriesIncome,
-
     categoriesSpending,
     topTransactions,
     getTopTransactions
@@ -167,6 +167,8 @@ export function Dashboard() {
             </Flex>
           </SimpleGrid>
         </Card>
+
+        <Activity />
 
         {/* TODO: Component */}
         <Box my="sm" w="100%">

@@ -1,3 +1,4 @@
+import { Calendar } from './charts/Calendar/Calendar';
 import { LineDateChart } from './charts/LineChart/LineDateChart';
 import { LineNumberChart } from './charts/LineChart/LineNumberChart';
 import { PieChart } from './charts/PieChart/PieChart';
@@ -24,6 +25,7 @@ export {
   Footer,
   Header,
   PieChart,
+  Calendar,
   LineDateChart,
   LineNumberChart,
   ConfirmDelete,
