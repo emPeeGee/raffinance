@@ -1,7 +1,8 @@
 import React from 'react';
 
-import { Box, Paper, Title, useMantineTheme } from '@mantine/core';
+import { Box, Paper, Title } from '@mantine/core';
 import { ResponsivePie } from '@nivo/pie';
+import { useIntl } from 'react-intl';
 
 import { useChartTheme } from 'hooks';
 import { LabelValueModel } from 'store';
@@ -13,6 +14,7 @@ function CenteredMetric({ dataWithArc, centerX, centerY, ...props }: any) {
   });
 
   const { colors } = useChartTheme();
+  const { formatMessage } = useIntl();
 
   return (
     <>
@@ -25,7 +27,7 @@ function CenteredMetric({ dataWithArc, centerX, centerY, ...props }: any) {
         style={{
           fontSize: '18px'
         }}>
-        All categories
+        {formatMessage({ id: 'cat-all' })}
       </text>
 
       <text
@@ -55,7 +57,7 @@ export function PieChart({
   const { colors } = useChartTheme();
 
   return (
-    <Box my="md" w="100%">
+    <Box my="sm" w="100%">
       <Paper withBorder radius="lg" p="md">
         <Title order={2}>{title}</Title>
         <Box h={height}>

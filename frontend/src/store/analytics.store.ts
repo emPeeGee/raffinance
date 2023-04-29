@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
+import { TransactionModel } from 'features/transactions';
 import { api } from 'services/http';
 import { useAuthStore } from 'store';
 
@@ -57,16 +58,18 @@ type AnalyticsStore = {
   pending: boolean;
   reset: () => void;
   date: Range;
-  setDate: (range: [Date | null, Date | null]) => void;
+  setDate: (range: Range) => void;
   categoriesSpending: LabelValueModel[];
   getCategoriesSpending: (range?: Range) => void;
   categoriesIncome: LabelValueModel[];
   getCategoriesIncome: (range?: Range) => void;
-  // TODO: Component itself should make the queries
+  // TODO: Component itself should make the calls to it
   balanceEvo: DateValueModel[];
-  getBalanceEvo: (range?: [Date | null, Date | null]) => void;
+  getBalanceEvo: (range?: Range) => void;
   cashFlow: CashFlowModel[];
-  getCashFlow: (range?: [Date | null, Date | null]) => void;
+  getCashFlow: (range?: Range) => void;
+  topTransactions: TransactionModel[];
+  getTopTransactions: (range?: Range, limit?: number) => void;
 };
 
 const analyticsStore = 'Analytics store';
@@ -77,7 +80,6 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
       pending: false,
       date: [null, null],
       setDate: (range) => {
-        console.log(range);
         const newRange: Range = [range[0], getLastDayOfMonth(range[1])];
         set({ ...get(), date: newRange });
 
@@ -85,17 +87,18 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
         get().getCategoriesIncome(range);
         get().getCategoriesSpending(range);
         get().getCashFlow(range);
+        get().getTopTransactions(range);
       },
       categoriesSpending: [],
       categoriesIncome: [],
       balanceEvo: [],
       cashFlow: [],
+      topTransactions: [],
       reset: () => {
         set({ pending: false });
       },
       getCategoriesIncome: async (range?: Range) => {
         set({ ...get(), pending: true });
-        const { categoriesIncome } = get();
 
         const queryParams = getDateRangeQueryParam(range);
         const report = await api.get<ReportModel<LabelValueModel[]>>({
@@ -107,7 +110,6 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
 
       getCategoriesSpending: async (range?: Range) => {
         set({ ...get(), pending: true });
-        const { categoriesSpending } = get();
 
         const queryParams = getDateRangeQueryParam(range);
         const report = await api.get<ReportModel<LabelValueModel[]>>({
@@ -137,6 +139,19 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
           token: useAuthStore.getState().token
         });
         set({ cashFlow: report?.data ?? [], pending: false });
+      },
+
+      getTopTransactions: async (range?: Range, limit = 5) => {
+        set({ ...get(), pending: true });
+
+        const queryParams = getDateRangeQueryParam(range);
+        queryParams.append('limit', String(limit));
+        const report = await api.get<ReportModel<TransactionModel[]>>({
+          url: `analytics/topTxn?${queryParams}`,
+          token: useAuthStore.getState().token
+        });
+
+        set({ topTransactions: report?.data ?? [], pending: false });
       }
     }),
     {

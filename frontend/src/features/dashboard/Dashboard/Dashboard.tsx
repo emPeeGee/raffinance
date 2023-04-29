@@ -8,6 +8,7 @@ import {
   Container,
   Flex,
   Group,
+  Paper,
   SimpleGrid,
   Text,
   Title,
@@ -26,6 +27,7 @@ import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
 import { PieChart } from 'components';
+import { TransactionTable } from 'features/transactions';
 import { useAccountStore, useAnalyticsStore, useAuthStore } from 'store';
 import { getRandomNumber } from 'utils';
 
@@ -55,7 +57,10 @@ export function Dashboard() {
     getCategoriesIncome,
     getCategoriesSpending,
     categoriesIncome,
-    categoriesSpending
+
+    categoriesSpending,
+    topTransactions,
+    getTopTransactions
   } = useAnalyticsStore();
   const { accounts } = useAccountStore();
 
@@ -66,6 +71,7 @@ export function Dashboard() {
   useEffect(() => {
     getCategoriesIncome();
     getCategoriesSpending();
+    getTopTransactions();
   }, []);
 
   return (
@@ -75,8 +81,9 @@ export function Dashboard() {
         <Text mb="sm" c="dimmed" size="lg">
           {randomGreeting}
         </Text>
-        <Card withBorder radius="md" mb="md">
-          <Title order={4} mb="md">
+
+        <Card withBorder radius="md" mb="sm">
+          <Title order={4} mb="sm">
             <Group>
               <IconRocket color="gray" />
               {formatMessage({ id: 'co-quick-act' })}
@@ -129,7 +136,7 @@ export function Dashboard() {
         {date[0]?.toDateString()}
         {date[1]?.toDateString()}
 
-        <Card withBorder radius="md">
+        <Card my="sm" withBorder radius="md">
           <SimpleGrid
             spacing={80}
             cols={2}
@@ -160,6 +167,14 @@ export function Dashboard() {
             </Flex>
           </SimpleGrid>
         </Card>
+
+        {/* TODO: Component */}
+        <Box my="sm" w="100%">
+          <Paper withBorder radius="lg" p="md">
+            <Title order={2}>{formatMessage({ id: 'dsh-top-txn' })}</Title>
+            <TransactionTable transactions={topTransactions} />
+          </Paper>
+        </Box>
 
         <CashFlow />
 
