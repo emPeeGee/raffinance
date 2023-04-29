@@ -1,8 +1,9 @@
 import React from 'react';
 
-import { Box, Paper, Title } from '@mantine/core';
+import { Box, Paper, Title, useMantineTheme } from '@mantine/core';
 import { ResponsivePie } from '@nivo/pie';
 
+import { useChartTheme } from 'hooks';
 import { LabelValueModel } from 'store';
 
 function CenteredMetric({ dataWithArc, centerX, centerY, ...props }: any) {
@@ -11,7 +12,7 @@ function CenteredMetric({ dataWithArc, centerX, centerY, ...props }: any) {
     total += datum.value;
   });
 
-  console.log(dataWithArc, centerX, centerY, props);
+  const { colors } = useChartTheme();
 
   return (
     <>
@@ -20,7 +21,7 @@ function CenteredMetric({ dataWithArc, centerX, centerY, ...props }: any) {
         y={centerY - 10}
         textAnchor="middle"
         dominantBaseline="central"
-        fill="black"
+        fill={colors.textColor}
         style={{
           fontSize: '18px'
         }}>
@@ -32,7 +33,7 @@ function CenteredMetric({ dataWithArc, centerX, centerY, ...props }: any) {
         y={centerY + 14}
         textAnchor="middle"
         dominantBaseline="central"
-        fill="black"
+        fill={colors.textColor}
         style={{
           fontSize: '18px'
         }}>
@@ -51,6 +52,8 @@ export function PieChart({
   height: string | number;
   data: LabelValueModel[];
 }) {
+  const { colors } = useChartTheme();
+
   return (
     <Box my="md" w="100%">
       <Paper withBorder radius="lg" p="md">
@@ -78,7 +81,7 @@ export function PieChart({
               modifiers: [['darker', 0.2]]
             }}
             arcLinkLabelsSkipAngle={10}
-            arcLinkLabelsTextColor="#333333"
+            arcLinkLabelsTextColor={colors.textColor}
             arcLinkLabelsThickness={4}
             arcLinkLabelsColor={{ from: 'color' }}
             arcLabelsSkipAngle={10}

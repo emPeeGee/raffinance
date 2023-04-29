@@ -1,7 +1,9 @@
 import React from 'react';
 
-import { Box, Paper, Title } from '@mantine/core';
-import { ResponsiveLine, Serie } from '@nivo/line';
+import { Box, Paper, Title, useMantineTheme } from '@mantine/core';
+import { PointTooltipProps, ResponsiveLine, Serie } from '@nivo/line';
+
+import { useChartTheme } from 'hooks';
 
 interface Props {
   title: string;
@@ -12,6 +14,50 @@ interface Props {
   data: Serie[];
 }
 
+function Areas({ series, areaGenerator, xScale, yScale }: any) {
+  return series.map(({ id, data, color, disableArea }: any) => (
+    <path
+      key={id}
+      d={areaGenerator(
+        data.map((d: any) => ({
+          x: xScale(d.data.x),
+          y: yScale(d.data.y)
+        }))
+      )}
+      fill={disableArea ? 'none' : color}
+      fillOpacity={0.25}
+    />
+  ));
+}
+
+function Tooltip({ p }: { p: PointTooltipProps }) {
+  const theme = useMantineTheme();
+  const isDarkMode = theme.colorScheme === 'dark';
+  const background = isDarkMode ? theme.colors.gray[9] : theme.colors.gray[1];
+  const border = isDarkMode ? theme.black : theme.colors.gray[5];
+
+  return (
+    <div
+      style={{
+        background,
+        padding: '9px 12px',
+        border: `1px solid ${border}`
+      }}>
+      <div>
+        <strong>{p.point.serieId}</strong> {p.point.data.xFormatted}
+      </div>
+      <div
+        key={p.point.id}
+        style={{
+          color: p.point.serieColor,
+          padding: '3px 0'
+        }}>
+        {p.point.data.yFormatted} CUR
+      </div>
+    </div>
+  );
+}
+
 export function LineDateChart({
   title,
   height,
@@ -20,6 +66,8 @@ export function LineDateChart({
   areaOpacity = 0.07,
   colors = ['rgb(97, 205, 187)', 'rgb(244, 117, 96)']
 }: Props) {
+  const { chartTheme } = useChartTheme();
+
   return (
     <Box my="sm" w="100%">
       <Paper withBorder radius="lg" p="md">
@@ -29,21 +77,27 @@ export function LineDateChart({
         <Box h={height}>
           <ResponsiveLine
             colors={colors}
-            theme={{
-              labels: {
-                text: {
-                  fontSize: 16
-                }
-              }
-            }}
+            layers={[
+              Areas,
+              'grid',
+              'markers',
+              'axes',
+              'crosshair',
+              'lines',
+              'points',
+              'slices',
+              'mesh',
+              'legends'
+            ]}
+            theme={chartTheme}
             data={data}
             xScale={{
               type: 'time',
               format: '%Y-%m-%d',
               useUTC: false,
               precision: 'day'
-              // nice: false
             }}
+            curve="monotoneX"
             xFormat="time:%Y-%m-%d"
             yScale={{
               type: 'linear',
@@ -76,26 +130,7 @@ export function LineDateChart({
             enableGridX={false}
             useMesh
             // eslint-disable-next-line react/no-unstable-nested-components
-            tooltip={(s) => (
-              <div
-                style={{
-                  background: 'white',
-                  padding: '9px 12px',
-                  border: '1px solid #ccc'
-                }}>
-                <div>
-                  <strong>{s.point.serieId}</strong> {s.point.data.xFormatted}
-                </div>
-                <div
-                  key={s.point.id}
-                  style={{
-                    color: s.point.serieColor,
-                    padding: '3px 0'
-                  }}>
-                  {s.point.data.yFormatted} CUR
-                </div>
-              </div>
-            )}
+            tooltip={(s) => <Tooltip p={s} />}
             crosshairType="cross"
           />
         </Box>

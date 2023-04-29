@@ -26,3 +26,7 @@
 25. useAuthStore.getState().token. I don't like to call it every time.
 26. Search cat, accont and tag frontend
 27. Setting option: Use categories colors for chart. And tag as well
+28. Rechart instead of nivo
+29. Nivo has calendar, which is exactly what I want. Or a separate calendar component?
+30. Account selection in dashboard. This will require calculatin and transfers on back
+https://nivo.rocks/storybook/?path=/story/calendar--default
