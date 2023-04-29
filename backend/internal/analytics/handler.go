@@ -112,7 +112,7 @@ func (h *handler) GetTopTransactions(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": topTransactions})
+	c.JSON(http.StatusOK, topTransactions)
 }
 
 func (h *handler) GetCategoriesSpending(c *gin.Context) {

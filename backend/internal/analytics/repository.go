@@ -101,10 +101,10 @@ func (r *repository) GetBalanceEvolutionReport(userID uint, params *BalanceEvolu
 func (r *repository) GetTopTransactions(userID uint, params *TopTransactionsParams) ([]entity.Transaction, error) {
 	var transactions []entity.Transaction
 
-	query := r.db.Table("transactions").
+	query := r.db.Model(&entity.Transaction{}).
 		Preload("Tags").
 		Preload("Category").
-		Joins("JOIN accounts ON transactions.from_account_id = accounts.id OR transactions.to_account_id = accounts.id").
+		Joins("JOIN accounts ON transactions.to_account_id = accounts.id").
 		Where("transactions.deleted_at IS NULL AND accounts.user_id = ?", userID).
 		Order("amount DESC").
 		Limit(int(params.Limit))
@@ -113,7 +113,7 @@ func (r *repository) GetTopTransactions(userID uint, params *TopTransactionsPara
 		query.Where("date BETWEEN ? AND ?", params.StartDate, params.EndDate)
 	}
 
-	if err := query.Scan(&transactions).Error; err != nil {
+	if err := query.Find(&transactions).Error; err != nil {
 		return nil, err
 	}
 
