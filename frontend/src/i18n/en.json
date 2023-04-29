@@ -54,6 +54,7 @@
   "co-for-month": "Transactions for {month}",
   "co-for-months": "Transactions from {start} to {end}",
   "co-comp-prev-month": "Compared to previous month",
+  "co-geo-err": "Geolocation is disabled or not allowed by your browser",
 
   "acc": "Accounts",
   "acc-to": "To account",
@@ -121,6 +122,7 @@
   "cat-c-icon": "An icon that represents the category. This can also be used for easy identification and organization of transactions.",
   "cat-c-color": "The color associated with the category. This can be used for easy identification and organization of transactions.",
   "cat-update": "Edit category",
+  "cat-all": "All categories",
 
   "tag-tag": "Tags",
   "tag-info": "Tags are another way for users to organize their transactions, but they offer more flexibility than categories. Users can create tags based on any criteria they choose, such as the merchant name, the location, or the type of payment used. Tags can also have a name and color for easy identification. Users can assign multiple tags to a single transaction, allowing them to track their spending in more detail and analyze their financial behavior in different ways.",
@@ -159,5 +161,7 @@
   "dsh-greeting-19": "Hello again, {name}! Are you ready to make some smart financial decisions?",
   "dsh-greeting-20": "Welcome back, {name}, to your financial dashboard! What's on your mind today?",
   "dsh-greeting-21": "Hey there, {name}! Let's start the day off right by reviewing your finances.",
-  "dsh-greeting-22": "Good to have you back, {name}! Let's see how much progress you've made."
+  "dsh-greeting-22": "Good to have you back, {name}! Let's see how much progress you've made.",
+
+  "dsh-top-txn": "Top transactions"
 }

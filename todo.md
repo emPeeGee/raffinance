@@ -30,3 +30,5 @@
 29. Nivo has calendar, which is exactly what I want. Or a separate calendar component?
 30. Account selection in dashboard. This will require calculatin and transfers on back
 https://nivo.rocks/storybook/?path=/story/calendar--default
+
+31. Location use with browser api

@@ -94,6 +94,32 @@ export function TransactionForm() {
   const { tags: allTags } = useTagsStore();
   const { accounts } = useAccountStore();
 
+  const isCreate = transaction === undefined || transaction === null;
+
+  useEffect(() => {
+    if (navigator.geolocation && isCreate) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          const response = await fetch(
+            // `http://ip-api.com/json?fields=status,message,country,countryCode,region,regionName,city,zip,lat,lon,timezone,isp,org,as,query`
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+          );
+          const data = await response.json();
+          const { city, road } = data.address;
+          setValue('location', `${road}, ${city}`);
+        },
+        () => {
+          showNotification({
+            message: formatMessage({ id: 'co-geo-err' }),
+            color: 'blue',
+            autoClose: DateUnit.second * 5
+          });
+        }
+      );
+    }
+  }, []);
+
   useEffect(() => {
     // Clear fromAccountId, if the type is not transfer
     if (type !== TransactionType.TRANSFER) {
@@ -136,8 +162,6 @@ export function TransactionForm() {
   if (isLoading) {
     return <LoadingOverlay visible />;
   }
-
-  const isCreate = transaction === undefined || transaction === null;
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
   const showFailNotification = (isCreate: boolean) => {
