@@ -6,6 +6,7 @@ import (
 	"github.com/emPeeGee/raffinance/internal/auth"
 	"github.com/emPeeGee/raffinance/pkg/errorutil"
 	"github.com/emPeeGee/raffinance/pkg/log"
+	"github.com/emPeeGee/raffinance/pkg/util"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator"
 )
@@ -18,6 +19,7 @@ func RegisterHandlers(apiRg *gin.RouterGroup, service Service, validate *validat
 		api.GET("/cashFlow", h.GetCashFlowReport)
 		api.GET("/balanceEvolution", h.GetBalanceEvolutionReport)
 		api.GET("/topTxn", h.GetTopTransactions)
+		api.GET("/txnCount", h.GetTransactionsCount)
 		api.GET("/categoriesSpending", h.GetCategoriesSpending)
 		api.GET("/categoriesIncome", h.GetCategoriesIncome)
 	}
@@ -165,6 +167,35 @@ func (h *handler) GetCategoriesIncome(c *gin.Context) {
 	}
 
 	income, err := h.service.GetCategoriesIncome(*userID, params)
+	if err != nil {
+		errorutil.InternalServer(c, err.Error(), "")
+		return
+	}
+
+	c.JSON(http.StatusOK, income)
+}
+
+func (h *handler) GetTransactionsCount(c *gin.Context) {
+	userID, err := auth.GetUserId(c)
+	if err != nil || userID == nil {
+		errorutil.Unauthorized(c, err.Error(), "missing user ID")
+		return
+	}
+
+	params := &YearlyTransactionsParams{}
+	if err := c.ShouldBindQuery(params); err != nil {
+		errorutil.BadRequest(c, err.Error(), "")
+		return
+	}
+
+	h.logger.Debug(util.StringifyAny(params))
+
+	if err := h.validate.Struct(params); err != nil {
+		errorutil.BadRequest(c, err.Error(), "")
+		return
+	}
+
+	income, err := h.service.GetTransactionsCountByDay(*userID, params)
 	if err != nil {
 		errorutil.InternalServer(c, err.Error(), "")
 		return

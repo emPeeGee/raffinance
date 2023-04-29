@@ -18,6 +18,10 @@ type TopTransactionsParams struct {
 	Limit uint `form:"limit" binding:"required"`
 }
 
+type YearlyTransactionsParams struct {
+	Year int `form:"year"`
+}
+
 type BalanceEvolutionParams struct {
 	RangeDateParams
 	AccountID *uint `form:"account_id"`

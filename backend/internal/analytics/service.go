@@ -1,6 +1,8 @@
 package analytics
 
 import (
+	"time"
+
 	"github.com/emPeeGee/raffinance/internal/transaction"
 	"github.com/emPeeGee/raffinance/pkg/log"
 	"github.com/emPeeGee/raffinance/pkg/util"
@@ -12,6 +14,7 @@ type Service interface {
 	GetTopTransactions(userID uint, params *TopTransactionsParams) (*Report, error)
 	GetCategoriesSpending(userID uint, params *RangeDateParams) (*Report, error)
 	GetCategoriesIncome(userID uint, params *RangeDateParams) (*Report, error)
+	GetTransactionsCountByDay(userID uint, params *YearlyTransactionsParams) (*Report, error)
 }
 
 type service struct {
@@ -104,6 +107,24 @@ func (s *service) GetCategoriesIncome(userID uint, params *RangeDateParams) (*Re
 
 	return &Report{
 		Title: "Categories Income",
+		Data:  data,
+	}, nil
+}
+
+func (s *service) GetTransactionsCountByDay(userID uint, params *YearlyTransactionsParams) (*Report, error) {
+
+	// If year is not provided, use the current year
+	if params.Year == 0 {
+		params.Year = time.Now().Year()
+	}
+
+	data, err := s.repo.GetTransactionCountByDay(userID, params)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Report{
+		Title: "Count transactions by day",
 		Data:  data,
 	}, nil
 }

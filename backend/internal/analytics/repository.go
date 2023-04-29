@@ -15,6 +15,7 @@ type Repository interface {
 
 	GetTopTransactions(userID uint, params *TopTransactionsParams) ([]entity.Transaction, error)
 	GetCategoriesReport(userID uint, txnType transaction.TransactionType, params *RangeDateParams) ([]LabelValue, error)
+	GetTransactionCountByDay(userID uint, params *YearlyTransactionsParams) ([]DateValue, error)
 }
 
 type repository struct {
@@ -142,4 +143,25 @@ func (r *repository) GetCategoriesReport(userID uint, txnType transaction.Transa
 	}
 
 	return byCategory, nil
+}
+
+func (r *repository) GetTransactionCountByDay(userID uint, params *YearlyTransactionsParams) ([]DateValue, error) {
+	startDate := time.Date(params.Year, 1, 1, 0, 0, 0, 0, time.UTC)
+	endDate := startDate.AddDate(1, 0, 0).Add(-time.Nanosecond)
+
+	var counts []DateValue
+
+	query := r.db.Table("transactions").
+		Select("date::date AS date, COUNT(*) AS value").
+		Joins("JOIN accounts ON transactions.to_account_id = accounts.id").
+		Where("transactions.deleted_at IS NULL AND accounts.user_id = ?", userID).
+		Where("date BETWEEN ? AND ?", startDate, endDate).
+		Group("date::date").
+		Order("date::date ASC")
+
+	if err := query.Scan(&counts).Error; err != nil {
+		return nil, err
+	}
+
+	return counts, nil
 }
