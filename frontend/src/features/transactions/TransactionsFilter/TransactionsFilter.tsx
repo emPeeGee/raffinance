@@ -1,8 +1,5 @@
 import React from 'react';
 
-import 'dayjs/locale/ro';
-import 'dayjs/locale/ru';
-
 import {
   Accordion,
   ActionIcon,
