@@ -255,6 +255,10 @@ func (r *repository) findByFilter(filter TransactionFilter) ([]TransactionRespon
 		query = query.Where("date BETWEEN ? AND ?", start, end)
 	}
 
+	if filter.Day != nil {
+		query = query.Where("date::date = ?", filter.Day)
+	}
+
 	// Filter by accounts
 	// ASK: from_account_id too?
 	if len(filter.Accounts) > 0 {

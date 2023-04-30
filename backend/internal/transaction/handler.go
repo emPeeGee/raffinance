@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/emPeeGee/raffinance/internal/auth"
 	"github.com/emPeeGee/raffinance/pkg/errorutil"
@@ -160,6 +161,21 @@ func (h *handler) getTransactionsFiltered(c *gin.Context) {
 	}
 	filter.StartDate = startMonth
 	filter.EndDate = endMonth
+
+	dayParam := c.DefaultQuery("day", "")
+	if dayParam != "" && startMonth != nil {
+		errorutil.BadRequest(c, "Day can't be used along with start_month and end_month", "")
+		return
+	}
+
+	if dayParam != "" && startMonth == nil && endMonth == nil {
+		day, err := time.Parse(time.RFC3339, dayParam)
+		if err != nil {
+			errorutil.BadRequest(c, err.Error(), "Invalid day parameter format")
+			return
+		}
+		filter.Day = &day
+	}
 
 	filter.Accounts, err = util.ParseStringToUintArr(c.Query("accounts"))
 	if err != nil {

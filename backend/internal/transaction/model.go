@@ -65,6 +65,7 @@ type TransactionFilter struct {
 	Type        *byte
 	StartDate   *time.Time
 	EndDate     *time.Time
+	Day         *time.Time
 	Accounts    []uint
 	Categories  []uint
 	Tags        []uint
