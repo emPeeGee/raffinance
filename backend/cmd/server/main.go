@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
@@ -16,6 +17,7 @@ import (
 	"github.com/emPeeGee/raffinance/internal/contact"
 	"github.com/emPeeGee/raffinance/internal/cors"
 	"github.com/emPeeGee/raffinance/internal/entity"
+	"github.com/emPeeGee/raffinance/internal/hub"
 	"github.com/emPeeGee/raffinance/internal/seeder"
 	"github.com/emPeeGee/raffinance/internal/tag"
 	"github.com/emPeeGee/raffinance/internal/transaction"
@@ -23,6 +25,7 @@ import (
 	"github.com/emPeeGee/raffinance/pkg/errorutil"
 	"github.com/emPeeGee/raffinance/pkg/log"
 	"github.com/emPeeGee/raffinance/pkg/validatorutil"
+	"github.com/gorilla/websocket"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator"
@@ -78,8 +81,10 @@ func main() {
 	valid.RegisterStructValidation(transaction.ValidateUpdateTransaction, transaction.UpdateTransactionDTO{})
 	valid.RegisterStructValidation(analytics.ValidateDateRange, analytics.RangeDateParams{})
 
+	hub := hub.NewHub()
+
 	go func() {
-		if err := server.Run(cfg.Server, buildHandler(db, valid, logger)); err != nil {
+		if err := server.Run(cfg.Server, buildHandler(db, valid, logger, hub)); err != nil {
 			logger.Fatalf("Error occurred while running http server: %s", err.Error())
 		}
 	}()
@@ -100,15 +105,19 @@ func main() {
 // TODO: How the dependencies injection can be done better?
 // TODO: Logger is not passed as ref
 // buildHandler sets up the HTTP routing and builds an HTTP handler.
-func buildHandler(db *gorm.DB, valid *validator.Validate, logger log.Logger) http.Handler {
+func buildHandler(db *gorm.DB, valid *validator.Validate, logger log.Logger, hub *hub.Hub) http.Handler {
 	router := gin.New()
 	router.Use(accesslog.Handler(logger), errorutil.Handler(logger), cors.Handler())
 
 	authRg := router.Group("/auth")
 	apiRg := router.Group("/api", auth.HandleUserIdentity(logger))
 
+	apiRg.GET("/websocket", func(c *gin.Context) {
+		handleWebSocketConnection(c, hub)
+	})
+
 	// transaction service is used in account as well
-	transactionService := transaction.NewTransactionService(transaction.NewTransactionRepository(db, logger), logger)
+	transactionService := transaction.NewTransactionService(transaction.NewTransactionRepository(db, logger), logger, hub)
 
 	auth.RegisterHandlers(
 		authRg,
@@ -162,3 +171,78 @@ func buildHandler(db *gorm.DB, valid *validator.Validate, logger log.Logger) htt
 
 	return router
 }
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		// Allow requests from a specific origin
+		fmt.Println(r.Header.Get("Origin"))
+		return r.Header.Get("Origin") == "http://localhost:3000"
+	},
+}
+
+func handleWebSocketConnection(c *gin.Context, huub *hub.Hub) {
+	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	defer conn.Close()
+
+	// Get the user ID from the URL params
+	userID, err := auth.GetUserId(c)
+	if err != nil || userID == nil {
+		fmt.Println("ERRORR", err.Error())
+		errorutil.Unauthorized(c, err.Error(), "you are not authorized")
+		return
+	}
+
+	fmt.Println("USER ID", userID)
+
+	// Create a new client for this connection
+	client := hub.NewClient(*userID, conn)
+
+	// Add the client to the repository
+	huub.AddClient(client)
+
+	// Start listening for incoming messages
+	go client.Listen(huub)
+}
+
+// func (r *Hub) SendToClient(id string, messageType int, p []byte) error {
+// 	r.Lock.RLock()
+// 	defer r.Lock.RUnlock()
+
+// 	if client, ok := r.Clients[id]; ok {
+// 		return client.Conn.WriteMessage(messageType, p)
+// 	}
+
+// 	return fmt.Errorf("client not found: %s", id)
+// }
+
+// func handleWebSocketConnection(c *gin.Context) {
+// 	fmt.Println("Connect")
+// 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+// 	if err != nil {
+// 		fmt.Println(err)
+// 		return
+// 	}
+// 	defer conn.Close()
+
+// 	for {
+// 		// Get the current time and serialize it as a JSON message
+// 		currentTime := time.Now().Format(time.RFC3339)
+// 		message := []byte(`{"time":"` + currentTime + `"}`)
+
+// 		// Send the JSON message to the client
+// 		err := conn.WriteMessage(websocket.TextMessage, message)
+// 		if err != nil {
+// 			fmt.Println(err)
+// 			break
+// 		}
+
+// 		// Wait for 10 seconds before sending the next message
+// 		time.Sleep(10 * time.Second)
+// 	}
+// }

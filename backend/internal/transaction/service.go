@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/emPeeGee/raffinance/internal/category"
+	"github.com/emPeeGee/raffinance/internal/hub"
 	"github.com/emPeeGee/raffinance/pkg/log"
 )
 
@@ -24,10 +25,11 @@ type Service interface {
 type service struct {
 	repo   Repository
 	logger log.Logger
+	hub    *hub.Hub
 }
 
-func NewTransactionService(repo Repository, logger log.Logger) *service {
-	return &service{repo: repo, logger: logger}
+func NewTransactionService(repo Repository, logger log.Logger, hub *hub.Hub) *service {
+	return &service{repo: repo, logger: logger, hub: hub}
 }
 
 func (s *service) createTransaction(userId uint, transaction CreateTransactionDTO) (*TransactionResponse, error) {
@@ -112,6 +114,11 @@ func (s *service) getTransaction(userID, txnId uint) (*TransactionResponse, erro
 
 	if !ok {
 		return nil, fmt.Errorf("transaction with ID %d does not exist or belong to user with ID %d", txnId, userID)
+	}
+
+	client := s.hub.GetClient(userID)
+	if client != nil {
+		client.Send([]byte("Here is a string...."))
 	}
 
 	return s.repo.getTransaction(txnId)
