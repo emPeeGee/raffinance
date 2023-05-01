@@ -77,6 +77,7 @@ type AnalyticsStore = {
   getTopTransactions: (range?: Range, limit?: number) => void;
   transactionsCount: DayValueModel[];
   getTransactionsCount: (year?: number) => void;
+  getTransactionsForDay: (day: string) => Promise<TransactionModel[]>;
 };
 
 const analyticsStore = 'Analytics store';
@@ -183,6 +184,16 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
         });
 
         set({ transactionsCount: data, pending: false });
+      },
+
+      getTransactionsForDay: async (day: string): Promise<TransactionModel[]> => {
+        const queryParams = new URLSearchParams({ day });
+        const transactions = await api.get<TransactionModel[]>({
+          url: `transactions/f?${queryParams}`,
+          token: useAuthStore.getState().token
+        });
+
+        return transactions;
       }
     }),
     {
