@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box, Paper, Title } from '@mantine/core';
+import { Box, Card, Title } from '@mantine/core';
 import { ResponsivePie } from '@nivo/pie';
 import { useIntl } from 'react-intl';
 
@@ -58,7 +58,7 @@ export function PieChart({
 
   return (
     <Box my="sm" w="100%">
-      <Paper withBorder radius="lg" p="md">
+      <Card withBorder radius="lg" p="md">
         <Title order={2}>{title}</Title>
         <Box h={height}>
           <ResponsivePie
@@ -119,7 +119,7 @@ export function PieChart({
             // ]}
           />
         </Box>
-      </Paper>
+      </Card>
     </Box>
   );
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box, Paper, Title, useMantineTheme } from '@mantine/core';
+import { Box, Card, Title, useMantineTheme } from '@mantine/core';
 import { PointTooltipProps, ResponsiveLine, Serie } from '@nivo/line';
 
 import { useChartTheme } from 'hooks';
@@ -70,7 +70,7 @@ export function LineDateChart({
 
   return (
     <Box my="sm" w="100%">
-      <Paper withBorder radius="lg" p="md">
+      <Card withBorder radius="lg" p="md">
         <Title order={2} mb="sm">
           {title}
         </Title>
@@ -134,7 +134,7 @@ export function LineDateChart({
             crosshairType="cross"
           />
         </Box>
-      </Paper>
+      </Card>
     </Box>
   );
 }

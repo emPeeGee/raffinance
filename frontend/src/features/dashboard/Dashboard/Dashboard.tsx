@@ -172,10 +172,10 @@ export function Dashboard() {
 
         {/* TODO: Component */}
         <Box my="sm" w="100%">
-          <Paper withBorder radius="lg" p="md">
+          <Card withBorder radius="lg" p="md">
             <Title order={2}>{formatMessage({ id: 'dsh-top-txn' })}</Title>
             <TransactionTable transactions={topTransactions} />
-          </Paper>
+          </Card>
         </Box>
 
         <CashFlow />
