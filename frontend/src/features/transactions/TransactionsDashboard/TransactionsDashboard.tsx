@@ -5,6 +5,7 @@ import { IconCircle, IconInfoCircle } from '@tabler/icons-react';
 import { useIntl } from 'react-intl';
 import { Link, useLocation } from 'react-router-dom';
 
+import { DateRange } from 'components';
 import {
   TransactionFilterModel,
   TransactionTypeWithAll,
@@ -12,7 +13,6 @@ import {
   TransactionsList
 } from 'features/transactions';
 import { useTransactionStore } from 'store';
-import { getDateRangeText } from 'utils';
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -58,15 +58,13 @@ export function TransactionsDashboard() {
     }
   }, []);
 
-  const dateRange = getDateRangeText(range, formatMessage);
-
   return (
     <>
       <Group position="apart" mb="md">
         <Title className={classes.title}>
           {formatMessage({ id: 'txn' })}
           <Text inline color="blue">
-            {dateRange}
+            <DateRange range={range} variant="transactions" />
           </Text>
         </Title>
         <Button

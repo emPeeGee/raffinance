@@ -50,9 +50,13 @@
   "co-conf-text": "Confirmation field",
   "co-del-suc": "The selected item has been successfully removed.",
   "co-del-err": "Unable to remove the item from the system. Please check your connection and try again.",
-  "co-all-time": "All-time transactions",
-  "co-for-month": "Transactions for {month}",
-  "co-for-months": "Transactions from {start} to {end}",
+  "co-txn-time": "All-time transactions",
+  "co-txn-month": "Transactions for {month}",
+  "co-txn-months": "Transactions from {start} to {end}",
+  "co-dsh-time": "All-time analytics",
+  "co-dsh-month": "Analytics for {month}",
+  "co-dsh-months": "Analytics from {start} to {end}",
+
   "co-comp-prev-month": "Compared to previous month",
   "co-geo-err": "Geolocation is disabled or not allowed by your browser",
 
@@ -165,5 +169,8 @@
   "dsh-greeting-22": "Good to have you back, {name}! Let's see how much progress you've made.",
 
   "dsh-top-txn": "Top transactions",
-  "dsh-activity": "Transaction Activity Overview for {year}"
+  "dsh-filter": "Refine Your Search",
+  "dsh-month-help": "Select a month to narrow down your transaction history. If no month is selected, analytics from all time will be displayed.",
+  "dsh-activity": "Transaction Activity Overview for {year}",
+  "dsh-activity-help": "Discover your transactions for this day by clicking on it!"
 }

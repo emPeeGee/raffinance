@@ -24,9 +24,9 @@ import {
 import { Controller, useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
 
-import { MultiPicker, TransactionTypePicker } from 'components';
+import { DateRange, MultiPicker, TransactionTypePicker } from 'components';
 import { useAccountStore, useCategoriesStore, useI18nStore, useTagsStore } from 'store';
-import { MAX_AVAILABLE_DATE, MIN_AVAILABLE_DATE, getDateRangeText } from 'utils';
+import { MAX_AVAILABLE_DATE, MIN_AVAILABLE_DATE } from 'utils';
 
 import { TransactionFilterModel, TransactionTypeWithAll } from '../transactions.model';
 
@@ -103,7 +103,7 @@ export function TransactionsFilter({
             {formatMessage({ id: 'co-filters' })}
             {withTitle && (
               <Text inline color="blue">
-                {getDateRangeText(range, formatMessage)}
+                <DateRange range={range} variant="transactions" />
               </Text>
             )}
           </Accordion.Control>

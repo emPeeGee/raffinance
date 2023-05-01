@@ -3,6 +3,7 @@ import { LineDateChart } from './charts/LineChart/LineDateChart';
 import { LineNumberChart } from './charts/LineChart/LineNumberChart';
 import { PieChart } from './charts/PieChart/PieChart';
 import { ConfirmDelete } from './common/ConfirmDelete/ConfirmDelete';
+import { DateRange } from './common/DateRange/DateRange';
 import { Iconify } from './common/Iconify/Iconify';
 import { IconPicker } from './common/IconPicker/IconPicker';
 import { IconPicker2 } from './common/IconPicker2/IconPicker2';
@@ -41,5 +42,6 @@ export {
   MultiPicker,
   IconPicker,
   IconPicker2,
-  TransactionTypePicker
+  TransactionTypePicker,
+  DateRange
 };
