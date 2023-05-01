@@ -59,6 +59,19 @@
 
   "co-comp-prev-month": "Compared to previous month",
   "co-geo-err": "Geolocation is disabled or not allowed by your browser",
+  "co-usr": "Username",
+  "co-usr-req": "Username is required",
+  "co-passw": "Password",
+  "co-passw-req": "Password is required",
+
+  "auth-sign-in": "Sign in",
+  "auth-sign-up": "Sign up",
+  "auth-home": "Go home",
+  "auth-remem": "Remember me",
+  "auth-forgot": "Forgot password?",
+  "auth-welcome": "Welcome!",
+  "auth-welcome-back": "Welcome back!",
+  "auth-no-yet": "Do not have an account yet? {create}",
 
   "acc": "Accounts",
   "acc-to": "To account",

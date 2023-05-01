@@ -16,6 +16,7 @@ import {
 import { showNotification } from '@mantine/notifications';
 import { IconArrowBackUp, IconBolt, IconLock, IconUserCircle } from '@tabler/icons-react';
 import { useForm } from 'react-hook-form';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { AuthenticationResponse, CredentialsModel } from 'features/authentication';
@@ -33,6 +34,7 @@ export function SignIn() {
   });
 
   const navigate = useNavigate();
+  const { formatMessage } = useIntl();
   const [isLoading, setIsLoading] = useState(false);
   const { setToken, fetchUser } = useAuthStore();
 
@@ -72,9 +74,8 @@ export function SignIn() {
       .catch((err) => {
         console.log(err);
         showNotification({
-          title: "We're sorry, but your login was unsuccessful",
-          message:
-            'Please double-check your credentials and try again. If you continue to experience issues, please contact our support team for assistance.',
+          title: formatMessage({ id: 'auth-in-fail-tit' }),
+          message: formatMessage({ id: 'auth-in-fail-mes' }),
           color: 'red',
           autoClose: DateUnit.second * 5
         });
@@ -89,13 +90,19 @@ export function SignIn() {
       <Title
         align="center"
         sx={(theme) => ({ fontFamily: `Greycliff CF, ${theme.fontFamily}`, fontWeight: 900 })}>
-        Welcome back!
+        <FormattedMessage id="auth-welcome-back" />
       </Title>
       <Text color="dimmed" size="sm" align="center" mt={5}>
-        Do not have an account yet?{' '}
-        <Anchor size="sm" component="button">
-          Create account
-        </Anchor>
+        <FormattedMessage
+          id="auth-no-yet"
+          values={{
+            create: (
+              <Anchor size="sm" component={Link} to="/sign-up">
+                <FormattedMessage id="acc-create" />
+              </Anchor>
+            )
+          }}
+        />
       </Text>
 
       <form onSubmit={handleSubmit(signIn)}>
@@ -103,9 +110,8 @@ export function SignIn() {
           <TextInput
             {...register('username', { required: true, value: '' })}
             required
-            label="Username"
-            placeholder="Enter your username"
-            error={errors.username ? 'Username is required' : null}
+            label={formatMessage({ id: 'co-usr' })}
+            error={errors.username ? formatMessage({ id: 'co-usr-req' }) : null}
             icon={<IconUserCircle size={14} />}
           />
 
@@ -113,17 +119,16 @@ export function SignIn() {
             {...register('password', { required: true, value: '' })}
             required
             my="md"
-            label="Password"
-            placeholder="Enter your password"
-            error={errors.password ? 'Password is required' : null}
+            label={formatMessage({ id: 'co-passw' })}
+            error={errors.password ? formatMessage({ id: 'co-passw-req' }) : null}
             toggleTabIndex={0}
             icon={<IconLock size={16} />}
           />
 
           <Group position="apart" mt="lg">
-            <Checkbox label="Remember me" />
+            <Checkbox label={formatMessage({ id: 'auth-remem' })} />
             <Anchor component="button" size="sm">
-              Forgot password?
+              <FormattedMessage id="auth-forgot" />
             </Anchor>
           </Group>
 
@@ -133,7 +138,7 @@ export function SignIn() {
             color="primary"
             type="submit"
             leftIcon={isLoading ? <Loader size={24} color="white" /> : <IconBolt size={24} />}>
-            Sign in
+            <FormattedMessage id="auth-sign-in" />
           </Button>
           <Button<typeof Link>
             component={Link}
@@ -143,7 +148,7 @@ export function SignIn() {
             color="gray"
             my="lg"
             leftIcon={<IconArrowBackUp size={24} />}>
-            Go home
+            <FormattedMessage id="auth-home" />
           </Button>
         </Paper>
       </form>
