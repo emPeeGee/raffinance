@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
 import {
+  Accordion,
+  Alert,
   Box,
   Button,
   Card,
@@ -8,7 +10,7 @@ import {
   Container,
   Flex,
   Group,
-  Paper,
+  LoadingOverlay,
   SimpleGrid,
   Text,
   Title,
@@ -18,6 +20,8 @@ import {
 import { MonthPicker } from '@mantine/dates';
 import {
   IconCircle,
+  IconFilter,
+  IconInfoCircle,
   IconPentagon,
   IconRocket,
   IconSquare,
@@ -26,9 +30,9 @@ import {
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
-import { PieChart } from 'components';
+import { DateRange, PieChart } from 'components';
 import { TransactionTable } from 'features/transactions';
-import { useAccountStore, useAnalyticsStore, useAuthStore, useI18nStore } from 'store';
+import { useAccountStore, useAnalyticsStore, useAuthStore } from 'store';
 import { getRandomNumber } from 'utils';
 
 import { Activity } from '../Activity/Activity';
@@ -53,6 +57,7 @@ export function Dashboard() {
   const { classes } = useStyles();
   const { user } = useAuthStore();
   const {
+    pending,
     date,
     setDate,
     getCategoriesIncome,
@@ -76,12 +81,17 @@ export function Dashboard() {
 
   return (
     <Container my="xl">
+      <LoadingOverlay visible={pending} />
       <Box>
-        <Title className={classes.title}>Dashboard</Title>
+        <Title className={classes.title}>
+          Dashboard
+          <Text inline color="blue">
+            <DateRange range={date} variant="analytics" />
+          </Text>
+        </Title>
         <Text mb="sm" c="dimmed" size="lg">
           {randomGreeting}
         </Text>
-
         <Card withBorder radius="md" mb="sm">
           <Title order={4} mb="sm">
             <Group>
@@ -132,44 +142,48 @@ export function Dashboard() {
             </Button>
           </Group>
         </Card>
-
-        {date[0]?.toDateString()}
-        {date[1]?.toDateString()}
-
-        <Card my="sm" withBorder radius="md">
-          <SimpleGrid
-            spacing={80}
-            cols={2}
-            breakpoints={[{ maxWidth: 'sm', cols: 1, spacing: 40 }]}>
-            <MonthPicker
-              w="40"
-              type="range"
-              defaultValue={date}
-              onChange={setDate}
-              mx="auto"
-              maw={400}
-            />
-
-            <Flex direction="column">
-              <Title order={3} mb="xs">
-                {formatMessage({ id: 'acc' })}
-              </Title>
-              {/* TODO */}
-              <Chip.Group multiple>
-                <Flex justify="start" gap="xs" w="100%" wrap="wrap">
-                  {accounts.map((acc) => (
-                    <Chip key={acc.id} value={String(acc.id)} variant="light">
-                      {acc.name}
-                    </Chip>
-                  ))}
+        <Accordion variant="separated" radius="md" my="sm" defaultValue="da">
+          <Accordion.Item value="da">
+            <Accordion.Control icon={<IconFilter />}>
+              {formatMessage({ id: 'dsh-filter' })}
+            </Accordion.Control>
+            <Accordion.Panel>
+              <Alert color="gray" mb="sm" icon={<IconInfoCircle />}>
+                {formatMessage({ id: 'dsh-month-help' })}
+              </Alert>
+              <SimpleGrid
+                spacing={80}
+                cols={2}
+                breakpoints={[{ maxWidth: 'sm', cols: 1, spacing: 40 }]}>
+                <MonthPicker
+                  w="40"
+                  type="range"
+                  defaultValue={date}
+                  onChange={setDate}
+                  mx="auto"
+                  maw={400}
+                />
+                <Flex direction="column">
+                  <Title order={3} mb="xs">
+                    {formatMessage({ id: 'acc' })}
+                  </Title>
+                  {/* TODO */}
+                  <Chip.Group multiple>
+                    <Flex justify="start" gap="xs" w="100%" wrap="wrap">
+                      {accounts.map((acc) => (
+                        <Chip key={acc.id} value={String(acc.id)} variant="light">
+                          {acc.name}
+                        </Chip>
+                      ))}
+                    </Flex>
+                  </Chip.Group>
                 </Flex>
-              </Chip.Group>
-            </Flex>
-          </SimpleGrid>
-        </Card>
+              </SimpleGrid>
+            </Accordion.Panel>
+          </Accordion.Item>
+        </Accordion>
 
         <Activity />
-
         {/* TODO: Component */}
         <Box my="sm" w="100%">
           <Card withBorder radius="lg" p="md">
@@ -177,14 +191,11 @@ export function Dashboard() {
             <TransactionTable transactions={topTransactions} />
           </Card>
         </Box>
-
         <CashFlow />
-
         <Flex w="100%" h="100%" gap="sm" justify="space-between">
           <PieChart title="Categories spending" height={400} data={categoriesSpending} />
           <PieChart title="Categories income" height={400} data={categoriesIncome} />
         </Flex>
-
         <BalanceEvo />
       </Box>
     </Container>
