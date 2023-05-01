@@ -34,9 +34,25 @@ const useStyles = createStyles(() => ({
   content: { minHeight: 'calc(100vh - 60px)', marginTop: 60 }
 }));
 
+function connectToWebSocket(token: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    // TODO:
+    const socket = new WebSocket('ws://localhost:9000/api/websocket', ['access_token', token]);
+    socket.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      const currentTime = message.time;
+      console.log(`Received time: ${currentTime}`);
+      resolve(currentTime);
+    };
+    socket.onerror = (event) => {
+      reject(new Error(`WebSocket error: ${event}`));
+    };
+  });
+}
+
 export function AppShell() {
   const { classes } = useStyles();
-  const { isLogged, fetchUser } = useAuthStore();
+  const { isLogged, fetchUser, token } = useAuthStore();
   const { getCategories } = useCategoriesStore();
   const { getTags } = useTagsStore();
   const { getAccounts } = useAccountStore();
@@ -62,6 +78,14 @@ export function AppShell() {
   // TODO: too many renders on init
   useEffect(() => {
     getUser();
+
+    connectToWebSocket(token)
+      .then((currentTime) => {
+        console.log(`Connected to WebSocket, current time: ${currentTime}`);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, []);
 
   console.info('App shell render');
