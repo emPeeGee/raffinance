@@ -14,6 +14,7 @@ import {
   Container
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 
 import { ToggleColor, LanguagePicker } from 'components';
@@ -86,24 +87,9 @@ function Header() {
               )}
 
               <LanguagePicker />
-              {!isLogged && (
-                <Group sx={{ height: '100%' }} spacing={0} className={classes.hiddenMobile}>
-                  {/* TODO: Link to app section */}
-                  <Link to="/" className={classes.link}>
-                    Home
-                  </Link>
-                  <Link to="/" className={classes.link}>
-                    Learn
-                  </Link>
-                  <Link to="/" className={classes.link}>
-                    Academy
-                  </Link>
-                </Group>
-              )}
 
               <Group className={classes.hiddenMobile}>
                 <ToggleColor />
-
                 {user ? (
                   <Button component={Link} variant="default" to="profile" title="User profile">
                     {user.username}
@@ -111,10 +97,10 @@ function Header() {
                 ) : (
                   <>
                     <Button component={Link} to="/sign-in" variant="default">
-                      Log in
+                      <FormattedMessage id="auth-sign-in" />
                     </Button>
                     <Button component={Link} to="/sign-up" variant="default">
-                      Sign up
+                      <FormattedMessage id="auth-sign-up" />
                     </Button>
                   </>
                 )}
@@ -140,22 +126,16 @@ function Header() {
           <ScrollArea h={`calc(100vh - ${rem(60)})`} mx="-md">
             <Divider my="sm" color={theme.colorScheme === 'dark' ? 'dark.5' : 'gray.1'} />
 
-            <a href="todo" className={classes.link}>
-              Home
-            </a>
-            <a href="todo" className={classes.link}>
-              Learn
-            </a>
-            <a href="todo" className={classes.link}>
-              Academy
-            </a>
-
             <Divider my="sm" color={theme.colorScheme === 'dark' ? 'dark.5' : 'gray.1'} />
 
             <Group position="center" grow pb="xl" px="md">
               <ToggleColor />
-              <Button variant="default">Log in</Button>
-              <Button>Sign up</Button>
+              <Button variant="default">
+                <FormattedMessage id="auth-sign-in" />
+              </Button>
+              <Button>
+                <FormattedMessage id="auth-sign-in" />
+              </Button>
             </Group>
           </ScrollArea>
         </Drawer>

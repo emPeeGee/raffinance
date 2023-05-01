@@ -63,6 +63,9 @@
   "co-usr-req": "Username is required",
   "co-passw": "Password",
   "co-passw-req": "Password is required",
+  "co-rights": " © 2023 mantine.dev. All rights reserved.",
+  "co-build": "Build with 💙 by {author} .",
+  "co-bloom": "Bloom your finances with Raffinace&apos;s money management app",
 
   "auth-sign-in": "Sign in",
   "auth-sign-up": "Sign up",
