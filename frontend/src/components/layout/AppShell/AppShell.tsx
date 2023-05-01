@@ -4,8 +4,8 @@ import { Flex, LoadingOverlay, createStyles } from '@mantine/core';
 import { Route, Routes } from 'react-router-dom';
 
 import { Footer, Header, Navbar, NotFound, ProtectedRoute } from 'components';
-import { AccountDetail, AccountForm, Accounts } from 'features/accounts';
-import { Profile, SignIn } from 'features/authentication';
+import { Accounts } from 'features/accounts';
+import { Profile, SignIn, SignUp } from 'features/authentication';
 import { Categories } from 'features/categories';
 import { Dashboard } from 'features/dashboard';
 import { Landing } from 'features/home';
@@ -13,10 +13,10 @@ import { Tags } from 'features/tags';
 import { Transactions } from 'features/transactions';
 import {
   FetchUserStatus,
+  useAccountStore,
   useAuthStore,
-  useTagsStore,
   useCategoriesStore,
-  useAccountStore
+  useTagsStore
 } from 'store';
 
 const useStyles = createStyles(() => ({
@@ -103,6 +103,7 @@ export function AppShell() {
               <Routes>
                 <Route path="/" element={<Landing />} />
                 <Route path="/sign-in" element={<SignIn />} />
+                <Route path="/sign-up" element={<SignUp />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </div>

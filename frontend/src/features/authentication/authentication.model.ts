@@ -1,3 +1,11 @@
+export interface RegistrationModel {
+  username: string;
+  password: string;
+  email: string;
+  name: string;
+  phone: string;
+}
+
 export interface CredentialsModel {
   username: string;
   password: string;

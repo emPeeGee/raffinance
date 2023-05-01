@@ -12,7 +12,7 @@
 11. Delete to confirm feature in settings, 3 level, not confirm, click to confirm and write to confirm.
 12. [x] Horizontal icons picker
 13. 9d28463 commit. Check in every place if other users can access the data
-14. Calendar view for transactions. For examples, in Dashboard, there we make a calendar and with count of transactions per day....
+14. [x] Calendar view for transactions. For examples, in Dashboard, there we make a calendar and with count of transactions per day....
 15. User has transactions, but he is blind on them, he doesn't know when, so I should work on better visibility with count of them ???. Some statistic count of txns per monts, and show last 3 years
 16. Global search, Elastic search and solr
 17. [x] No transactions yet, this month and no transaction found
