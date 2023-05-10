@@ -37,7 +37,10 @@ export function Activity() {
           {formatMessage({ id: 'dsh-activity' }, { year: new Date().getFullYear() })}
         </Title>
         <Text c="dimmed" size="md">
-          * {formatMessage({ id: 'dsh-activity-help' })}
+          *{' '}
+          {formatMessage({
+            id: transactionsCount.length === 0 ? 'dsh-activity-no-data' : 'dsh-activity-help'
+          })}
         </Text>
 
         <Calendar transactionsCount={transactionsCount} onDayClick={dayClickHandler} />

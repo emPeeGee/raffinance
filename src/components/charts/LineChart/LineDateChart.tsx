@@ -5,6 +5,8 @@ import { PointTooltipProps, ResponsiveLine, Serie } from '@nivo/line';
 
 import { useChartTheme } from 'hooks';
 
+import { NoData } from '../../common/NoData/NoData';
+
 interface Props {
   title: string;
   height: number;
@@ -68,72 +70,80 @@ export function LineDateChart({
 }: Props) {
   const { chartTheme } = useChartTheme();
 
+  const chart =
+    data.length === 0 || data[0].data.length === 0 ? (
+      <NoData />
+    ) : (
+      <Box h={height}>
+        <ResponsiveLine
+          colors={colors}
+          layers={[
+            Areas,
+            'grid',
+            'markers',
+            'axes',
+            'crosshair',
+            'lines',
+            'points',
+            'slices',
+            'mesh',
+            'legends'
+          ]}
+          theme={chartTheme}
+          data={data}
+          xScale={{
+            type: 'time',
+            format: '%Y-%m-%d',
+            useUTC: false,
+            precision: 'day'
+          }}
+          curve="monotoneX"
+          xFormat="time:%Y-%m-%d"
+          yScale={{
+            type: 'linear',
+            stacked: false,
+            min: 'auto',
+            max: 'auto',
+            clamp: true
+          }}
+          axisLeft={{
+            legendOffset: 12,
+            tickSize: 0
+          }}
+          axisBottom={{
+            format: '%b %d',
+            tickSize: 0,
+            tickPadding: 12
+          }}
+          enablePointLabel
+          pointSize={8}
+          pointBorderWidth={1}
+          pointBorderColor={{
+            from: 'color',
+            modifiers: [['darker', 0.3]]
+          }}
+          pointLabelYOffset={-10}
+          margin={{ left: 50, right: 16, top: 20, bottom: 30 }}
+          enableArea={enableArea}
+          areaOpacity={areaOpacity}
+          enableSlices={false}
+          enableGridX={false}
+          useMesh
+          // eslint-disable-next-line react/no-unstable-nested-components
+          tooltip={(s) => <Tooltip p={s} />}
+          crosshairType="cross"
+        />
+      </Box>
+    );
+
   return (
     <Box my="sm" w="100%">
       <Card withBorder radius="lg" p="md">
         <Title order={2} mb="sm">
           {title}
         </Title>
-        <Box h={height}>
-          <ResponsiveLine
-            colors={colors}
-            layers={[
-              Areas,
-              'grid',
-              'markers',
-              'axes',
-              'crosshair',
-              'lines',
-              'points',
-              'slices',
-              'mesh',
-              'legends'
-            ]}
-            theme={chartTheme}
-            data={data}
-            xScale={{
-              type: 'time',
-              format: '%Y-%m-%d',
-              useUTC: false,
-              precision: 'day'
-            }}
-            curve="monotoneX"
-            xFormat="time:%Y-%m-%d"
-            yScale={{
-              type: 'linear',
-              stacked: false,
-              min: 'auto',
-              max: 'auto',
-              clamp: true
-            }}
-            axisLeft={{
-              legendOffset: 12,
-              tickSize: 0
-            }}
-            axisBottom={{
-              format: '%b %d',
-              tickSize: 0,
-              tickPadding: 12
-            }}
-            enablePointLabel
-            pointSize={8}
-            pointBorderWidth={1}
-            pointBorderColor={{
-              from: 'color',
-              modifiers: [['darker', 0.3]]
-            }}
-            pointLabelYOffset={-10}
-            margin={{ left: 50, right: 16, top: 20, bottom: 30 }}
-            enableArea={enableArea}
-            areaOpacity={areaOpacity}
-            enableSlices={false}
-            enableGridX={false}
-            useMesh
-            // eslint-disable-next-line react/no-unstable-nested-components
-            tooltip={(s) => <Tooltip p={s} />}
-            crosshairType="cross"
-          />
-        </Box>
+
+        {chart}
       </Card>
     </Box>
   );

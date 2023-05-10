@@ -5,6 +5,7 @@ import { IconArrowsExchange, IconCashBanknote, IconCashBanknoteOff } from '@tabl
 import { FormattedDate } from 'react-intl';
 import { Link } from 'react-router-dom';
 
+import { NoData } from 'components';
 import { getContrastColor } from 'utils';
 
 import { TransactionModel, TransactionType } from '../transactions.model';
@@ -14,6 +15,10 @@ interface Props {
 }
 
 export function TransactionTable({ transactions }: Props) {
+  if (transactions.length === 0) {
+    return <NoData />;
+  }
+
   return (
     <Table highlightOnHover striped>
       <thead>

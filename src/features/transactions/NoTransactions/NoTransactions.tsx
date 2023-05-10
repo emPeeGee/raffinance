@@ -3,6 +3,7 @@ import React from 'react';
 import { Button, Card, Text, Title, createStyles, rem } from '@mantine/core';
 import { IconPlus, IconSearchOff } from '@tabler/icons-react';
 import { FormattedDate, useIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -64,7 +65,13 @@ export function NoTransactions({ range }: Props) {
         {formatMessage({ id: 'no-txn-desc' })}
       </Text>
 
-      <Button style={{ marginTop: 20 }} variant="outline" color="blue" leftIcon={<IconPlus />}>
+      <Button
+        component={Link}
+        to="/transactions/create"
+        style={{ marginTop: 20 }}
+        variant="outline"
+        color="blue"
+        leftIcon={<IconPlus />}>
         {formatMessage({ id: 'txn-create' })}
       </Button>
     </Card>

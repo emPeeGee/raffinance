@@ -31,6 +31,8 @@
   "co-latest-log": "Cele mai recente logări",
   "co-tot-txn": "Tranzacții totale",
   "co-field-inv": "Câmpul nu este valid",
+  "co-no-data-tit": "Fără date, fără probleme!",
+  "co-no-data-mes": "Această vizualizare pare să fie goală momentan. Aceasta poate fi din cauza lipsei de date sau de faptul că datele nu sunt încă disponibile.",
 
   "co-apply": "Aplică",
   "co-clear-all": "Șterge tot",
@@ -200,5 +202,6 @@
   "dsh-filter": "Filtrează căutarea",
   "dsh-month-help": "Selectați o lună pentru a restrânge istoricul tranzacțiilor. Dacă nu este selectată nicio lună, vor fi afișate analize din toată perioada.",
   "dsh-activity": "Prezentarea generală a activității de tranzacționare pentru {year}",
-  "dsh-activity-help": "Descoperiți tranzacțiile dvs. pentru această zi făcând clic pe ea!"
+  "dsh-activity-help": "Descoperiți tranzacțiile dvs. pentru această zi făcând clic pe ea!",
+  "dsh-activity-no-data": "Se pare că nu există istoric de tranzacții disponibil pentru acest cont. Aceasta poate fi din cauza lipsei de activitate sau pentru că contul este nou. Nu vă faceți griji, însă, pe măsură ce continuați să utilizați contul și să faceți tranzacții, istoricul dvs. de tranzacții va începe să crească. Vă mulțumim că sunteți un client valoros!"
 }
