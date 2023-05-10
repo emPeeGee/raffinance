@@ -58,7 +58,7 @@ export function AccountsDashboard() {
   const { accounts, pending } = useAccountStore();
   const { viewMode, setViewMode } = useSettingsStore();
 
-  const content = accounts.length > 0 ? <AccountsList /> : <NoAccounts />;
+  const content = accounts?.length > 0 ? <AccountsList /> : <NoAccounts />;
 
   return (
     <Container>

@@ -24,6 +24,7 @@ export function DateRange({ range, variant }: Props) {
   if (range[0] === null && range[1] === null) {
     return <>{formatMessage({ id: labelMap[variant].all })}</>;
   }
+
   if (range[0] !== null && range[1] === null) {
     return (
       <>
@@ -36,6 +37,7 @@ export function DateRange({ range, variant }: Props) {
       </>
     );
   }
+
   if (range[0] !== null && range[1] !== null) {
     return (
       <>

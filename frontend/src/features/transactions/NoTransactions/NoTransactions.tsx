@@ -56,7 +56,7 @@ export function NoTransactions({ range }: Props) {
       <IconSearchOff size="5rem" className={classes.icon} />
 
       <Title order={2} mb="1rem" weight={700} classNames={classes.title}>
-        {range
+        {range?.[0] !== null
           ? formatMessage({ id: 'no-txn-found-for' }, { range: rangeView })
           : formatMessage({ id: 'no-txn-found' })}
       </Title>

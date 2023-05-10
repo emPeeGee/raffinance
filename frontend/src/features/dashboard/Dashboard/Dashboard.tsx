@@ -151,34 +151,34 @@ export function Dashboard() {
               <Alert color="gray" mb="sm" icon={<IconInfoCircle />}>
                 {formatMessage({ id: 'dsh-month-help' })}
               </Alert>
-              <SimpleGrid
+              {/* <SimpleGrid
                 spacing={80}
                 cols={2}
-                breakpoints={[{ maxWidth: 'sm', cols: 1, spacing: 40 }]}>
-                <MonthPicker
-                  w="40"
-                  type="range"
-                  defaultValue={date}
-                  onChange={setDate}
-                  mx="auto"
-                  maw={400}
-                />
-                <Flex direction="column">
+                breakpoints={[{ maxWidth: 'sm', cols: 1, spacing: 40 }]}> */}
+              <MonthPicker
+                w="40"
+                type="range"
+                defaultValue={date}
+                onChange={setDate}
+                mx="auto"
+                maw={400}
+              />
+              {/* TODO */}
+              {/* <Flex direction="column">
                   <Title order={3} mb="xs">
                     {formatMessage({ id: 'acc' })}
                   </Title>
-                  {/* TODO */}
                   <Chip.Group multiple>
                     <Flex justify="start" gap="xs" w="100%" wrap="wrap">
-                      {accounts.map((acc) => (
+                      {accounts?.map((acc) => (
                         <Chip key={acc.id} value={String(acc.id)} variant="light">
                           {acc.name}
                         </Chip>
                       ))}
                     </Flex>
                   </Chip.Group>
-                </Flex>
-              </SimpleGrid>
+                </Flex> */}
+              {/* </SimpleGrid> */}
             </Accordion.Panel>
           </Accordion.Item>
         </Accordion>

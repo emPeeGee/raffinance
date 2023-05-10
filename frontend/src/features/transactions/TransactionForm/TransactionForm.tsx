@@ -106,7 +106,7 @@ export function TransactionForm() {
             `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
           );
           const data = await response.json();
-          const { city, road } = data.address;
+          const { city, road } = data.address ?? { city: '', road: '' };
           setValue('location', `${road}, ${city}`);
         },
         () => {

@@ -146,12 +146,14 @@ export function TransactionsFilter({
                   <MultiPicker
                     {...field}
                     label={formatMessage({ id: 'cat-categ' })}
-                    data={categories.map((c) => ({
-                      label: c.name,
-                      value: String(c.id),
-                      icon: c.icon,
-                      color: c.color
-                    }))}
+                    data={
+                      categories?.map((c) => ({
+                        label: c.name,
+                        value: String(c.id),
+                        icon: c.icon,
+                        color: c.color
+                      })) ?? []
+                    }
                   />
                 )}
               />
@@ -163,12 +165,14 @@ export function TransactionsFilter({
                   <MultiPicker
                     {...field}
                     label={formatMessage({ id: 'tag-tag' })}
-                    data={tags.map((t) => ({
-                      label: t.name,
-                      value: String(t.id),
-                      icon: t.icon,
-                      color: t.color
-                    }))}
+                    data={
+                      tags?.map((t) => ({
+                        label: t.name,
+                        value: String(t.id),
+                        icon: t.icon,
+                        color: t.color
+                      })) ?? []
+                    }
                   />
                 )}
               />
@@ -181,12 +185,14 @@ export function TransactionsFilter({
                     <MultiPicker
                       {...field}
                       label={formatMessage({ id: 'acc' })}
-                      data={accounts.map((a) => ({
-                        label: a.name,
-                        value: String(a.id),
-                        icon: a.icon,
-                        color: a.color
-                      }))}
+                      data={
+                        accounts?.map((a) => ({
+                          label: a.name,
+                          value: String(a.id),
+                          icon: a.icon,
+                          color: a.color
+                        })) ?? []
+                      }
                     />
                   )}
                 />

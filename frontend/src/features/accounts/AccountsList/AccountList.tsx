@@ -115,7 +115,7 @@ export function AccountsList(props: Props) {
             </tr>
           </thead>
           <tbody>
-            {accounts.map(({ id, name, balance, currency, icon, color, updatedAt }) => (
+            {accounts?.map(({ id, name, balance, currency, icon, color, updatedAt }) => (
               <tr key={id}>
                 <td>{name}</td>
                 <td>{balance}</td>
@@ -150,7 +150,7 @@ export function AccountsList(props: Props) {
             { maxWidth: 'md', cols: 2 },
             { maxWidth: 'xs', cols: 1 }
           ]}>
-          {accounts.map(
+          {accounts?.map(
             ({ id, name, color, icon, currency, balance, transactionCount, rateWithPrevMonth }) => {
               const textColor = getContrastColor(color);
 

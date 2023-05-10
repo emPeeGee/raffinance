@@ -40,7 +40,7 @@ export const useAccountStore = create<AccountsStore>()(
         set({ ...get(), pending: true });
         const { accounts } = get();
 
-        if (accounts.length === 0) {
+        if (accounts && accounts.length === 0) {
           get().fetchAccounts();
         } else {
           set({ ...get(), pending: false });
