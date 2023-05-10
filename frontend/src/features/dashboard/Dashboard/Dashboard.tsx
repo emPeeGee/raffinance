@@ -155,14 +155,9 @@ export function Dashboard() {
                 spacing={80}
                 cols={2}
                 breakpoints={[{ maxWidth: 'sm', cols: 1, spacing: 40 }]}> */}
-              <MonthPicker
-                w="40"
-                type="range"
-                defaultValue={date}
-                onChange={setDate}
-                mx="auto"
-                maw={400}
-              />
+              <Group>
+                <MonthPicker type="range" defaultValue={date} onChange={setDate} mx="auto" />
+              </Group>
               {/* TODO */}
               {/* <Flex direction="column">
                   <Title order={3} mb="xs">
