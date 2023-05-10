@@ -32,6 +32,7 @@
 https://nivo.rocks/storybook/?path=/story/calendar--default
 
 31. Location use with browser api
+32. Error catch
 
 v2.
 32. Google authenticaton
