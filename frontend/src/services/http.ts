@@ -1,6 +1,5 @@
-// To make a config file
-const testUrl = 'http://localhost:9000/api/';
-const authUrl = 'http://localhost:9000/auth/';
+const apiUrl = process.env.REACT_APP_API_URL;
+const authUrl = process.env.REACT_APP_AUTH_URL;
 
 interface GetRequest {
   url: string;
@@ -31,7 +30,7 @@ async function handleErrors<T>(response: Response): Promise<T> {
 
 export const api = {
   get: <K>({ url, token }: GetRequest) =>
-    fetch(`${testUrl}${url}`, {
+    fetch(`${apiUrl}${url}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -40,7 +39,7 @@ export const api = {
     }).then((response) => handleErrors<K>(response)),
 
   post: <T, K>({ url, body, token, auth = false }: PostRequest<T>) =>
-    fetch(`${auth ? authUrl : testUrl}${url}`, {
+    fetch(`${auth ? authUrl : apiUrl}${url}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -50,7 +49,7 @@ export const api = {
     }).then((response) => handleErrors<K>(response)),
 
   put: <T, K>({ url, body, token, auth = false }: PostRequest<T>) =>
-    fetch(`${auth ? authUrl : testUrl}${url}`, {
+    fetch(`${auth ? authUrl : apiUrl}${url}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -60,7 +59,7 @@ export const api = {
     }).then((response) => handleErrors<K>(response)),
 
   delete: <K>({ url, token, auth = false }: DeleteRequest) =>
-    fetch(`${auth ? authUrl : testUrl}${url}`, {
+    fetch(`${auth ? authUrl : apiUrl}${url}`, {
       method: 'delete',
       headers: {
         'Content-Type': 'application/json',

@@ -32,3 +32,8 @@
 https://nivo.rocks/storybook/?path=/story/calendar--default
 
 31. Location use with browser api
+
+v2.
+32. Google authenticaton
+33. Export de date in pdf sau csv
+34. WEbsocket
