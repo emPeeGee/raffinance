@@ -32,9 +32,10 @@ export function ViewSwitcher({ defaultValue, onChange }: Props) {
         ]}
       />
 
-      <Button size="sm" variant="outline" leftIcon={<IconFileExport />}>
+      {/* // TODO */}
+      {/* <Button size="sm" variant="outline" leftIcon={<IconFileExport />}>
         {formatMessage({ id: 'co-exp-csv' })}
-      </Button>
+      </Button> */}
     </Group>
   );
 }

@@ -43,10 +43,11 @@ export const useTagsStore = create<TagsStore>()(
         return tag;
       },
       fetchTags: async () => {
-        const tags = await api.get<TagModel[]>({
-          url: 'tags',
-          token: useAuthStore.getState().token
-        });
+        const tags =
+          (await api.get<TagModel[]>({
+            url: 'tags',
+            token: useAuthStore.getState().token
+          })) ?? [];
         set({ tags, pending: false });
       },
       addTag: async (tag: CreateTagDTO): Promise<boolean> => {

@@ -43,10 +43,11 @@ export const useCategoriesStore = create<CategoriesStore>()(
         return category;
       },
       fetchCategories: async () => {
-        const categories = await api.get<CategoryModel[]>({
-          url: 'categories',
-          token: useAuthStore.getState().token
-        });
+        const categories =
+          (await api.get<CategoryModel[]>({
+            url: 'categories',
+            token: useAuthStore.getState().token
+          })) ?? [];
         set({ categories, pending: false });
       },
       addCategory: async (category: CreateCategoryDTO): Promise<boolean> => {

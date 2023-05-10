@@ -40,7 +40,7 @@ export const useAccountStore = create<AccountsStore>()(
         set({ ...get(), pending: true });
         const { accounts } = get();
 
-        if (accounts && accounts.length === 0) {
+        if (accounts.length === 0) {
           get().fetchAccounts();
         } else {
           set({ ...get(), pending: false });
@@ -85,10 +85,11 @@ export const useAccountStore = create<AccountsStore>()(
       },
 
       fetchAccounts: async () => {
-        const accounts = await api.get<AccountModel[]>({
-          url: 'accounts',
-          token: useAuthStore.getState().token
-        });
+        const accounts =
+          (await api.get<AccountModel[]>({
+            url: 'accounts',
+            token: useAuthStore.getState().token
+          })) ?? [];
         set({ accounts, pending: false });
       },
 
