@@ -186,8 +186,16 @@ export function Dashboard() {
         </Box>
         <CashFlow />
         <Flex w="100%" h="100%" gap="sm" justify="space-between">
-          <PieChart title="Categories spending" height={400} data={categoriesSpending} />
-          <PieChart title="Categories income" height={400} data={categoriesIncome} />
+          <PieChart
+            title={formatMessage({ id: 'dsh-categs-spend' })}
+            height={400}
+            data={categoriesSpending}
+          />
+          <PieChart
+            title={formatMessage({ id: 'dsh-categs-income' })}
+            height={400}
+            data={categoriesIncome}
+          />
         </Flex>
         <BalanceEvo />
       </Box>

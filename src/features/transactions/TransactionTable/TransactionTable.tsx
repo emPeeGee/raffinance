@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Anchor, Badge, Flex, Group, Table } from '@mantine/core';
 import { IconArrowsExchange, IconCashBanknote, IconCashBanknoteOff } from '@tabler/icons-react';
-import { FormattedDate } from 'react-intl';
+import { FormattedDate, FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 
 import { NoData } from 'components';
@@ -23,12 +23,24 @@ export function TransactionTable({ transactions }: Props) {
     <Table highlightOnHover striped>
       <thead>
         <tr>
-          <th>Date</th>
-          <th>Type</th>
-          <th>Amount</th>
-          <th>Description</th>
-          <th>Category</th>
-          <th>Tags</th>
+          <th>
+            <FormattedMessage id="co-date" />
+          </th>
+          <th>
+            <FormattedMessage id="co-type" />
+          </th>
+          <th>
+            <FormattedMessage id="co-amo" />
+          </th>
+          <th>
+            <FormattedMessage id="co-desc" />
+          </th>
+          <th>
+            <FormattedMessage id="cat-cat" />
+          </th>
+          <th>
+            <FormattedMessage id="tag-tag" />
+          </th>
         </tr>
       </thead>
       <tbody>

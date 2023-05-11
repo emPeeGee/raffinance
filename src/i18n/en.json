@@ -33,6 +33,7 @@
   "co-field-inv": "Field is invalid",
   "co-no-data-tit": "No Data, No Problem!",
   "co-no-data-mes": "This view appears to be empty at the moment. This could be due to a lack of data input, or the data may not be available yet.",
+  "co-type": "Type",
 
   "co-apply": "Apply",
   "co-clear-all": "Clear all",
@@ -203,5 +204,8 @@
   "dsh-month-help": "Select a month to narrow down your transaction history. If no month is selected, analytics from all time will be displayed.",
   "dsh-activity": "Transaction Activity Overview for {year}",
   "dsh-activity-help": "Discover your transactions for this day by clicking on it!",
-  "dsh-activity-no-data": "It appears that there is no transaction history available for this account. This could be due to a lack of activity or because the account is new. Don't worry though, as you continue to use your account and make transactions, your transaction history will start to grow. Thank you for being a valued customer!"
+  "dsh-activity-no-data": "It appears that there is no transaction history available for this account. This could be due to a lack of activity or because the account is new. Don't worry though, as you continue to use your account and make transactions, your transaction history will start to grow. Thank you for being a valued customer!",
+  "dsh-categs-spend": "Categories spending",
+  "dsh-categs-income": "Categories income",
+  "dsh-bal-evo": "Balance evolution {balance} {currency}"
 }
